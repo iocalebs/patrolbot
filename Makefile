@@ -1,4 +1,7 @@
-.PHONY: generate lint test
+.PHONY: docs generate lint test
+
+docs:
+	pkgsite -open .
 
 generate:
 	go generate ./...
