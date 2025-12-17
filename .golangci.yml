@@ -11,5 +11,11 @@ linters:
     exhaustruct:
       allow-empty: true
 
+  exclusions:
+    rules:
+      - path: _test\.go
+        linters:
+          - funlen
+
 issues:
   fix: true

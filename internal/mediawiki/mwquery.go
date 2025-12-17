@@ -5,15 +5,24 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
 	"net/http"
 )
 
-var errMediaWikiWarnings = errors.New("MediaWiki response body contains warnings")
-var errMediaWikiErrors = errors.New("MediaWiki response body contains errors")
+var (
+	// ErrResponseWarnings indicates that the MediaWiki API response body contained warnings.
+	ErrResponseWarnings = errors.New("MediaWiki response body contains warnings")
+
+	// ErrResponseError indicates that the MediaWiki API response body contained errors.
+	ErrResponseError = errors.New("MediaWiki response body contains errors")
+
+	// ErrQueryNotOK indicates that the MediaWiki API returned a non-200 OK status code.
+	ErrQueryNotOK = errors.New("MediaWiki API returned non-OK status code")
+)
 
 type queryResponseBody struct {
 	Warnings *json.RawMessage `json:"warnings"`
-	Errors   *json.RawMessage `json:"errors"`
+	Error    *json.RawMessage `json:"error"`
 	Query    *json.RawMessage `json:"query"`
 }
 
@@ -41,9 +50,24 @@ func (c *Client) doQuery(ctx context.Context, req *http.Request, res any) error 
 	defer func() {
 		err = resp.Body.Close()
 		if err != nil {
-			c.logger.WarnContext(ctx, "failed to close MediaWiki response body", "error", err)
+			c.logger.WarnContext(ctx, "Failed to close MediaWiki response body", "error", err)
 		}
 	}()
+
+	if resp.StatusCode != http.StatusOK {
+		bodyBytes, err := io.ReadAll(resp.Body)
+		if err != nil {
+			c.logger.WarnContext(ctx, "Failed to read response body", "error", err)
+
+			return fmt.Errorf("%w: %d", ErrQueryNotOK, resp.StatusCode)
+		}
+
+		if len(bodyBytes) == 0 {
+			return fmt.Errorf("%w: %d with empty response body", ErrQueryNotOK, resp.StatusCode)
+		}
+
+		return fmt.Errorf("%w: %d, response body: %s", ErrQueryNotOK, resp.StatusCode, string(bodyBytes))
+	}
 
 	var responseBody queryResponseBody
 
@@ -52,12 +76,12 @@ func (c *Client) doQuery(ctx context.Context, req *http.Request, res any) error 
 		return fmt.Errorf("failed to decode MediaWiki response body: %w", err)
 	}
 
-	if responseBody.Errors != nil {
-		return fmt.Errorf("%w: %s", errMediaWikiErrors, string(*responseBody.Errors))
+	if responseBody.Error != nil {
+		return fmt.Errorf("%w: %s", ErrResponseError, string(*responseBody.Error))
 	}
 
 	if responseBody.Warnings != nil {
-		return fmt.Errorf("%w: %s", errMediaWikiWarnings, string(*responseBody.Warnings))
+		return fmt.Errorf("%w: %s", ErrResponseWarnings, string(*responseBody.Warnings))
 	}
 
 	err = json.Unmarshal(*responseBody.Query, res)
