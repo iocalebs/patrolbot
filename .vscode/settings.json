@@ -1,11 +1,12 @@
 {
-  "go.buildFlags": [
-    "-tags=tools"
-  ],
+  "editor.defaultFormatter": "prettier.prettier-vscode",
+  "editor.formatOnSave": true,
+  "[go]": {
+    "editor.defaultFormatter": "golang.go"
+  },
+  "go.buildFlags": ["-tags=tools"],
   "go.lintTool": "golangci-lint-v2",
   "go.lintOnSave": "workspace",
-  "go.lintFlags": [
-    "--fast-only"
-  ],
-  "go.testFlags": ["-v"],
+  "go.lintFlags": ["--fast-only"],
+  "go.testFlags": ["-v"]
 }
