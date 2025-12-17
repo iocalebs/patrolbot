@@ -14,7 +14,12 @@ func TestLoad(t *testing.T) {
 		t.Fatalf("Failed to load config: %v", err)
 	}
 
-	if cfg.MediaWiki.APIURL == "" {
-		t.Fatal("MediaWiki API URL is empty")
+	zwEn, ok := cfg.Wikis["ZWen"]
+	if !ok {
+		t.Fatal("Expected wikis[\"ZWen\"] to exist")
+	}
+
+	if zwEn.APIURL == "" {
+		t.Fatal("Expected wikis[\"ZWen\"].APIURL to not be empty")
 	}
 }

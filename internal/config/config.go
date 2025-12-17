@@ -1,7 +1,7 @@
 // Package config provides functionality to load static app config from a YAML file.
 package config
 
-//go:generate go run ../../tools/genschema/g.go
+//go:generate go run ../../tools/genschema/genschema.go
 
 import (
 	_ "embed"
@@ -12,11 +12,11 @@ import (
 
 // Config represents the entire application configuration.
 type Config struct {
-	MediaWiki MediaWiki `json:"mediawiki"`
+	Wikis map[string]Wiki `json:"wikis"`
 }
 
-// MediaWiki represents configuration used by [github.com/iocalebs/patrolbot/internal/mediawiki].
-type MediaWiki struct {
+// Wiki represents bot configuration for a particular MediaWiki instance.
+type Wiki struct {
 	APIURL string `json:"apiUrl"`
 }
 

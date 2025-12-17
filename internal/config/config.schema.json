@@ -5,17 +5,20 @@
   "$defs": {
     "Config": {
       "properties": {
-        "mediawiki": {
-          "$ref": "#/$defs/MediaWiki"
+        "wikis": {
+          "additionalProperties": {
+            "$ref": "#/$defs/Wiki"
+          },
+          "type": "object"
         }
       },
       "additionalProperties": false,
       "type": "object",
       "required": [
-        "mediawiki"
+        "wikis"
       ]
     },
-    "MediaWiki": {
+    "Wiki": {
       "properties": {
         "apiUrl": {
           "type": "string"
