@@ -1,4 +1,7 @@
 {
+  "go.buildFlags": [
+    "-tags=tools"
+  ],
   "go.lintTool": "golangci-lint-v2",
   "go.lintOnSave": "workspace",
   "go.lintFlags": [
