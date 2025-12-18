@@ -22,12 +22,20 @@
       "properties": {
         "apiUrl": {
           "type": "string"
+        },
+        "username": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
         }
       },
       "additionalProperties": false,
       "type": "object",
       "required": [
-        "apiUrl"
+        "apiUrl",
+        "username",
+        "password"
       ]
     }
   }
