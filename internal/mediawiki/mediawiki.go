@@ -2,9 +2,6 @@
 package mediawiki
 
 import (
-	"context"
-	"fmt"
-	"io"
 	"log/slog"
 	"net/http"
 
@@ -27,15 +24,4 @@ func NewClient(config config.Wiki, httpClient *http.Client, logger slog.Logger) 
 	}
 
 	return client
-}
-
-func (c *Client) newRequest(ctx context.Context, method string, body io.Reader) (*http.Request, error) {
-	req, err := http.NewRequestWithContext(ctx, method, c.config.APIURL, body)
-	if err != nil {
-		return nil, fmt.Errorf("failed to create MediaWiki request: %w", err)
-	}
-
-	req.Header.Set("User-Agent", "PatrolBot/1.0 (+https://github.com/iocalebs/patrolbot; phantomcalebs@gmail.com)")
-
-	return req, nil
 }

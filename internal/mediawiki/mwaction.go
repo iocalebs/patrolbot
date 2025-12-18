@@ -1,0 +1,94 @@
+package mediawiki
+
+import (
+	"context"
+	"encoding/json"
+	"errors"
+	"fmt"
+	"io"
+	"net/http"
+)
+
+var (
+	// ErrResponseWarnings indicates that the MediaWiki API response body contained warnings.
+	ErrResponseWarnings = errors.New("MediaWiki response body contains warnings")
+
+	// ErrResponseError indicates that the MediaWiki API response body contained errors.
+	ErrResponseError = errors.New("MediaWiki response body contains errors")
+
+	// ErrResponseNotOK indicates that the MediaWiki API returned a non-200 OK status code.
+	ErrResponseNotOK = errors.New("MediaWiki API returned non-OK status code")
+)
+
+type baseResponse struct {
+	Warnings *json.RawMessage `json:"warnings"`
+	Error    *json.RawMessage `json:"error"`
+}
+
+type response interface {
+	warnings() *json.RawMessage
+	errors() *json.RawMessage
+}
+
+func (b baseResponse) warnings() *json.RawMessage {
+	return b.Warnings
+}
+
+func (b baseResponse) errors() *json.RawMessage {
+	return b.Error
+}
+
+func (c *Client) newRequest(ctx context.Context, method string, body io.Reader) (*http.Request, error) {
+	req, err := http.NewRequestWithContext(ctx, method, c.config.APIURL, body)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create MediaWiki request: %w", err)
+	}
+
+	req.Header.Set("User-Agent", "PatrolBot/1.0 (+https://github.com/iocalebs/patrolbot; phantomcalebs@gmail.com)")
+
+	return req, nil
+}
+
+func (c *Client) do(ctx context.Context, req *http.Request, res response) error {
+	resp, err := c.httpClient.Do(req)
+	if err != nil {
+		return fmt.Errorf("failed to send HTTP request to MediaWiki API: %w", err)
+	}
+
+	defer func() {
+		err = resp.Body.Close()
+		if err != nil {
+			c.logger.WarnContext(ctx, "Failed to close MediaWiki response body", "error", err)
+		}
+	}()
+
+	if resp.StatusCode != http.StatusOK {
+		bodyBytes, err := io.ReadAll(resp.Body)
+		if err != nil {
+			c.logger.WarnContext(ctx, "Failed to read response body", "error", err)
+
+			return fmt.Errorf("%w: %d", ErrResponseNotOK, resp.StatusCode)
+		}
+
+		if len(bodyBytes) == 0 {
+			return fmt.Errorf("%w: %d with empty response body", ErrResponseNotOK, resp.StatusCode)
+		}
+
+		return fmt.Errorf("%w: %d, response body: %s", ErrResponseNotOK, resp.StatusCode, string(bodyBytes))
+	}
+
+	err = json.NewDecoder(resp.Body).Decode(&res)
+	if err != nil {
+		return fmt.Errorf("failed to decode MediaWiki response body: %w", err)
+	}
+
+	if errs := res.errors(); errs != nil {
+		return fmt.Errorf("%w: %s", ErrResponseError, string(*errs))
+	}
+
+	if warnings := res.warnings(); warnings != nil {
+		return fmt.Errorf("%w: %s", ErrResponseWarnings, string(*warnings))
+	}
+
+	return nil
+}
