@@ -1,4 +1,4 @@
-// Package mediawiki provides a client for interacting with the MediaWiki API.
+// Package mediawiki provides a client for interacting with the MediaWiki Action API.
 package mediawiki
 
 import (
