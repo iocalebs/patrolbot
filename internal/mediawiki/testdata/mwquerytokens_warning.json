@@ -1,7 +1,0 @@
-{
-  "batchcomplete": true,
-  "warnings": {
-    "tokens": { "warnings": "Unrecognized value for parameter \"type\": foo" }
-  },
-  "query": { "tokens": {} }
-}

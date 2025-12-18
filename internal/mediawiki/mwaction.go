@@ -21,20 +21,20 @@ var (
 )
 
 type baseResponse struct {
-	Warnings *json.RawMessage `json:"warnings"`
-	Error    *json.RawMessage `json:"error"`
+	Warnings json.RawMessage `json:"warnings"`
+	Error    json.RawMessage `json:"error"`
 }
 
 type response interface {
-	warnings() *json.RawMessage
-	errors() *json.RawMessage
+	warnings() json.RawMessage
+	errors() json.RawMessage
 }
 
-func (b baseResponse) warnings() *json.RawMessage {
+func (b baseResponse) warnings() json.RawMessage {
 	return b.Warnings
 }
 
-func (b baseResponse) errors() *json.RawMessage {
+func (b baseResponse) errors() json.RawMessage {
 	return b.Error
 }
 
@@ -82,12 +82,12 @@ func (c *Client) do(ctx context.Context, req *http.Request, res response) error 
 		return fmt.Errorf("failed to decode MediaWiki response body: %w", err)
 	}
 
-	if errs := res.errors(); errs != nil {
-		return fmt.Errorf("%w: %s", ErrResponseError, string(*errs))
+	if errs := res.errors(); len(errs) != 0 {
+		return fmt.Errorf("%w: %s", ErrResponseError, string(errs))
 	}
 
-	if warnings := res.warnings(); warnings != nil {
-		return fmt.Errorf("%w: %s", ErrResponseWarnings, string(*warnings))
+	if warnings := res.warnings(); len(warnings) != 0 {
+		return fmt.Errorf("%w: %s", ErrResponseWarnings, string(warnings))
 	}
 
 	return nil
