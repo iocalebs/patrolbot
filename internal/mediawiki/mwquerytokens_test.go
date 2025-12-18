@@ -55,7 +55,7 @@ func TestLoginToken(t *testing.T) {
 			statusCode:          http.StatusInternalServerError,
 			responseBody:        []byte("An error occurred"),
 			expectedToken:       "",
-			expectedError:       mediawiki.ErrResponseNotOK,
+			expectedError:       mediawiki.ErrResponseStatusCode,
 			expectedErrorSubstr: "An error occurred",
 		},
 		{
@@ -63,7 +63,7 @@ func TestLoginToken(t *testing.T) {
 			statusCode:          http.StatusBadGateway,
 			responseBody:        nil,
 			expectedToken:       "",
-			expectedError:       mediawiki.ErrResponseNotOK,
+			expectedError:       mediawiki.ErrResponseStatusCode,
 			expectedErrorSubstr: "empty response body",
 		},
 	}

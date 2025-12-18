@@ -16,8 +16,8 @@ var (
 	// ErrResponseError indicates that the MediaWiki API response body contained errors.
 	ErrResponseError = errors.New("MediaWiki response body contains errors")
 
-	// ErrResponseNotOK indicates that the MediaWiki API returned a non-200 OK status code.
-	ErrResponseNotOK = errors.New("MediaWiki API returned non-OK status code")
+	// ErrResponseStatusCode indicates that the MediaWiki API returned a 400+ status code.
+	ErrResponseStatusCode = errors.New("MediaWiki API returned error status code")
 )
 
 type baseResponse struct {
@@ -62,19 +62,19 @@ func (c *Client) do(ctx context.Context, req *http.Request, res response) error 
 		}
 	}()
 
-	if resp.StatusCode != http.StatusOK {
+	if resp.StatusCode >= http.StatusBadRequest {
 		bodyBytes, err := io.ReadAll(resp.Body)
 		if err != nil {
 			c.logger.WarnContext(ctx, "Failed to read response body", "error", err)
 
-			return fmt.Errorf("%w: %d", ErrResponseNotOK, resp.StatusCode)
+			return fmt.Errorf("%w: %d", ErrResponseStatusCode, resp.StatusCode)
 		}
 
 		if len(bodyBytes) == 0 {
-			return fmt.Errorf("%w: %d with empty response body", ErrResponseNotOK, resp.StatusCode)
+			return fmt.Errorf("%w: %d with empty response body", ErrResponseStatusCode, resp.StatusCode)
 		}
 
-		return fmt.Errorf("%w: %d, response body: %s", ErrResponseNotOK, resp.StatusCode, string(bodyBytes))
+		return fmt.Errorf("%w: %d, response body: %s", ErrResponseStatusCode, resp.StatusCode, string(bodyBytes))
 	}
 
 	err = json.NewDecoder(resp.Body).Decode(&res)
