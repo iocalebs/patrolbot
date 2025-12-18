@@ -16,8 +16,8 @@ var (
 	// ErrResponseError indicates that the MediaWiki API response body contained errors.
 	ErrResponseError = errors.New("MediaWiki response body contains errors")
 
-	// ErrQueryNotOK indicates that the MediaWiki API returned a non-200 OK status code.
-	ErrQueryNotOK = errors.New("MediaWiki API returned non-OK status code")
+	// ErrResponseNotOK indicates that the MediaWiki API returned a non-200 OK status code.
+	ErrResponseNotOK = errors.New("MediaWiki API returned non-OK status code")
 )
 
 type queryResponseBody struct {
@@ -59,14 +59,14 @@ func (c *Client) doQuery(ctx context.Context, req *http.Request, res any) error 
 		if err != nil {
 			c.logger.WarnContext(ctx, "Failed to read response body", "error", err)
 
-			return fmt.Errorf("%w: %d", ErrQueryNotOK, resp.StatusCode)
+			return fmt.Errorf("%w: %d", ErrResponseNotOK, resp.StatusCode)
 		}
 
 		if len(bodyBytes) == 0 {
-			return fmt.Errorf("%w: %d with empty response body", ErrQueryNotOK, resp.StatusCode)
+			return fmt.Errorf("%w: %d with empty response body", ErrResponseNotOK, resp.StatusCode)
 		}
 
-		return fmt.Errorf("%w: %d, response body: %s", ErrQueryNotOK, resp.StatusCode, string(bodyBytes))
+		return fmt.Errorf("%w: %d, response body: %s", ErrResponseNotOK, resp.StatusCode, string(bodyBytes))
 	}
 
 	var responseBody queryResponseBody
