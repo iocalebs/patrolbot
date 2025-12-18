@@ -19,12 +19,12 @@ func TestLoginToken(t *testing.T) {
 	t.Parallel()
 
 	tests := []struct {
-		name                string // test case name
-		statusCode          int    // HTTP status code to return in mock API response
-		responseBody        []byte // name of file in testdata/ containing the mock API response
-		expectedToken       string // expected token value
-		expectedError       error  // expected error value, or nil if no error expected
-		expectedErrorSubstr string // expected error message substring
+		name                string          // test case name
+		statusCode          int             // HTTP status code to return in mock API response
+		responseBody        []byte          // name of file in testdata/ containing the mock API response
+		expectedToken       mediawiki.Token // expected token value
+		expectedError       error           // expected error value, or nil if no error expected
+		expectedErrorSubstr string          // expected error message substring
 	}{
 		{
 			name:                "200_ValidLoginToken",

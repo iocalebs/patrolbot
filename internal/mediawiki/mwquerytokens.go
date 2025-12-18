@@ -2,6 +2,9 @@ package mediawiki
 
 import "context"
 
+// Token represents a MediaWiki API token.
+type Token string
+
 type queryResponseTokens struct {
 	Tokens struct {
 		LoginToken string `json:"logintoken"`
@@ -11,7 +14,7 @@ type queryResponseTokens struct {
 // LoginToken retrieves a login token from [API:Tokens].
 //
 // [API:Tokens]: https://www.mediawiki.org/wiki/API:Tokens
-func (c *Client) LoginToken(ctx context.Context) (string, error) {
+func (c *Client) LoginToken(ctx context.Context) (Token, error) {
 	req, err := c.newQuery(ctx)
 	if err != nil {
 		return "", err
@@ -29,5 +32,5 @@ func (c *Client) LoginToken(ctx context.Context) (string, error) {
 		return "", err
 	}
 
-	return tokens.Tokens.LoginToken, nil
+	return Token(tokens.Tokens.LoginToken), nil
 }
