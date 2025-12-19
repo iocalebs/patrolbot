@@ -12,6 +12,10 @@ linters:
       allow-empty: true
     nlreturn:
       block-size: 2
+    varnamelen:
+      ignore-names:
+        - w # http.ResponseWriter
+        - tc # table test case
 
   exclusions:
     rules:

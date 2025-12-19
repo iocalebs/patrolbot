@@ -2,27 +2,33 @@ package main
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"log/slog"
 	"net/http"
 	"net/http/cookiejar"
+	"time"
 
 	"github.com/iocalebs/patrolbot/internal/config"
 	"github.com/iocalebs/patrolbot/internal/mediawiki"
 )
 
 func mwTestData(overwrite bool) error {
+	mwclient, capturer, err := setup(overwrite)
+
 	generators := [](func(*mediawiki.Client, *capturingTransport) error){
 		actionError,
 		actionWarnings,
 		tokensLogin,
 		loginFailedWrongToken,
 		loginSuccess,
+		recentChanges,
+		recentChangesError,
+		recentChangesWarnings,
 	}
 
 	for _, generator := range generators {
-		mwclient, capturer, err := setup(overwrite)
 		if err != nil {
 			return err
 		}
@@ -125,4 +131,74 @@ func loginSuccess(mwclient *mediawiki.Client, transport *capturingTransport) err
 	}
 
 	return transport.writeCapture("testdata/mwlogin_success.json")
+}
+
+func recentChanges(mwclient *mediawiki.Client, transport *capturingTransport) error {
+	params := mediawiki.RecentChangesQueryParams{}
+	params.RCStart = time.Now()
+	params.RCEnd = time.Now().Add(-1 * time.Hour)
+	params.RCShow = "!patrolled"
+
+	paginator := mediawiki.NewRecentChangesPaginator(mwclient, params)
+
+	errs := []error{}
+
+	for curPage := 1; paginator.HasMorePages(); curPage++ {
+		_, err := paginator.NextPage(context.TODO())
+		if err != nil {
+			return err
+		}
+
+		err = transport.writeCapture(fmt.Sprintf("testdata/mwqueryrecentchanges_unpatrolled%d.json", curPage))
+		if err != nil {
+			errs = append(errs, err)
+		}
+	}
+
+	return errors.Join(errs...)
+}
+
+func recentChangesError(mwclient *mediawiki.Client, transport *capturingTransport) error {
+	params := mediawiki.RecentChangesQueryParams{}
+	params.RCShow = "patrolled|!patrolled"
+	paginator := mediawiki.NewRecentChangesPaginator(mwclient, params)
+	ctx := context.Background()
+
+	_, err := paginator.NextPage(ctx)
+	if err != nil && !errors.Is(err, mediawiki.ErrResponseError) {
+		return err
+	}
+
+	return transport.writeCapture("testdata/mwqueryrecentchanges_error.json")
+}
+
+func recentChangesWarnings(mwclient *mediawiki.Client, transport *capturingTransport) error {
+	params := mediawiki.RecentChangesQueryParams{}
+	params.RCShow = "foo"
+	paginator := mediawiki.NewRecentChangesPaginator(mwclient, params)
+	ctx := context.Background()
+
+	_, err := paginator.NextPage(ctx)
+	if err != nil && !errors.Is(err, mediawiki.ErrResponseWarnings) {
+		return err
+	}
+
+	// Remove `continue` pagination cursor as only one page is needed for this test
+	var respBody map[string]any
+
+	err = json.Unmarshal(transport.captured, &respBody)
+	if err != nil {
+		return fmt.Errorf("error unmarshaling response body: %w", err)
+	}
+
+	delete(respBody, "continue")
+
+	transport.captured, err = json.MarshalIndent(respBody, "", "  ")
+	if err != nil {
+		return err
+	}
+
+	transport.captured = append(transport.captured, '\n')
+
+	return transport.writeCapture("testdata/mwqueryrecentchanges_warnings.json")
 }

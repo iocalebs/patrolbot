@@ -1,0 +1,112 @@
+{
+  "batchcomplete": true,
+  "query": {
+    "recentchanges": [
+      {
+        "ns": 0,
+        "old_revid": 1248944,
+        "pageid": 176162,
+        "rcid": 415223,
+        "revid": 1307359,
+        "timestamp": "2025-12-19T14:33:00Z",
+        "title": "Smoothie",
+        "type": "edit"
+      },
+      {
+        "ns": 0,
+        "old_revid": 1303540,
+        "pageid": 2192,
+        "rcid": 415222,
+        "revid": 1307358,
+        "timestamp": "2025-12-19T14:29:53Z",
+        "title": "Potion",
+        "type": "edit"
+      },
+      {
+        "ns": 0,
+        "old_revid": 1307356,
+        "pageid": 176161,
+        "rcid": 415221,
+        "revid": 1307357,
+        "timestamp": "2025-12-19T14:28:39Z",
+        "title": "Smoothie Shop",
+        "type": "edit"
+      },
+      {
+        "ns": 0,
+        "old_revid": 1222115,
+        "pageid": 176161,
+        "rcid": 415220,
+        "revid": 1307356,
+        "timestamp": "2025-12-19T14:22:31Z",
+        "title": "Smoothie Shop",
+        "type": "edit"
+      },
+      {
+        "ns": 2,
+        "old_revid": 0,
+        "pageid": 153798,
+        "rcid": 415219,
+        "revid": 0,
+        "timestamp": "2025-12-19T12:28:37Z",
+        "title": "User:VexIsBot",
+        "type": "log"
+      },
+      {
+        "ns": 2,
+        "old_revid": 0,
+        "pageid": 152111,
+        "rcid": 415218,
+        "revid": 0,
+        "timestamp": "2025-12-19T12:28:20Z",
+        "title": "User:Mollborg",
+        "type": "log"
+      },
+      {
+        "ns": 0,
+        "old_revid": 1307317,
+        "pageid": 66564,
+        "rcid": 415217,
+        "revid": 1307355,
+        "timestamp": "2025-12-19T12:15:35Z",
+        "title": "Speedrun Records",
+        "type": "edit"
+      },
+      {
+        "ns": 6,
+        "old_revid": 1307353,
+        "pageid": 120969,
+        "rcid": 415216,
+        "revid": 1307354,
+        "timestamp": "2025-12-19T11:23:16Z",
+        "title": "File:TPHD Letter Closed Icon.png",
+        "type": "edit"
+      },
+      {
+        "ns": 6,
+        "old_revid": 0,
+        "pageid": 120969,
+        "rcid": 415215,
+        "revid": 1307353,
+        "timestamp": "2025-12-19T11:22:40Z",
+        "title": "File:TPHD Letter Closed Icon.png",
+        "type": "log"
+      },
+      {
+        "ns": 6,
+        "old_revid": 1307351,
+        "pageid": 120966,
+        "rcid": 415214,
+        "revid": 1307352,
+        "timestamp": "2025-12-19T11:22:06Z",
+        "title": "File:TPHD Letter Open Icon.png",
+        "type": "edit"
+      }
+    ]
+  },
+  "warnings": {
+    "recentchanges": {
+      "warnings": "Unrecognized value for parameter \"rcshow\": foo"
+    }
+  }
+}
