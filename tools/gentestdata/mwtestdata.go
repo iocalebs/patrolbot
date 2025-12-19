@@ -12,7 +12,7 @@ import (
 	"github.com/iocalebs/patrolbot/internal/mediawiki"
 )
 
-func mwTestData() error {
+func mwTestData(overwrite bool) error {
 	generators := [](func(*mediawiki.Client, *capturingTransport) error){
 		actionError,
 		actionWarnings,
@@ -22,7 +22,7 @@ func mwTestData() error {
 	}
 
 	for _, generator := range generators {
-		mwclient, capturer, err := setup()
+		mwclient, capturer, err := setup(overwrite)
 		if err != nil {
 			return err
 		}
@@ -36,7 +36,7 @@ func mwTestData() error {
 	return nil
 }
 
-func setup() (*mediawiki.Client, *capturingTransport, error) {
+func setup(overwrite bool) (*mediawiki.Client, *capturingTransport, error) {
 	cfg, err := config.Load()
 	if err != nil {
 		return nil, nil, err
@@ -54,6 +54,7 @@ func setup() (*mediawiki.Client, *capturingTransport, error) {
 
 	transport := &capturingTransport{}
 	transport.rt = http.DefaultTransport
+	transport.overwrite = overwrite
 
 	client := &http.Client{}
 	client.Jar = jar
@@ -64,9 +65,8 @@ func setup() (*mediawiki.Client, *capturingTransport, error) {
 	return mwclient, transport, nil
 }
 
-func actionError(mwclient *mediawiki.Client, capture *capturingTransport) error {
-	capture.outPath = "testdata/mwaction_error.json"
-	capture.requestMutator = func(req *http.Request) {
+func actionError(mwclient *mediawiki.Client, transport *capturingTransport) error {
+	transport.requestMutator = func(req *http.Request) {
 		q := req.URL.Query()
 		q.Set("action", "foo")
 		req.URL.RawQuery = q.Encode()
@@ -77,12 +77,11 @@ func actionError(mwclient *mediawiki.Client, capture *capturingTransport) error 
 		return err
 	}
 
-	return nil
+	return transport.writeCapture("testdata/mwaction_error.json")
 }
 
-func actionWarnings(mwclient *mediawiki.Client, capture *capturingTransport) error {
-	capture.outPath = "testdata/mwaction_warnings.json"
-	capture.requestMutator = func(req *http.Request) {
+func actionWarnings(mwclient *mediawiki.Client, transport *capturingTransport) error {
+	transport.requestMutator = func(req *http.Request) {
 		q := req.URL.Query()
 		q.Set("type", "foo")
 		req.URL.RawQuery = q.Encode()
@@ -93,44 +92,37 @@ func actionWarnings(mwclient *mediawiki.Client, capture *capturingTransport) err
 		return err
 	}
 
-	return nil
+	return transport.writeCapture("testdata/mwaction_warnings.json")
 }
 
-func tokensLogin(mwclient *mediawiki.Client, capture *capturingTransport) error {
-	capture.skip = true // To avoid changing random token value and breaking test
-	capture.outPath = "testdata/mwquerytokens_login.json"
-
+func tokensLogin(mwclient *mediawiki.Client, transport *capturingTransport) error {
 	_, err := mwclient.LoginToken(context.Background())
 	if err != nil {
 		return err
 	}
 
-	return nil
+	return transport.writeCapture("testdata/mwquerytokens_login.json")
 }
 
-func loginFailedWrongToken(mwclient *mediawiki.Client, capture *capturingTransport) error {
-	capture.outPath = "testdata/mwlogin_failed_wrongtoken.json"
-
+func loginFailedWrongToken(mwclient *mediawiki.Client, transport *capturingTransport) error {
 	err := mwclient.Login(context.Background(), "foo")
 	if err != nil && !errors.Is(err, mediawiki.ErrLoginFailed) {
 		return err
 	}
 
-	return nil
+	return transport.writeCapture("testdata/mwlogin_failed_wrongtoken.json")
 }
 
-func loginSuccess(mwclient *mediawiki.Client, capture *capturingTransport) error {
+func loginSuccess(mwclient *mediawiki.Client, transport *capturingTransport) error {
 	token, err := mwclient.LoginToken(context.Background())
 	if err != nil {
 		return err
 	}
-
-	capture.outPath = "testdata/mwlogin_success.json"
 
 	err = mwclient.Login(context.Background(), token)
 	if err != nil {
 		return err
 	}
 
-	return nil
+	return transport.writeCapture("testdata/mwlogin_success.json")
 }

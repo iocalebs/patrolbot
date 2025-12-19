@@ -3,13 +3,18 @@
 package main
 
 import (
+	"flag"
 	"log"
 )
 
 const testWiki = "zw_en"
 
 func main() {
-	err := mwTestData()
+	overwrite := flag.Bool("overwrite", false, "overwrite existing testdata files")
+
+	flag.Parse()
+
+	err := mwTestData(*overwrite)
 	if err != nil {
 		log.Fatal(err)
 	}

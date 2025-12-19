@@ -3,36 +3,33 @@ package main
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
+	"fmt"
 	"io"
+	"log"
 	"net/http"
 	"os"
 )
 
 type capturingTransport struct {
 	rt             http.RoundTripper
-	outPath        string
-	requestMutator func(req *http.Request)
-	skip           bool
+	overwrite      bool                    // if true, overwrite existing files when writing captures
+	requestMutator func(req *http.Request) // to mutate request before it is sent
+	captured       []byte                  // captured response body
 }
 
-func (t *capturingTransport) RoundTrip(req *http.Request) (*http.Response, error) {
+func (transport *capturingTransport) RoundTrip(req *http.Request) (*http.Response, error) {
 	defer func() {
-		t.outPath = ""
-		t.requestMutator = nil
-		t.skip = false
+		transport.requestMutator = nil
 	}()
 
-	if t.requestMutator != nil {
-		t.requestMutator(req)
+	if transport.requestMutator != nil {
+		transport.requestMutator(req)
 	}
 
-	resp, err := t.rt.RoundTrip(req)
+	resp, err := transport.rt.RoundTrip(req)
 	if err != nil {
 		return nil, err
-	}
-
-	if t.outPath == "" || t.skip {
-		return resp, nil
 	}
 
 	bodyBytes, err := io.ReadAll(resp.Body)
@@ -53,14 +50,33 @@ func (t *capturingTransport) RoundTrip(req *http.Request) (*http.Response, error
 	}
 
 	bodyBytes = append(bodyBytes, '\n')
-
-	err = os.WriteFile(t.outPath, bodyBytes, 0600) //nolint:mnd
-	if err != nil {
-		return nil, err
-	}
+	transport.captured = bodyBytes
 
 	// Restore the response body so it can be read again
 	resp.Body = io.NopCloser(bytes.NewBuffer(bodyBytes))
 
 	return resp, nil
+}
+
+func (transport *capturingTransport) writeCapture(outPath string) error {
+	if transport.captured == nil {
+		return errors.New("no response captured")
+	}
+
+	_, err := os.Stat(outPath)
+	if err == nil {
+		if !transport.overwrite {
+			log.Printf("skipped %s", outPath)
+			return nil
+		}
+	} else if !errors.Is(err, os.ErrNotExist) {
+		return fmt.Errorf("cannot stat test file: %w", err)
+	}
+
+	err = os.WriteFile(outPath, transport.captured, 0600) //nolint:mnd
+	if err != nil {
+		return fmt.Errorf("error writing capture to file: %w", err)
+	}
+
+	return nil
 }
