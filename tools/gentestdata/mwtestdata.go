@@ -107,7 +107,7 @@ func tokensLogin(mwclient *mediawiki.Client, transport *capturingTransport) erro
 		return err
 	}
 
-	return transport.writeCapture("testdata/mwquerytokens_login.json")
+	return transport.writeCapture("testdata/mwtokens_login.json")
 }
 
 func loginFailedWrongToken(mwclient *mediawiki.Client, transport *capturingTransport) error {
@@ -149,7 +149,7 @@ func recentChanges(mwclient *mediawiki.Client, transport *capturingTransport) er
 			return err
 		}
 
-		err = transport.writeCapture(fmt.Sprintf("testdata/mwqueryrecentchanges_unpatrolled%d.json", curPage))
+		err = transport.writeCapture(fmt.Sprintf("testdata/mwrecentchanges_unpatrolled%d.json", curPage))
 		if err != nil {
 			errs = append(errs, err)
 		}
@@ -169,7 +169,7 @@ func recentChangesError(mwclient *mediawiki.Client, transport *capturingTranspor
 		return err
 	}
 
-	return transport.writeCapture("testdata/mwqueryrecentchanges_error.json")
+	return transport.writeCapture("testdata/mwrecentchanges_error.json")
 }
 
 func recentChangesWarnings(mwclient *mediawiki.Client, transport *capturingTransport) error {
@@ -200,5 +200,5 @@ func recentChangesWarnings(mwclient *mediawiki.Client, transport *capturingTrans
 
 	transport.captured = append(transport.captured, '\n')
 
-	return transport.writeCapture("testdata/mwqueryrecentchanges_warnings.json")
+	return transport.writeCapture("testdata/mwrecentchanges_warnings.json")
 }

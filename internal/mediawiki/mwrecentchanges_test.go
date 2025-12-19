@@ -50,9 +50,9 @@ func TestRecentChangesPaginator(t *testing.T) {
 			name:       "ValidPages",
 			statusCode: 200,
 			pages: [][]byte{
-				readFile(t, "testdata/mwqueryrecentchanges_unpatrolled1.json"),
-				readFile(t, "testdata/mwqueryrecentchanges_unpatrolled2.json"),
-				readFile(t, "testdata/mwqueryrecentchanges_unpatrolled3.json"),
+				readFile(t, "testdata/mwrecentchanges_unpatrolled1.json"),
+				readFile(t, "testdata/mwrecentchanges_unpatrolled2.json"),
+				readFile(t, "testdata/mwrecentchanges_unpatrolled3.json"),
 			},
 			expectResults:  true,
 			expectError:    nil,
@@ -62,7 +62,7 @@ func TestRecentChangesPaginator(t *testing.T) {
 			name:       "ResponseError",
 			statusCode: 200,
 			pages: [][]byte{
-				readFile(t, "testdata/mwqueryrecentchanges_error.json"),
+				readFile(t, "testdata/mwrecentchanges_error.json"),
 			},
 			expectResults:  false,
 			expectError:    mediawiki.ErrResponseError,
@@ -72,7 +72,7 @@ func TestRecentChangesPaginator(t *testing.T) {
 			name:       "ResponseWarnings",
 			statusCode: 200,
 			pages: [][]byte{
-				readFile(t, "testdata/mwqueryrecentchanges_warnings.json"),
+				readFile(t, "testdata/mwrecentchanges_warnings.json"),
 			},
 			expectResults:  true,
 			expectError:    mediawiki.ErrResponseWarnings,

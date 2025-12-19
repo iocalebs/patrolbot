@@ -27,7 +27,7 @@ func TestLoginToken(t *testing.T) {
 		{
 			name:                "200_ValidLoginToken",
 			statusCode:          http.StatusOK,
-			responseBody:        readFile(t, "testdata/mwquerytokens_login.json"),
+			responseBody:        readFile(t, "testdata/mwtokens_login.json"),
 			expectedToken:       "8af20f35764bee599652a5d5d9e804d469444fb1+\\",
 			expectedError:       nil,
 			expectedErrorSubstr: "",

@@ -49,6 +49,21 @@ func (c *Client) newRequest(ctx context.Context, method string, body io.Reader) 
 	return req, nil
 }
 
+func (c *Client) newQuery(ctx context.Context) (*http.Request, error) {
+	req, err := c.newRequest(ctx, http.MethodGet, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	q := req.URL.Query()
+	q.Set("action", "query")
+	q.Set("format", "json")
+	q.Set("formatversion", "2")
+	req.URL.RawQuery = q.Encode()
+
+	return req, nil
+}
+
 func (c *Client) do(ctx context.Context, req *http.Request, res response) error {
 	resp, err := c.httpClient.Do(req)
 	if err != nil {
