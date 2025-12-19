@@ -6,9 +6,13 @@ import "context"
 type Token string
 
 type queryResponseTokens struct {
-	Tokens struct {
-		LoginToken string `json:"logintoken"`
-	} `json:"tokens"`
+	baseResponse
+
+	Query struct {
+		Tokens struct {
+			LoginToken string `json:"logintoken"`
+		} `json:"tokens"`
+	}
 }
 
 // LoginToken retrieves a login token from [API:Tokens].
@@ -25,12 +29,12 @@ func (c *Client) LoginToken(ctx context.Context) (Token, error) {
 	q.Set("type", "login")
 	req.URL.RawQuery = q.Encode()
 
-	var tokens queryResponseTokens
+	var res queryResponseTokens
 
-	err = c.doQuery(ctx, req, &tokens)
+	err = c.do(ctx, req, &res)
 	if err != nil {
 		return "", err
 	}
 
-	return Token(tokens.Tokens.LoginToken), nil
+	return Token(res.Query.Tokens.LoginToken), nil
 }
