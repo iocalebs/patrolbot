@@ -17,7 +17,7 @@ import (
 func mwTestData(overwrite bool) error {
 	mwclient, capturer, err := setup(overwrite)
 
-	generators := [](func(*mediawiki.Client, *capturingTransport) error){
+	generators := [](func(context.Context, *mediawiki.Client, *capturingTransport) error){
 		actionError,
 		actionWarnings,
 		tokensLogin,
@@ -33,7 +33,7 @@ func mwTestData(overwrite bool) error {
 			return err
 		}
 
-		err = generator(mwclient, capturer)
+		err = generator(context.TODO(), mwclient, capturer)
 		if err != nil {
 			return err
 		}
@@ -71,14 +71,14 @@ func setup(overwrite bool) (*mediawiki.Client, *capturingTransport, error) {
 	return mwclient, transport, nil
 }
 
-func actionError(mwclient *mediawiki.Client, transport *capturingTransport) error {
+func actionError(ctx context.Context, mwclient *mediawiki.Client, transport *capturingTransport) error {
 	transport.requestMutator = func(req *http.Request) {
 		q := req.URL.Query()
 		q.Set("action", "foo")
 		req.URL.RawQuery = q.Encode()
 	}
 
-	_, err := mwclient.LoginToken(context.Background())
+	_, err := mwclient.LoginToken(ctx)
 	if err != nil && !errors.Is(err, mediawiki.ErrResponseError) {
 		return err
 	}
@@ -86,14 +86,14 @@ func actionError(mwclient *mediawiki.Client, transport *capturingTransport) erro
 	return transport.writeCapture("testdata/mwaction_error.json")
 }
 
-func actionWarnings(mwclient *mediawiki.Client, transport *capturingTransport) error {
+func actionWarnings(ctx context.Context, mwclient *mediawiki.Client, transport *capturingTransport) error {
 	transport.requestMutator = func(req *http.Request) {
 		q := req.URL.Query()
 		q.Set("type", "foo")
 		req.URL.RawQuery = q.Encode()
 	}
 
-	_, err := mwclient.LoginToken(context.Background())
+	_, err := mwclient.LoginToken(ctx)
 	if err != nil && !errors.Is(err, mediawiki.ErrResponseWarnings) {
 		return err
 	}
@@ -101,8 +101,8 @@ func actionWarnings(mwclient *mediawiki.Client, transport *capturingTransport) e
 	return transport.writeCapture("testdata/mwaction_warnings.json")
 }
 
-func tokensLogin(mwclient *mediawiki.Client, transport *capturingTransport) error {
-	_, err := mwclient.LoginToken(context.Background())
+func tokensLogin(ctx context.Context, mwclient *mediawiki.Client, transport *capturingTransport) error {
+	_, err := mwclient.LoginToken(ctx)
 	if err != nil {
 		return err
 	}
@@ -110,8 +110,8 @@ func tokensLogin(mwclient *mediawiki.Client, transport *capturingTransport) erro
 	return transport.writeCapture("testdata/mwtokens_login.json")
 }
 
-func loginFailedWrongToken(mwclient *mediawiki.Client, transport *capturingTransport) error {
-	err := mwclient.Login(context.Background(), "foo")
+func loginFailedWrongToken(ctx context.Context, mwclient *mediawiki.Client, transport *capturingTransport) error {
+	err := mwclient.Login(ctx, "foo")
 	if err != nil && !errors.Is(err, mediawiki.ErrLoginFailed) {
 		return err
 	}
@@ -119,13 +119,13 @@ func loginFailedWrongToken(mwclient *mediawiki.Client, transport *capturingTrans
 	return transport.writeCapture("testdata/mwlogin_failed_wrongtoken.json")
 }
 
-func loginSuccess(mwclient *mediawiki.Client, transport *capturingTransport) error {
-	token, err := mwclient.LoginToken(context.Background())
+func loginSuccess(ctx context.Context, mwclient *mediawiki.Client, transport *capturingTransport) error {
+	token, err := mwclient.LoginToken(ctx)
 	if err != nil {
 		return err
 	}
 
-	err = mwclient.Login(context.Background(), token)
+	err = mwclient.Login(ctx, token)
 	if err != nil {
 		return err
 	}
@@ -133,7 +133,7 @@ func loginSuccess(mwclient *mediawiki.Client, transport *capturingTransport) err
 	return transport.writeCapture("testdata/mwlogin_success.json")
 }
 
-func recentChanges(mwclient *mediawiki.Client, transport *capturingTransport) error {
+func recentChanges(ctx context.Context, mwclient *mediawiki.Client, transport *capturingTransport) error {
 	params := mediawiki.RecentChangesQueryParams{}
 	params.RCStart = time.Now()
 	params.RCEnd = time.Now().Add(-1 * time.Hour)
@@ -144,7 +144,7 @@ func recentChanges(mwclient *mediawiki.Client, transport *capturingTransport) er
 	errs := []error{}
 
 	for curPage := 1; paginator.HasMorePages(); curPage++ {
-		_, err := paginator.NextPage(context.TODO())
+		_, err := paginator.NextPage(ctx)
 		if err != nil {
 			return err
 		}
@@ -158,11 +158,10 @@ func recentChanges(mwclient *mediawiki.Client, transport *capturingTransport) er
 	return errors.Join(errs...)
 }
 
-func recentChangesError(mwclient *mediawiki.Client, transport *capturingTransport) error {
+func recentChangesError(ctx context.Context, mwclient *mediawiki.Client, transport *capturingTransport) error {
 	params := mediawiki.RecentChangesQueryParams{}
 	params.RCShow = "patrolled|!patrolled"
 	paginator := mediawiki.NewRecentChangesPaginator(mwclient, params)
-	ctx := context.Background()
 
 	_, err := paginator.NextPage(ctx)
 	if err != nil && !errors.Is(err, mediawiki.ErrResponseError) {
@@ -172,11 +171,10 @@ func recentChangesError(mwclient *mediawiki.Client, transport *capturingTranspor
 	return transport.writeCapture("testdata/mwrecentchanges_error.json")
 }
 
-func recentChangesWarnings(mwclient *mediawiki.Client, transport *capturingTransport) error {
+func recentChangesWarnings(ctx context.Context, mwclient *mediawiki.Client, transport *capturingTransport) error {
 	params := mediawiki.RecentChangesQueryParams{}
 	params.RCShow = "foo"
 	paginator := mediawiki.NewRecentChangesPaginator(mwclient, params)
-	ctx := context.Background()
 
 	_, err := paginator.NextPage(ctx)
 	if err != nil && !errors.Is(err, mediawiki.ErrResponseWarnings) {
