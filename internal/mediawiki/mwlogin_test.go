@@ -19,7 +19,7 @@ func TestLogIn(t *testing.T) {
 	tests := []struct {
 		name                string // test case name
 		statusCode          int    // HTTP status code to return in mock API response
-		responseBody        []byte // name of file in testdata/ containing the mock API response
+		responseBody        []byte // mock API response body
 		expectedError       error  // expected error value, or nil if no error expected
 		expectedErrorSubstr string // expected error message substring
 	}{
