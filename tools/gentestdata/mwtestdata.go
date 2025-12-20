@@ -190,3 +190,59 @@ func recentChangesWarnings(ctx context.Context, mwclient *mediawiki.Client, tran
 
 	return transport.writeCapture("testdata/mwrecentchanges_warnings.json")
 }
+
+func logEvents(ctx context.Context, mwclient *mediawiki.Client, transport *capturingTransport) error {
+	params := mediawiki.LogEventsQueryParams{}
+	params.LEStart = time.Now()
+	params.LEEnd = time.Now().Add(-2 * time.Hour)
+	paginator := mediawiki.NewLogEventsPaginator(mwclient, params)
+
+	errs := []error{}
+
+	for curPage := 1; paginator.HasMorePages(); curPage++ {
+		_, err := paginator.NextPage(ctx)
+		if err != nil {
+			return err
+		}
+
+		err = transport.writeCapture(fmt.Sprintf("testdata/mwlogevents%d.json", curPage))
+		if err != nil {
+			errs = append(errs, err)
+		}
+	}
+
+	return errors.Join(errs...)
+}
+
+func logEventsError(ctx context.Context, mwclient *mediawiki.Client, transport *capturingTransport) error {
+	params := mediawiki.LogEventsQueryParams{}
+	params.LEType = "foo"
+
+	paginator := mediawiki.NewLogEventsPaginator(mwclient, params)
+
+	_, err := paginator.NextPage(ctx)
+	if err != nil && !errors.Is(err, mediawiki.ErrResponseError) {
+		return err
+	}
+
+	return transport.writeCapture("testdata/mwlogevents_error.json")
+}
+
+func logEventsWarnings(ctx context.Context, mwclient *mediawiki.Client, transport *capturingTransport) error {
+	params := mediawiki.LogEventsQueryParams{}
+	params.LEProp = "foo"
+
+	paginator := mediawiki.NewLogEventsPaginator(mwclient, params)
+
+	_, err := paginator.NextPage(ctx)
+	if err != nil && !errors.Is(err, mediawiki.ErrResponseWarnings) {
+		return err
+	}
+
+	err = transport.removePagination()
+	if err != nil {
+		return err
+	}
+
+	return transport.writeCapture("testdata/mwlogevents_warnings.json")
+}

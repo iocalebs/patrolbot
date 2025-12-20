@@ -1,0 +1,181 @@
+{
+  "batchcomplete": true,
+  "continue": {
+    "lecontinue": "20251219185044|935780",
+    "continue": "-||"
+  },
+  "query": {
+    "logevents": [
+      {
+        "logid": 935790,
+        "ns": 0,
+        "title": "Ancient Adler's House",
+        "pageid": 144962,
+        "logpage": 144962,
+        "params": {
+          "curid": 1307261,
+          "previd": 1205430,
+          "auto": false
+        },
+        "type": "patrol",
+        "action": "patrol",
+        "user": "Croxodile",
+        "timestamp": "2025-12-19T18:56:01Z",
+        "comment": ""
+      },
+      {
+        "logid": 935789,
+        "ns": 0,
+        "title": "Rolling Ridge Base",
+        "pageid": 79634,
+        "logpage": 79634,
+        "params": {
+          "curid": 1307260,
+          "previd": 1306720,
+          "auto": false
+        },
+        "type": "patrol",
+        "action": "patrol",
+        "user": "Croxodile",
+        "timestamp": "2025-12-19T18:55:56Z",
+        "comment": ""
+      },
+      {
+        "logid": 935788,
+        "ns": 0,
+        "title": "Long Hook",
+        "pageid": 2670,
+        "logpage": 2670,
+        "params": {
+          "curid": 1307259,
+          "previd": 802582,
+          "auto": false
+        },
+        "type": "patrol",
+        "action": "patrol",
+        "user": "Croxodile",
+        "timestamp": "2025-12-19T18:55:46Z",
+        "comment": ""
+      },
+      {
+        "logid": 935787,
+        "ns": 0,
+        "title": "Tuni Nut",
+        "pageid": 4000,
+        "logpage": 4000,
+        "params": {
+          "curid": 1307258,
+          "previd": 1222712,
+          "auto": false
+        },
+        "type": "patrol",
+        "action": "patrol",
+        "user": "Croxodile",
+        "timestamp": "2025-12-19T18:55:37Z",
+        "comment": ""
+      },
+      {
+        "logid": 935786,
+        "ns": 0,
+        "title": "Touching Book",
+        "pageid": 9142,
+        "logpage": 9142,
+        "params": {
+          "curid": 1307257,
+          "previd": 1202106,
+          "auto": false
+        },
+        "type": "patrol",
+        "action": "patrol",
+        "user": "Croxodile",
+        "timestamp": "2025-12-19T18:55:29Z",
+        "comment": ""
+      },
+      {
+        "logid": 935785,
+        "ns": 0,
+        "title": "Vine Sprout",
+        "pageid": 99808,
+        "logpage": 99808,
+        "params": {
+          "curid": 1307256,
+          "previd": 1203971,
+          "auto": false
+        },
+        "type": "patrol",
+        "action": "patrol",
+        "user": "Croxodile",
+        "timestamp": "2025-12-19T18:55:23Z",
+        "comment": ""
+      },
+      {
+        "logid": 935784,
+        "ns": 0,
+        "title": "Funny Joke",
+        "pageid": 9138,
+        "logpage": 9138,
+        "params": {
+          "curid": 1307255,
+          "previd": 972987,
+          "auto": false
+        },
+        "type": "patrol",
+        "action": "patrol",
+        "user": "Croxodile",
+        "timestamp": "2025-12-19T18:52:28Z",
+        "comment": ""
+      },
+      {
+        "logid": 935783,
+        "ns": 0,
+        "title": "Magic Oar",
+        "pageid": 9144,
+        "logpage": 9144,
+        "params": {
+          "curid": 1307254,
+          "previd": 972988,
+          "auto": false
+        },
+        "type": "patrol",
+        "action": "patrol",
+        "user": "Croxodile",
+        "timestamp": "2025-12-19T18:51:13Z",
+        "comment": ""
+      },
+      {
+        "logid": 935782,
+        "ns": 0,
+        "title": "Flipper Cave",
+        "pageid": 144919,
+        "logpage": 144919,
+        "params": {
+          "curid": 1307253,
+          "previd": 1185783,
+          "auto": false
+        },
+        "type": "patrol",
+        "action": "patrol",
+        "user": "Croxodile",
+        "timestamp": "2025-12-19T18:51:06Z",
+        "comment": ""
+      },
+      {
+        "logid": 935781,
+        "ns": 0,
+        "title": "Dekadin's House",
+        "pageid": 10886,
+        "logpage": 10886,
+        "params": {
+          "curid": 1307252,
+          "previd": 1202163,
+          "auto": false
+        },
+        "type": "patrol",
+        "action": "patrol",
+        "user": "Croxodile",
+        "timestamp": "2025-12-19T18:50:57Z",
+        "comment": ""
+      }
+    ]
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "batchcomplete": true,
+  "query": {
+    "logevents": [
+      {
+        "logid": 935770,
+        "ns": 0,
+        "title": "Essence of the Triforce",
+        "pageid": 117626,
+        "logpage": 117626,
+        "params": {
+          "curid": 1307241,
+          "previd": 1242324,
+          "auto": false
+        },
+        "type": "patrol",
+        "action": "patrol",
+        "user": "Croxodile",
+        "timestamp": "2025-12-19T18:44:43Z",
+        "comment": ""
+      },
+      {
+        "logid": 935769,
+        "ns": 0,
+        "title": "Geldman",
+        "pageid": 6787,
+        "logpage": 6787,
+        "params": {
+          "curid": 1307240,
+          "previd": 1219919,
+          "auto": false
+        },
+        "type": "patrol",
+        "action": "patrol",
+        "user": "Croxodile",
+        "timestamp": "2025-12-19T18:43:47Z",
+        "comment": ""
+      }
+    ]
+  }
+}

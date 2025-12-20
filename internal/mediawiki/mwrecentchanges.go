@@ -24,7 +24,9 @@ type RecentChangesQueryParams struct {
 	RCLimit int
 }
 
-// RecentChange represents an entry in Special:RecentChanges.
+// RecentChange represents an entry in [Special:RecentChanges].
+//
+// [Special:RecentChangs]: https://www.mediawiki.org/wiki/Help:Recent_changes
 type RecentChange struct {
 	Timestamp time.Time `json:"timestamp"`
 }
@@ -73,9 +75,7 @@ func (p *RecentChangesPaginator) HasMorePages() bool {
 	return p.firstPage || p.cursor != ""
 }
 
-// NextPage requests the next [RecentChanges] page.
-//
-// [RecentChanges]: https://www.mediawiki.org/wiki/API:RecentChanges
+// NextPage requests the next page of recent changes.
 func (p *RecentChangesPaginator) NextPage(ctx context.Context) (RecentChangesPage, error) {
 	req, err := p.client.newQuery(ctx)
 	if err != nil {

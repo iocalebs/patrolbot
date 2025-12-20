@@ -10,6 +10,9 @@ linters:
   settings:
     exhaustruct:
       allow-empty: true
+    goconst:
+      ignore-string-values:
+        - foo #nonsense value commonly used in tests to pass invalid string
     nlreturn:
       block-size: 2
     varnamelen:
@@ -21,6 +24,7 @@ linters:
     rules:
       - path: _test\.go
         linters:
+          - dupl
           - funlen
       - path: tools/.*\.go
         linters:
