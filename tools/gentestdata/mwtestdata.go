@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"encoding/json"
 	"errors"
 	"fmt"
 	"log/slog"
@@ -26,6 +25,9 @@ func mwTestData(overwrite bool) error {
 		recentChanges,
 		recentChangesError,
 		recentChangesWarnings,
+		logEvents,
+		logEventsError,
+		logEventsWarnings,
 	}
 
 	for _, generator := range generators {
@@ -181,22 +183,10 @@ func recentChangesWarnings(ctx context.Context, mwclient *mediawiki.Client, tran
 		return err
 	}
 
-	// Remove `continue` pagination cursor as only one page is needed for this test
-	var respBody map[string]any
-
-	err = json.Unmarshal(transport.captured, &respBody)
-	if err != nil {
-		return fmt.Errorf("error unmarshaling response body: %w", err)
-	}
-
-	delete(respBody, "continue")
-
-	transport.captured, err = json.MarshalIndent(respBody, "", "  ")
+	err = transport.removePagination()
 	if err != nil {
 		return err
 	}
-
-	transport.captured = append(transport.captured, '\n')
 
 	return transport.writeCapture("testdata/mwrecentchanges_warnings.json")
 }

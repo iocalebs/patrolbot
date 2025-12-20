@@ -58,6 +58,32 @@ func (transport *capturingTransport) RoundTrip(req *http.Request) (*http.Respons
 	return resp, nil
 }
 
+// Removes "continue" field from captured JSON response to generate
+// a single page of test data when more than one is not desired.
+func (transport *capturingTransport) removePagination() error {
+	if transport.captured == nil {
+		return errors.New("no response captured")
+	}
+
+	var respBody map[string]any
+
+	err := json.Unmarshal(transport.captured, &respBody)
+	if err != nil {
+		return fmt.Errorf("error unmarshaling response body: %w", err)
+	}
+
+	delete(respBody, "continue")
+
+	transport.captured, err = json.MarshalIndent(respBody, "", "  ")
+	if err != nil {
+		return err
+	}
+
+	transport.captured = append(transport.captured, '\n')
+
+	return nil
+}
+
 func (transport *capturingTransport) writeCapture(outPath string) error {
 	if transport.captured == nil {
 		return errors.New("no response captured")
