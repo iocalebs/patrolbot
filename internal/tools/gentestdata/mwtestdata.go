@@ -145,10 +145,18 @@ func recentChanges(ctx context.Context, mwclient *mediawiki.Client, transport *c
 
 	errs := []error{}
 
-	for curPage := 1; paginator.HasMorePages(); curPage++ {
+	maxPages := 3
+	for curPage := 1; paginator.HasMorePages() && curPage < maxPages; curPage++ {
 		_, err := paginator.NextPage(ctx)
 		if err != nil {
 			return err
+		}
+
+		if curPage == maxPages {
+			err = transport.removePagination()
+			if err != nil {
+				return err
+			}
 		}
 
 		err = transport.writeCapture(fmt.Sprintf("testdata/mwrecentchanges_unpatrolled%d.json", curPage))
@@ -199,10 +207,18 @@ func logEvents(ctx context.Context, mwclient *mediawiki.Client, transport *captu
 
 	errs := []error{}
 
-	for curPage := 1; paginator.HasMorePages(); curPage++ {
+	maxPages := 3
+	for curPage := 1; paginator.HasMorePages() && curPage < maxPages; curPage++ {
 		_, err := paginator.NextPage(ctx)
 		if err != nil {
 			return err
+		}
+
+		if curPage == maxPages {
+			err = transport.removePagination()
+			if err != nil {
+				return err
+			}
 		}
 
 		err = transport.writeCapture(fmt.Sprintf("testdata/mwlogevents%d.json", curPage))
