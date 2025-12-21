@@ -5,6 +5,7 @@ linters:
 
   disable:
     - depguard
+    - nlreturn
     - wsl
 
   settings:
@@ -15,8 +16,6 @@ linters:
     goconst:
       ignore-string-values:
         - foo #nonsense value commonly used in tests to pass invalid string
-    nlreturn:
-      block-size: 2
     varnamelen:
       ignore-names:
         - w # http.ResponseWriter

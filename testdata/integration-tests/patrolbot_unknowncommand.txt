@@ -1,0 +1,11 @@
+-- command --
+./patrolbot foo
+-- stdout --
+-- stderr --
+          
+   ERROR  
+          
+  Unknown command "foo" for "patrolbot".                                                                              
+
+  Try --help for usage.
+

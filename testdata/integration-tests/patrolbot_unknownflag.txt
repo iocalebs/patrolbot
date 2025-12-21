@@ -1,0 +1,11 @@
+-- command --
+./patrolbot --foo
+-- stdout --
+-- stderr --
+          
+   ERROR  
+          
+  Unknown flag: --foo.                                                                                                
+
+  Try --help for usage.
+

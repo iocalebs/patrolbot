@@ -1,8 +1,6 @@
 // PatrolBot assists with patrolling tasks on MediaWiki sites.
 package main
 
-// TODO: integration tests
-
 import "github.com/iocalebs/patrolbot/internal/cli"
 
 //go:generate go run internal/tools/genschema/genschema.go

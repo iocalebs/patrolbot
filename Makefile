@@ -4,7 +4,7 @@ clean:
 	rm -f coverage.out
 
 cover:
-	go test $(shell go list ./... | grep -v 'internal/tools') -coverprofile=coverage.out
+	go test -coverprofile=coverage.out
 	go tool cover -html=coverage.out
 
 docs:
@@ -17,4 +17,9 @@ lint:
 	golangci-lint run ./...
 
 test:
-	go test -v ./...
+	go build -o patrolbot
+	go test ./... -v
+
+testupdate:
+	go build -o patrolbot
+	go test main_test.go -v -update
