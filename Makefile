@@ -4,7 +4,7 @@ clean:
 	rm -f coverage.out
 
 cover:
-	go test ./... -coverprofile=coverage.out
+	go test $(shell go list ./... | grep -v 'internal/tools') -coverprofile=coverage.out
 	go tool cover -html=coverage.out
 
 docs:
