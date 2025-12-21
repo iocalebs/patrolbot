@@ -2,9 +2,11 @@
 package cli
 
 import (
+	"context"
 	"fmt"
 	"os"
 
+	"github.com/charmbracelet/fang"
 	"github.com/iocalebs/patrolbot/internal/config"
 	"github.com/spf13/cobra"
 )
@@ -27,7 +29,7 @@ func Execute() {
 		Hidden: true,
 	})
 
-	err := rootCmd.Execute()
+	err := fang.Execute(context.Background(), rootCmd, fang.WithColorSchemeFunc(fang.AnsiColorScheme))
 	if err != nil {
 		os.Exit(1)
 	}
