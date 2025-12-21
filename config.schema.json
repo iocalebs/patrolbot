@@ -6,13 +6,15 @@
     "Config": {
       "properties": {
         "wiki": {
-          "type": "string"
+          "type": "string",
+          "description": "Target wiki for bot commands"
         },
         "wikis": {
           "additionalProperties": {
             "$ref": "#/$defs/Wiki"
           },
-          "type": "object"
+          "type": "object",
+          "description": "Wiki configurations"
         }
       },
       "additionalProperties": false,
@@ -20,18 +22,22 @@
       "required": [
         "wiki",
         "wikis"
-      ]
+      ],
+      "description": "Config represents the PatrolBot config."
     },
     "Wiki": {
       "properties": {
         "url": {
-          "type": "string"
+          "type": "string",
+          "description": "Wiki URL (e.g. https://en.wikipedia.org)"
         },
         "username": {
-          "type": "string"
+          "type": "string",
+          "description": "Special:BotPasswords username (e.g. PhantomCaleb@PatrolBot)"
         },
         "password": {
-          "type": "string"
+          "type": "string",
+          "description": "Special:BotPasswords password"
         }
       },
       "additionalProperties": false,
@@ -40,7 +46,8 @@
         "url",
         "username",
         "password"
-      ]
+      ],
+      "description": "Wiki represents bot configuration for a particular MediaWiki instance."
     }
   }
 }

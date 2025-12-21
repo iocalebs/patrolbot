@@ -21,7 +21,14 @@ func main() {
 }
 
 func generateSchema() error {
-	schema := jsonschema.Reflect(&config.Config{})
+	reflector := new(jsonschema.Reflector)
+
+	err := reflector.AddGoComments("github.com/iocalebs/patrolbot", "./internal/config")
+	if err != nil {
+		return fmt.Errorf("failed to create reflector: %w", err)
+	}
+
+	schema := reflector.Reflect(&config.Config{})
 
 	file, err := os.Create("config.schema.json")
 	if err != nil {
