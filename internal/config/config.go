@@ -1,7 +1,7 @@
 // Package config provides functionality to load static app config from a YAML file.
 package config
 
-//go:generate go run ../../tools/genschema/genschema.go
+//go:generate go run ../tools/genschema/genschema.go
 
 // Config represents the entire application configuration.
 type Config struct {
