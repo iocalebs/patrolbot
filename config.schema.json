@@ -24,7 +24,7 @@
     },
     "Wiki": {
       "properties": {
-        "apiUrl": {
+        "url": {
           "type": "string"
         },
         "username": {
@@ -37,7 +37,7 @@
       "additionalProperties": false,
       "type": "object",
       "required": [
-        "apiUrl",
+        "url",
         "username",
         "password"
       ]

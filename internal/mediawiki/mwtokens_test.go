@@ -80,7 +80,7 @@ func TestLoginToken(t *testing.T) {
 			defer srv.Close()
 
 			cfg := config.Wiki{}
-			cfg.APIURL = srv.URL
+			cfg.URL = srv.URL
 			mwclient := mediawiki.NewClient(cfg, http.DefaultClient, *slog.Default())
 			token, err := mwclient.LoginToken(context.Background())
 

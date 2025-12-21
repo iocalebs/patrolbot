@@ -82,7 +82,7 @@ func TestLogIn(t *testing.T) {
 			defer srv.Close()
 
 			cfg := config.Wiki{ //nolint:exhaustruct
-				APIURL: srv.URL,
+				URL: srv.URL,
 			}
 			mwclient := mediawiki.NewClient(cfg, http.DefaultClient, *slog.Default())
 

@@ -10,7 +10,7 @@ type Config struct {
 
 // Wiki represents bot configuration for a particular MediaWiki instance.
 type Wiki struct {
-	APIURL   string `json:"apiUrl"`
+	URL      string `json:"url"`
 	Username string `json:"username"`
 	Password string `json:"password"`
 }

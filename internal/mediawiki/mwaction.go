@@ -7,7 +7,10 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"net/url"
 )
+
+const actionAPIPath = "/w/api.php"
 
 var (
 	// ErrResponseWarnings indicates that the MediaWiki API response body contained warnings.
@@ -39,7 +42,12 @@ func (b baseResponse) errors() json.RawMessage {
 }
 
 func (c *Client) newRequest(ctx context.Context, method string, body io.Reader) (*http.Request, error) {
-	req, err := http.NewRequestWithContext(ctx, method, c.config.APIURL, body)
+	apiURL, err := url.JoinPath(c.config.URL, actionAPIPath)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create API URL: %w", err)
+	}
+
+	req, err := http.NewRequestWithContext(ctx, method, apiURL, body)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create MediaWiki request: %w", err)
 	}
