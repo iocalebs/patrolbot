@@ -5,6 +5,9 @@
   "$defs": {
     "Config": {
       "properties": {
+        "wiki": {
+          "type": "string"
+        },
         "wikis": {
           "additionalProperties": {
             "$ref": "#/$defs/Wiki"
@@ -15,6 +18,7 @@
       "additionalProperties": false,
       "type": "object",
       "required": [
+        "wiki",
         "wikis"
       ]
     },

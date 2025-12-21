@@ -1,11 +1,11 @@
-// Package config provides functionality to load static app config from a YAML file.
+// Package config provides functionality to load config from YAML files,
+// environment variables, and command-line arguments.
 package config
 
-//go:generate go run ../tools/genschema/genschema.go
-
-// Config represents the entire application configuration.
+// Config represents the PatrolBot config.
 type Config struct {
-	Wikis map[string]Wiki `json:"wikis"`
+	Wiki  string          `json:"wiki"`  // Target wiki for bot commands
+	Wikis map[string]Wiki `json:"wikis"` // Wiki configurations
 }
 
 // Wiki represents bot configuration for a particular MediaWiki instance.

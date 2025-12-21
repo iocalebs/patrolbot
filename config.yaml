@@ -1,0 +1,7 @@
+# yaml-language-server: $schema=config.schema.json
+wiki: "" # Env variable PATROLBOT_WIKI or flag --wiki
+wikis:
+  zwen:
+    apiUrl: https://zeldawiki.wiki/w/api.php
+    username: PhantomCaleb@PatrolBot
+    password: "" # Env variable PATROLBOT_WIKIS_ZWEN_PASSWORD

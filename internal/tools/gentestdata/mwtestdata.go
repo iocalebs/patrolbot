@@ -13,8 +13,15 @@ import (
 	"github.com/iocalebs/patrolbot/internal/mediawiki"
 )
 
-func mwTestData(overwrite bool) error {
-	mwclient, capturer, err := setup(overwrite)
+const testWiki = "zwen"
+
+func mwTestData(cfg config.Config, overwrite bool) error {
+	wikiCfg, ok := cfg.Wikis[testWiki]
+	if !ok {
+		return fmt.Errorf("wiki '%s' not found in config", testWiki)
+	}
+
+	mwclient, capturer, err := setup(wikiCfg, overwrite)
 
 	generators := [](func(context.Context, *mediawiki.Client, *capturingTransport) error){
 		actionError,
@@ -44,17 +51,7 @@ func mwTestData(overwrite bool) error {
 	return nil
 }
 
-func setup(overwrite bool) (*mediawiki.Client, *capturingTransport, error) {
-	cfg, err := config.Load()
-	if err != nil {
-		return nil, nil, err
-	}
-
-	wiki, ok := cfg.Wikis[testWiki]
-	if !ok {
-		return nil, nil, fmt.Errorf("wiki '%s' not found in config", testWiki)
-	}
-
+func setup(cfg config.Wiki, overwrite bool) (*mediawiki.Client, *capturingTransport, error) {
 	jar, err := cookiejar.New(nil)
 	if err != nil {
 		return nil, nil, err
@@ -68,7 +65,7 @@ func setup(overwrite bool) (*mediawiki.Client, *capturingTransport, error) {
 	client.Jar = jar
 	client.Transport = transport
 
-	mwclient := mediawiki.NewClient(wiki, client, *slog.Default())
+	mwclient := mediawiki.NewClient(cfg, client, *slog.Default())
 
 	return mwclient, transport, nil
 }

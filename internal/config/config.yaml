@@ -1,6 +1,0 @@
-# yaml-language-server: $schema=config.schema.json
-wikis:
-  zw_en:
-    apiUrl: https://zeldawiki.wiki/w/api.php
-    username: ${MW_USERNAME_ZWEN}
-    password: ${MW_PASSWORD_ZWEN}

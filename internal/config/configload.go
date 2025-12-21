@@ -1,62 +1,58 @@
 package config
 
 import (
-	_ "embed"
-	"errors"
 	"fmt"
 	"os"
-	"regexp"
 	"strings"
 
-	"sigs.k8s.io/yaml"
+	"github.com/spf13/cobra"
+	"github.com/spf13/pflag"
+	"github.com/spf13/viper"
 )
 
-//go:embed config.yaml
-var config string
+// Load sources config from the following, in order of highest to lowest priority:
+// 1. Command-line flags (e.g. --wiki wikipedia)
+// 2. Environment variables (e.g. PATROLBOT_WIKI=wikipedia)
+// 3. config.yaml file indicated by the `cfgFile` parameter
+// 3. config.yaml file in current directory
+// 4. config.yaml file in $HOME/.patrolbot.
+func Load(cfgFile string, flags *pflag.FlagSet) (Config, error) {
+	viper.SetEnvPrefix("PATROLBOT")
+	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_", "-", "_"))
+	viper.AutomaticEnv()
 
-// ErrMissingEnvVariables indicates that required environment variables are undefined or empty.
-var ErrMissingEnvVariables = errors.New("required environment variables are undefined or empty")
+	if cfgFile != "" {
+		viper.SetConfigFile(cfgFile)
+	} else {
+		home, err := os.UserHomeDir()
+		if err != nil {
+			return Config{}, fmt.Errorf("failed searching for config in home directory: %w", err)
+		}
 
-// Load loads the application configuration from the embedded YAML file.
-func Load() (*Config, error) {
-	expandedConfig, expandErr := expandEnv(config)
+		viper.AddConfigPath(".")
+		viper.AddConfigPath(home + "/.patrolbot")
+		viper.SetConfigName("config")
+		viper.SetConfigType("yaml")
+	}
+
+	err := viper.ReadInConfig()
+	if err != nil {
+		return Config{}, fmt.Errorf("failed to read config: %w", err)
+	}
+
+	err = viper.BindPFlags(flags)
+	if err != nil {
+		cobra.CheckErr(err)
+	}
 
 	var cfg Config
 
-	err := yaml.Unmarshal([]byte(expandedConfig), &cfg)
+	err = viper.Unmarshal(&cfg)
 	if err != nil {
-		return nil, fmt.Errorf("failed to unmarshal config: %w", err)
+		return Config{}, fmt.Errorf("failed to read config: %w", err)
 	}
 
-	return &cfg, expandErr
-}
+	// TODO: validate config
 
-func expandEnv(config string) (string, error) {
-	missing := []string{}
-
-	// Strip comment lines which may provide false positives for env expansion
-	// e.g. # yaml-language-server: $schema=config.schema.json
-	reg := regexp.MustCompile(`^\s*#[^\n]+\n`)
-	config = reg.ReplaceAllString(config, "")
-
-	expanded := os.Expand(config, func(envVar string) string {
-		val := os.Getenv(envVar)
-		// Allow undefined env variables for wiki-specific config so that theapp can still
-		// run even if not all wikis have the env variables configured,
-		// which may well be the case when running locally
-		if val == "" && !strings.HasPrefix(envVar, "MW_") {
-			missing = append(missing, envVar)
-		}
-
-		return val
-	})
-
-	var err error
-
-	if len(missing) > 0 {
-		vars := strings.Join(missing, ", ")
-		err = fmt.Errorf("%w: %s", ErrMissingEnvVariables, vars)
-	}
-
-	return expanded, err
+	return cfg, nil
 }
