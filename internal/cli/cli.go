@@ -25,9 +25,11 @@ func Execute() {
 
 	initFlags(rootCmd)
 	addCommands(rootCmd)
+
 	rootCmd.SetHelpCommand(&cobra.Command{
 		Hidden: true,
 	})
+	rootCmd.CompletionOptions.DisableDefaultCmd = true
 
 	err := fang.Execute(context.Background(), rootCmd, fang.WithColorSchemeFunc(fang.AnsiColorScheme))
 	if err != nil {
