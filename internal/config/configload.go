@@ -10,12 +10,8 @@ import (
 	"github.com/spf13/viper"
 )
 
-// Load sources config from the following, in order of highest to lowest priority:
-// 1. Command-line flags (e.g. --wiki wikipedia)
-// 2. Environment variables (e.g. PATROLBOT_WIKI=wikipedia)
-// 3. config.yaml file indicated by the `cfgFile` parameter
-// 3. config.yaml file in current directory
-// 4. config.yaml file in $HOME/.patrolbot.
+// Load sources config from files, environment variables, and command-line flags and returns the merged result.
+// See patrolbot config --help for more on config sources.
 func Load(cfgFile string, flags *pflag.FlagSet) (Config, error) {
 	viper.SetEnvPrefix("PATROLBOT")
 	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_", "-", "_"))

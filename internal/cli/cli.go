@@ -7,6 +7,7 @@ import (
 	"os"
 
 	"github.com/charmbracelet/fang"
+	configCmd "github.com/iocalebs/patrolbot/internal/cli/commands/config"
 	"github.com/iocalebs/patrolbot/internal/config"
 	"github.com/spf13/cobra"
 )
@@ -15,7 +16,7 @@ import (
 func Execute() {
 	rootCmd := &cobra.Command{
 		Use:          "patrolbot",
-		Short:        "patrolbot assists with patrolling tasks on MediaWiki sites.",
+		Short:        "patrolbot assists with patrolling-related tasks on MediaWiki sites.",
 		Long:         "",
 		SilenceUsage: true,
 		PersistentPreRunE: func(cmd *cobra.Command, _ []string) error {
@@ -54,7 +55,7 @@ func initFlags(rootCmd *cobra.Command) {
 
 func addCommands(rootCmd *cobra.Command) {
 	rootCmd.AddCommand(
-		reportCmd(),
+		configCmd.NewCommand(),
 	)
 }
 
