@@ -1,6 +1,5 @@
 package main_test
 
-// TODO: coverage instrumentation
 // TODO: add tests for config view covering precedence rules
 
 import (

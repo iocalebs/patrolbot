@@ -1,11 +1,57 @@
-.PHONY: clean cover docs generate lint test
+export GOCOVERDIR := coverage
+
+.PHONY: build
+.PHONY: clean
+.PHONY: cover
+.PHONY: cover-int 
+.PHONY: cover-unit 
+.PHONY: docs 
+.PHONY: generate 
+.PHONY: lint 
+.PHONY: test 
+.PHONY: testupdate
+
+build:
+	go build -o patrolbot
 
 clean:
-	rm -f coverage.out
+	rm -f patrolbot
+	rm -rf $(GOCOVERDIR)
 
 cover:
-	go test -coverprofile=coverage.out
-	go tool cover -html=coverage.out
+	rm -rf $(GOCOVERDIR)
+	mkdir -p $(GOCOVERDIR)/integration
+	mkdir -p $(GOCOVERDIR)/unit
+	go build -cover -o patrolbot
+	GOCOVERDIR=$(GOCOVERDIR)/integration go test -v -count=1 -parallel=1 main_test.go
+	go test -v -cover -parallel=1 ./... -args -test.gocoverdir=$(shell pwd)/$(GOCOVERDIR)/unit
+	go tool covdata textfmt -i=./$(GOCOVERDIR)/integration -o=./$(GOCOVERDIR)/profile-integation.txt
+	go tool covdata textfmt -i=./$(GOCOVERDIR)/unit -o=./$(GOCOVERDIR)/profile-unit.txt
+	go tool covdata textfmt -i=./$(GOCOVERDIR)/integration,./$(GOCOVERDIR)/unit -o=./$(GOCOVERDIR)/profile-merged.txt
+# It seems the 2nd-generation coverage output omits files with 0% coverage.
+# Workaround: Merge profiles with a "zero" profile that lists all files at 0% coverage, made by running the old coverage 
+# generator on all packages but with a -run regex that matches no tests.
+	go test -coverprofile=$(GOCOVERDIR)/profile-zero.txt -parallel=1 -run "a^" ./... 
+# go generate tools are removed from the report.
+	sed '/^github\.com\/iocalebs\/patrolbot\/internal\/tools/d' $(GOCOVERDIR)/profile-zero.txt > $(GOCOVERDIR)/profile-zero.tmp
+	mv $(GOCOVERDIR)/profile-zero.tmp $(GOCOVERDIR)/profile-zero.txt
+	go tool gocovmerge $(GOCOVERDIR)/profile-merged.txt $(GOCOVERDIR)/profile-zero.txt > $(GOCOVERDIR)/tmp.txt
+	mv $(GOCOVERDIR)/tmp.txt $(GOCOVERDIR)/profile-merged.txt
+	go tool cover -html=$(GOCOVERDIR)/profile-merged.txt
+
+cover-int: cover
+# Workaround to include files with 0 coverage
+	go tool gocovmerge $(GOCOVERDIR)/profile-integration.txt $(GOCOVERDIR)/profile-zero.txt > $(GOCOVERDIR)/tmp.txt
+	mv $(GOCOVERDIR)/tmp.txt $(GOCOVERDIR)/profile-integration.txt
+#
+	go tool cover -html=$(GOCOVERDIR)/profile-integration.txt
+
+cover-unit: cover
+# Workaround to include files with 0 coverage
+	go tool gocovmerge $(GOCOVERDIR)/profile-unit.txt $(GOCOVERDIR)/profile-zero.txt > $(GOCOVERDIR)/tmp.txt
+	mv $(GOCOVERDIR)/tmp.txt $(GOCOVERDIR)/profile-unit.txt
+#
+	go tool cover -html=$(GOCOVERDIR)/profile-unit.txt
 
 docs:
 	pkgsite -open .
@@ -16,10 +62,8 @@ generate:
 lint:
 	golangci-lint run ./...
 
-test:
-	go build -o patrolbot
+test: build
 	go test ./... -v
 
-testupdate:
-	go build -o patrolbot
+testupdate: build
 	go test main_test.go -v -update
