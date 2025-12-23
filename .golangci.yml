@@ -10,9 +10,6 @@ linters:
     - wsl
 
   settings:
-    goconst:
-      ignore-string-values:
-        - foo #nonsense value commonly used in tests to pass invalid string
     varnamelen:
       ignore-names:
         - w # http.ResponseWriter
