@@ -57,14 +57,14 @@ func setup(cfg config.Wiki, overwrite bool) (*mediawiki.Client, *capturingTransp
 		return nil, nil, err
 	}
 
-	transport := &capturingTransport{}
-	transport.rt = http.DefaultTransport
-	transport.overwrite = overwrite
-
-	client := &http.Client{}
-	client.Jar = jar
-	client.Transport = transport
-
+	transport := &capturingTransport{
+		rt:        http.DefaultTransport,
+		overwrite: overwrite,
+	}
+	client := &http.Client{
+		Jar:       jar,
+		Transport: transport,
+	}
 	mwclient := mediawiki.NewClient(cfg, client, *slog.Default())
 
 	return mwclient, transport, nil
@@ -166,8 +166,9 @@ func recentChanges(ctx context.Context, mwclient *mediawiki.Client, transport *c
 }
 
 func recentChangesError(ctx context.Context, mwclient *mediawiki.Client, transport *capturingTransport) error {
-	params := mediawiki.RecentChangesQueryParams{}
-	params.RCShow = "patrolled|!patrolled"
+	params := mediawiki.RecentChangesQueryParams{
+		RCShow: "patrolled|!patrolled",
+	}
 	paginator := mediawiki.NewRecentChangesPaginator(mwclient, params)
 
 	_, err := paginator.NextPage(ctx)
@@ -197,9 +198,10 @@ func recentChangesWarnings(ctx context.Context, mwclient *mediawiki.Client, tran
 }
 
 func logEvents(ctx context.Context, mwclient *mediawiki.Client, transport *capturingTransport) error {
-	params := mediawiki.LogEventsQueryParams{}
-	params.LEStart = time.Now()
-	params.LEEnd = time.Now().Add(-2 * time.Hour)
+	params := mediawiki.LogEventsQueryParams{
+		LEStart: time.Now(),
+		LEEnd:   time.Now().Add(-2 * time.Hour),
+	}
 	paginator := mediawiki.NewLogEventsPaginator(mwclient, params)
 
 	errs := []error{}
@@ -228,9 +230,9 @@ func logEvents(ctx context.Context, mwclient *mediawiki.Client, transport *captu
 }
 
 func logEventsError(ctx context.Context, mwclient *mediawiki.Client, transport *capturingTransport) error {
-	params := mediawiki.LogEventsQueryParams{}
-	params.LEType = "foo"
-
+	params := mediawiki.LogEventsQueryParams{
+		LEType: "foo",
+	}
 	paginator := mediawiki.NewLogEventsPaginator(mwclient, params)
 
 	_, err := paginator.NextPage(ctx)
@@ -242,9 +244,9 @@ func logEventsError(ctx context.Context, mwclient *mediawiki.Client, transport *
 }
 
 func logEventsWarnings(ctx context.Context, mwclient *mediawiki.Client, transport *capturingTransport) error {
-	params := mediawiki.LogEventsQueryParams{}
-	params.LEProp = "foo"
-
+	params := mediawiki.LogEventsQueryParams{
+		LEProp: "foo",
+	}
 	paginator := mediawiki.NewLogEventsPaginator(mwclient, params)
 
 	_, err := paginator.NextPage(ctx)

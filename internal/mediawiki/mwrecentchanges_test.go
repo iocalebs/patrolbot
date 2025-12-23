@@ -107,8 +107,9 @@ func TestRecentChangesPaginator(t *testing.T) {
 			srv := mockServer(t, tc.statusCode, tc.pages)
 			defer srv.Close()
 
-			cfg := config.Wiki{}
-			cfg.URL = srv.URL
+			cfg := config.Wiki{
+				URL: srv.URL,
+			}
 			mwclient := mediawiki.NewClient(cfg, http.DefaultClient, *slog.Default())
 			paginator := mediawiki.NewRecentChangesPaginator(mwclient, mediawiki.RecentChangesQueryParams{})
 
@@ -149,8 +150,9 @@ func TestRecentChangesQueryParametersAll(t *testing.T) {
 	}))
 	defer srv.Close()
 
-	cfg := config.Wiki{}
-	cfg.URL = srv.URL
+	cfg := config.Wiki{
+		URL: srv.URL,
+	}
 	mwclient := mediawiki.NewClient(cfg, http.DefaultClient, *slog.Default())
 	paginator := mediawiki.NewRecentChangesPaginator(mwclient, mediawiki.RecentChangesQueryParams{
 		RCStart: time.Now(),
@@ -187,8 +189,9 @@ func TestRecentChangesQueryParametersNone(t *testing.T) {
 	}))
 	defer srv.Close()
 
-	cfg := config.Wiki{}
-	cfg.URL = srv.URL
+	cfg := config.Wiki{
+		URL: srv.URL,
+	}
 	mwclient := mediawiki.NewClient(cfg, http.DefaultClient, *slog.Default())
 	paginator := mediawiki.NewRecentChangesPaginator(mwclient, mediawiki.RecentChangesQueryParams{})
 

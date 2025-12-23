@@ -5,14 +5,11 @@ linters:
 
   disable:
     - depguard
+    - exhaustruct
     - nlreturn
     - wsl
 
   settings:
-    exhaustruct:
-      allow-empty: true
-      exclude:
-        - ^github.com/spf13/cobra\.Command$
     goconst:
       ignore-string-values:
         - foo #nonsense value commonly used in tests to pass invalid string

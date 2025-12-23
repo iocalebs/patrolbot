@@ -15,20 +15,21 @@ var update = flag.Bool("update", false, "update golden files") //nolint:gocheckn
 func TestCommands(t *testing.T) {
 	t.Parallel()
 
-	params := testscript.Params{}
-	params.Dir = "testdata/integration-tests"
-	params.UpdateScripts = *update
-	params.Setup = func(env *testscript.Env) error {
-		cwd, err := os.Getwd()
-		if err != nil {
-			t.Fatalf("Error getting current working directory: %v", err)
-		}
+	params := testscript.Params{
+		Dir:           "testdata/integration-tests",
+		UpdateScripts: *update,
+		Setup: func(env *testscript.Env) error {
+			cwd, err := os.Getwd()
+			if err != nil {
+				t.Fatalf("Error getting current working directory: %v", err)
+			}
 
-		// Add patrolbot binary to PATH
-		// Assuming binary was already built in go test's working dir
-		env.Setenv("PATH", cwd)
+			// Add patrolbot binary to PATH
+			// Assuming binary was already built in go test's working dir
+			env.Setenv("PATH", cwd)
 
-		return nil
+			return nil
+		},
 	}
 
 	testscript.Run(t, params)
