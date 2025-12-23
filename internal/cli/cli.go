@@ -19,13 +19,8 @@ func Execute() {
 		SilenceUsage: true,
 	}
 
-	initFlags(rootCmd)
-	addCommands(rootCmd)
-
-	rootCmd.SetHelpCommand(&cobra.Command{
-		Hidden: true,
-	})
-	rootCmd.CompletionOptions.DisableDefaultCmd = true
+	commands(rootCmd)
+	flags(rootCmd)
 
 	err := fang.Execute(context.Background(), rootCmd, fang.WithColorSchemeFunc(fang.AnsiColorScheme))
 	if err != nil {
@@ -33,7 +28,17 @@ func Execute() {
 	}
 }
 
-func initFlags(rootCmd *cobra.Command) {
+func commands(rootCmd *cobra.Command) {
+	rootCmd.AddCommand(
+		configCmd.NewCommand(),
+	)
+	rootCmd.SetHelpCommand(&cobra.Command{
+		Hidden: true,
+	})
+	rootCmd.CompletionOptions.DisableDefaultCmd = true
+}
+
+func flags(rootCmd *cobra.Command) {
 	rootCmd.PersistentFlags().StringP(
 		"config",
 		"c",
@@ -45,11 +50,5 @@ func initFlags(rootCmd *cobra.Command) {
 		"w",
 		"",
 		"Target wiki for bot operations",
-	)
-}
-
-func addCommands(rootCmd *cobra.Command) {
-	rootCmd.AddCommand(
-		configCmd.NewCommand(),
 	)
 }
