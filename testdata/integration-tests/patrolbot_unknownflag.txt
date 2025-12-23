@@ -1,5 +1,5 @@
 -- command --
-./patrolbot --foo
+patrolbot --foo
 -- stdout --
 -- stderr --
           

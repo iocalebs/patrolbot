@@ -1,5 +1,5 @@
 -- command --
-./patrolbot
+patrolbot
 -- stdout --
 
   patrolbot assists with patrolling-related tasks on MediaWiki sites.                                                   

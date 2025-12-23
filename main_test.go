@@ -7,6 +7,7 @@ import (
 	"embed"
 	"errors"
 	"flag"
+	"io"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -64,23 +65,10 @@ func TestCommands(t *testing.T) {
 
 			test := parseTestFile(t, file)
 
-			stdout := bytes.Buffer{}
-			stderr := bytes.Buffer{}
+			stdout, stderr := runTest(t, test)
+			test.stdout = stdout
+			test.stderr = stderr
 
-			// #nosec G204 -- trusted inputs from test suite
-			cmd := exec.CommandContext(t.Context(), "sh", "-c", string(test.command))
-			cmd.Stdout = &stdout
-			cmd.Stderr = &stderr
-
-			err = cmd.Run()
-
-			var exitErr *exec.ExitError
-			if err != nil && (!errors.As(err, &exitErr) || cmd.ProcessState.ExitCode() > 1) {
-				t.Fatal("Error executing test command: %w", err)
-			}
-
-			test.stdout = stdout.Bytes()
-			test.stderr = stderr.Bytes()
 			got := formatTestFile(t, test)
 
 			if update {
@@ -94,7 +82,7 @@ func TestCommands(t *testing.T) {
 
 			// Simpler to compare whole test files than to extract stdout and stderr from test files and run diffs on
 			// each. This way the line numbers in the diff align with the checked in test file.
-			diff := diffTestFile(t, file, got)
+			diff := diffFiles(t, file, got)
 			if diff != "" {
 				t.Errorf("Output mismatch (-want +got):\n%s", diff)
 			}
@@ -148,7 +136,55 @@ func formatTestFile(t *testing.T, test integrationTest) []byte {
 	return txtar.Format(archive)
 }
 
-func diffTestFile(t *testing.T, wantPath string, got []byte) string {
+func runTest(t *testing.T, test integrationTest) (stdout []byte, stderr []byte) {
+	// Run each test in isolated temp dir
+	tempDir := t.TempDir()
+
+	bin, err := os.Open("patrolbot")
+	if err != nil {
+		t.Fatalf("Error copying patrolbot binary to temp dir: %v", err)
+	}
+	defer bin.Close()
+
+	dest, err := os.Create(filepath.Join(tempDir, "patrolbot"))
+	if err != nil {
+		t.Fatalf("Error copying patrolbot binary to temp dir: %v", err)
+	}
+	defer dest.Close()
+
+	_, err = io.Copy(dest, bin)
+	if err != nil {
+		t.Fatalf("Error copying patrolbot binary to temp dir: %v", err)
+	}
+
+	err = dest.Chmod(0755)
+	if err != nil {
+		t.Fatalf("Error chmodding patrolbot binary: %v", err)
+	}
+
+	// #nosec G204 -- trusted inputs from test suite
+	cmd := exec.CommandContext(t.Context(), "sh", "-c", string(test.command))
+
+	cmd.Dir = tempDir
+	cmd.Env = append(os.Environ(), "PATH="+tempDir+":"+os.Getenv("PATH"))
+
+	stdoutBuf := bytes.Buffer{}
+	stderrBuf := bytes.Buffer{}
+
+	cmd.Stdout = &stdoutBuf
+	cmd.Stderr = &stderrBuf
+
+	err = cmd.Run()
+
+	var exitErr *exec.ExitError
+	if err != nil && (!errors.As(err, &exitErr) || cmd.ProcessState.ExitCode() > 1) {
+		t.Fatalf("Error executing test command: %v", err)
+	}
+
+	return stdoutBuf.Bytes(), stderrBuf.Bytes()
+}
+
+func diffFiles(t *testing.T, wantPath string, got []byte) string {
 	t.Helper()
 
 	dir := t.TempDir()
