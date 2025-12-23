@@ -7,6 +7,7 @@ export GOCOVERDIR := coverage
 .PHONY: cover-unit 
 .PHONY: docs 
 .PHONY: generate 
+.PHONY: int
 .PHONY: lint 
 .PHONY: test 
 .PHONY: testupdate
@@ -31,7 +32,7 @@ cover:
 # It seems the 2nd-generation coverage output omits files with 0% coverage.
 # Workaround: Merge profiles with a "zero" profile that lists all files at 0% coverage, made by running the old coverage 
 # generator on all packages but with a -run regex that matches no tests.
-	go test -coverprofile=$(GOCOVERDIR)/profile-zero.txt -parallel=1 -run "a^" ./... 
+	go test -coverprofile=$(GOCOVERDIR)/profile-zero.txt -parallel=1 -run "a^" ./...
 # go generate tools are removed from the report.
 	sed '/^github\.com\/iocalebs\/patrolbot\/internal\/tools/d' $(GOCOVERDIR)/profile-zero.txt > $(GOCOVERDIR)/profile-zero.tmp
 	mv $(GOCOVERDIR)/profile-zero.tmp $(GOCOVERDIR)/profile-zero.txt
@@ -58,6 +59,10 @@ docs:
 
 generate:
 	go generate ./...
+
+# Integration tests
+int: build
+	go test main_test.go -v
 
 lint:
 	golangci-lint run ./...
