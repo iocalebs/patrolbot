@@ -1,6 +1,7 @@
 package config
 
 import (
+	"errors"
 	"fmt"
 	"os"
 	"strings"
@@ -9,6 +10,10 @@ import (
 	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
 )
+
+// ErrFileNotFound indicates that no config file was found in the home directory, current directory, or at the --config
+// flag path if given.
+var ErrFileNotFound = errors.New("config.yaml file not found")
 
 // Load sources config from files, environment variables, and command-line flags and returns the merged result.
 // See patrolbot config --help for more on config sources.
@@ -38,6 +43,11 @@ func Load(flags *pflag.FlagSet) (Config, error) {
 
 	err = viper.ReadInConfig()
 	if err != nil {
+		var configFileNotFoundError viper.ConfigFileNotFoundError
+		if errors.As(err, &configFileNotFoundError) {
+			return Config{}, ErrFileNotFound
+		}
+
 		return Config{}, fmt.Errorf("failed to read config: %w", err)
 	}
 

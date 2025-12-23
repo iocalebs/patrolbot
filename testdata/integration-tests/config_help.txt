@@ -4,19 +4,22 @@ cmp stdout help.golden
 exec patrolbot config --help
 cmp stdout help.golden
 
--- config.yaml --
-wiki: zwen
+exec patrolbot config -
+cmp stdout help.golden
 
 -- help.golden --
 
   Manage patrolbot configuration.                                                                                       
                                                                                                                         
-  patrolbot sources config from the following places, in order of highest to lowest priority:                           
+  patrolbot sources configuration from the following places, in order of highest to lowest priority:                    
       1. Command-line flags (e.g. --wiki wikipedia)                                                                     
       2. Environment variables (e.g. PATROLBOT_WIKI=wikipedia)                                                          
-      3. config.yaml file indicated by the --config flag                                                                
-      4. config.yaml file in current directory                                                                          
-      5. config.yaml file in $HOME/.patrolbot.                                                                          
+      3. A YAML file read from one of the following paths, in order of highest to lowest priority:                      
+          3. config.yaml file indicated by the --config flag                                                            
+          4. config.yaml file in current directory                                                                      
+          5. config.yaml file in $HOME/.patrolbot.                                                                      
+  Configuration is read from the highest-priority file only—configuration is not merged from multiple files.            
+                                                                                                                        
          
   USAGE  
          

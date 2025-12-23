@@ -1,0 +1,22 @@
+# A config.yaml file must exist in current dir, $HOME/.patrolbot, or be passed in via --config
+! exec patrolbot config view
+cmp stderr no-config-file.golden
+
+# $HOME env variable must be set
+env HOME=
+! exec patrolbot config view
+cmp stderr home-undefined.golden
+env HOME=/no-home
+
+-- no-config-file.golden --
+          
+   ERROR  
+          
+  Failed to load config: config.yaml file not found.                                                                  
+
+-- home-undefined.golden --
+          
+   ERROR  
+          
+  Failed to load config: failed searching for config in home directory: $HOME is not defined.                         
+

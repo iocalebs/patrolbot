@@ -1,0 +1,133 @@
+env HOME=$WORK/home
+
+exec patrolbot config view
+cmp stdout basic-home-config.golden
+
+# Env variables can override config.yaml.
+env PATROLBOT_WIKI=zwfr
+exec patrolbot config view
+cmp stdout override-wiki-env.golden
+env PATROLBOT_WIKI=
+
+# Flags can override config.yaml and env variables.
+env PATROLBOT_WIKI=zwfr
+exec patrolbot --wiki wikipedia config view
+cmp stdout override-wiki-flag.golden
+env PATROLBOT_WIKI=
+
+# Env variables can override nested properties.
+env PATROLBOT_WIKIS_ZWEN_PASSWORD=password
+exec patrolbot config view
+cmp stdout override-env-nested.golden
+env PATROLBOT_WIKIS_ZWEN_PASSWORD=
+
+# config.yaml in current directory has precedence over home config.
+# Config files are not merged - only the highest precedence file is considered.
+cp wikipedia.yaml config.yaml
+exec patrolbot config view
+cmp stdout override-curdir.golden
+rm config.yaml
+
+# config file specified via flag has precedence over ./config.yaml and $HOME/.patrolbot/config.yaml
+cp wikipedia.yaml config.yaml
+exec patrolbot config view --config dunepedia.yaml
+cmp stdout override-config-flag.golden
+rm config.yaml
+
+# -c is a shorthand for --config
+exec patrolbot config view -c dunepedia.yaml
+cmp stdout override-config-flag.golden
+
+-- home/.patrolbot/config.yaml --
+wiki: zwen
+wikis:
+  zwen:
+    url: https://zeldawiki.wiki
+    username: PhantomCaleb@Patrolbot
+    password: ""
+
+  zwfr:
+    url: https://fr.zeldawiki.wiki
+    username: FantômeCaleb@Patrolbot
+    password: ""
+
+-- wikipedia.yaml --
+wiki: wikipedia
+
+-- dunepedia.yaml --
+wiki: dunepedia
+
+-- basic-home-config.golden --
+{
+  "wiki": "zwen",
+  "wikis": {
+    "zwen": {
+      "url": "https://zeldawiki.wiki",
+      "username": "PhantomCaleb@Patrolbot",
+      "password": ""
+    },
+    "zwfr": {
+      "url": "https://fr.zeldawiki.wiki",
+      "username": "FantômeCaleb@Patrolbot",
+      "password": ""
+    }
+  }
+}
+-- override-wiki-env.golden --
+{
+  "wiki": "zwfr",
+  "wikis": {
+    "zwen": {
+      "url": "https://zeldawiki.wiki",
+      "username": "PhantomCaleb@Patrolbot",
+      "password": ""
+    },
+    "zwfr": {
+      "url": "https://fr.zeldawiki.wiki",
+      "username": "FantômeCaleb@Patrolbot",
+      "password": ""
+    }
+  }
+}
+-- override-wiki-flag.golden --
+{
+  "wiki": "wikipedia",
+  "wikis": {
+    "zwen": {
+      "url": "https://zeldawiki.wiki",
+      "username": "PhantomCaleb@Patrolbot",
+      "password": ""
+    },
+    "zwfr": {
+      "url": "https://fr.zeldawiki.wiki",
+      "username": "FantômeCaleb@Patrolbot",
+      "password": ""
+    }
+  }
+}
+-- override-env-nested.golden --
+{
+  "wiki": "zwen",
+  "wikis": {
+    "zwen": {
+      "url": "https://zeldawiki.wiki",
+      "username": "PhantomCaleb@Patrolbot",
+      "password": "password"
+    },
+    "zwfr": {
+      "url": "https://fr.zeldawiki.wiki",
+      "username": "FantômeCaleb@Patrolbot",
+      "password": ""
+    }
+  }
+}
+-- override-curdir.golden --
+{
+  "wiki": "wikipedia",
+  "wikis": null
+}
+-- override-config-flag.golden --
+{
+  "wiki": "dunepedia",
+  "wikis": null
+}
