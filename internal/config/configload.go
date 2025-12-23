@@ -12,10 +12,15 @@ import (
 
 // Load sources config from files, environment variables, and command-line flags and returns the merged result.
 // See patrolbot config --help for more on config sources.
-func Load(cfgFile string, flags *pflag.FlagSet) (Config, error) {
+func Load(flags *pflag.FlagSet) (Config, error) {
 	viper.SetEnvPrefix("PATROLBOT")
 	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_", "-", "_"))
 	viper.AutomaticEnv()
+
+	cfgFile, err := flags.GetString("config")
+	if err != nil {
+		return Config{}, fmt.Errorf("error reading config flag: %w", err)
+	}
 
 	if cfgFile != "" {
 		viper.SetConfigFile(cfgFile)
@@ -31,7 +36,7 @@ func Load(cfgFile string, flags *pflag.FlagSet) (Config, error) {
 		viper.SetConfigType("yaml")
 	}
 
-	err := viper.ReadInConfig()
+	err = viper.ReadInConfig()
 	if err != nil {
 		return Config{}, fmt.Errorf("failed to read config: %w", err)
 	}

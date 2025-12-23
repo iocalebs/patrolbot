@@ -38,7 +38,7 @@ func view() *cobra.Command {
 	cmd.Short = "View merged configuration"
 	cmd.Long = `View JSON representation of the merged configuration struct used by the bot.`
 	cmd.RunE = func(cmd *cobra.Command, _ []string) error {
-		cfg, err := config.FromContext(cmd.Context())
+		cfg, err := config.Load(cmd.Flags())
 		if err != nil {
 			return fmt.Errorf("error loading config: %w", err)
 		}

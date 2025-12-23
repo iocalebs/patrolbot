@@ -3,12 +3,10 @@ package cli
 
 import (
 	"context"
-	"fmt"
 	"os"
 
 	"github.com/charmbracelet/fang"
 	configCmd "github.com/iocalebs/patrolbot/internal/cli/commands/config"
-	"github.com/iocalebs/patrolbot/internal/config"
 	"github.com/spf13/cobra"
 )
 
@@ -19,9 +17,6 @@ func Execute() {
 		Short:        "patrolbot assists with patrolling-related tasks on MediaWiki sites.",
 		Long:         "",
 		SilenceUsage: true,
-		PersistentPreRunE: func(cmd *cobra.Command, _ []string) error {
-			return initConfig(cmd)
-		},
 	}
 
 	initFlags(rootCmd)
@@ -57,21 +52,4 @@ func addCommands(rootCmd *cobra.Command) {
 	rootCmd.AddCommand(
 		configCmd.NewCommand(),
 	)
-}
-
-func initConfig(cmd *cobra.Command) error {
-	cfgFile, err := cmd.Flags().GetString("config")
-	if err != nil {
-		return fmt.Errorf("error loading config: %w", err)
-	}
-
-	cfg, err := config.Load(cfgFile, cmd.Flags())
-	if err != nil {
-		return fmt.Errorf("error loading config: %w", err)
-	}
-
-	ctx := config.NewContext(cmd.Context(), cfg)
-	cmd.SetContext(ctx)
-
-	return nil
 }

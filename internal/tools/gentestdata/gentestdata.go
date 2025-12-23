@@ -3,20 +3,24 @@
 package main
 
 import (
-	"flag"
 	"log"
+	"os"
 
 	"github.com/iocalebs/patrolbot/internal/config"
 	"github.com/spf13/pflag"
 )
 
 func main() {
-	overwrite := flag.Bool("overwrite", false, "overwrite existing testdata files")
-	cfgFile := flag.String("config", "../../config.yaml", "path to patrolbot config file")
+	flagset := pflag.NewFlagSet("gentestdata", pflag.ExitOnError)
+	overwrite := flagset.Bool("overwrite", false, "overwrite existing testdata files")
+	flagset.String("config", "../../config.yaml", "path to patrolbot config file")
 
-	flag.Parse()
+	err := flagset.Parse(os.Args[1:])
+	if err != nil {
+		log.Fatalf("Error parsing flags: %v\n", err)
+	}
 
-	cfg, err := config.Load(*cfgFile, &pflag.FlagSet{})
+	cfg, err := config.Load(flagset)
 	if err != nil {
 		log.Fatalf("Error loading config: %v", err)
 	}
