@@ -14,7 +14,7 @@ import (
 func Execute() {
 	rootCmd := &cobra.Command{
 		Use:          "patrolbot",
-		Short:        "patrolbot assists with patrolling-related tasks on MediaWiki sites.",
+		Short:        "patrolbot assists with patrolling MediaWiki sites.",
 		Long:         "",
 		SilenceUsage: true,
 	}

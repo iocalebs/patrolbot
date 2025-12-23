@@ -9,7 +9,7 @@ cmp stdout help.golden
 
 -- help.golden --
 
-  patrolbot assists with patrolling-related tasks on MediaWiki sites.                                                   
+  patrolbot assists with patrolling MediaWiki sites.                                                                    
          
   USAGE  
          

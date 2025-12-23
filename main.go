@@ -1,4 +1,4 @@
-// PatrolBot assists with patrolling tasks on MediaWiki sites.
+// PatrolBot assists with patrolling MediaWiki sites.
 package main
 
 import "github.com/iocalebs/patrolbot/internal/cli"
