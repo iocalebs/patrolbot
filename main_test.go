@@ -26,9 +26,7 @@ func TestCommands(t *testing.T) {
 
 		// Add patrolbot binary to PATH
 		// Assuming binary was already built in go test's working dir
-		path := env.Getenv("PATH")
-		path = cwd + string(os.PathListSeparator) + path
-		env.Setenv("PATH", path)
+		env.Setenv("PATH", cwd)
 
 		return nil
 	}

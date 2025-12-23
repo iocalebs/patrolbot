@@ -48,7 +48,5 @@ func Load(cfgFile string, flags *pflag.FlagSet) (Config, error) {
 		return Config{}, fmt.Errorf("failed to read config: %w", err)
 	}
 
-	// TODO: validate config
-
 	return cfg, nil
 }
