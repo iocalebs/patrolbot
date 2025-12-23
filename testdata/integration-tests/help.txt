@@ -1,6 +1,13 @@
--- command --
-patrolbot
--- stdout --
+exec patrolbot
+cmp stdout help.golden
+
+exec patrolbot --help
+cmp stdout help.golden
+
+exec patrolbot -h
+cmp stdout help.golden
+
+-- help.golden --
 
   patrolbot assists with patrolling-related tasks on MediaWiki sites.                                                   
          
@@ -19,4 +26,3 @@ patrolbot
     -v --version      Version for patrolbot
     -w --wiki         Target wiki for bot operations
 
--- stderr --

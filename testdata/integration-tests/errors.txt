@@ -1,0 +1,22 @@
+! exec patrolbot foo
+cmp stderr invalid-command.golden
+
+! exec patrolbot --foo
+cmp stderr invalid-flag.golden
+
+-- invalid-command.golden --
+          
+   ERROR  
+          
+  Unknown command "foo" for "patrolbot".                                                                              
+
+  Try --help for usage.
+
+-- invalid-flag.golden --
+          
+   ERROR  
+          
+  Unknown flag: --foo.                                                                                                
+
+  Try --help for usage.
+
