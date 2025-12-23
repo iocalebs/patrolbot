@@ -78,11 +78,11 @@ func TestLogEventsPaginator(t *testing.T) {
 		},
 	}
 
-	for _, tc := range tests {
-		t.Run(tc.name, func(t *testing.T) {
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
 			t.Parallel()
 
-			srv := mockServer(t, tc.statusCode, tc.pages)
+			srv := mockServer(t, test.statusCode, test.pages)
 			defer srv.Close()
 
 			cfg := config.Wiki{
@@ -91,7 +91,7 @@ func TestLogEventsPaginator(t *testing.T) {
 			mwclient := mediawiki.NewClient(cfg, http.DefaultClient, *slog.Default())
 			paginator := mediawiki.NewLogEventsPaginator(mwclient, mediawiki.LogEventsQueryParams{})
 
-			expectedPageCount := len(tc.pages)
+			expectedPageCount := len(test.pages)
 			for pageCount := 0; paginator.HasMorePages(); pageCount++ {
 				if pageCount > expectedPageCount {
 					t.Fatalf("Paginator has more than the %d pages expected", expectedPageCount)
@@ -99,16 +99,16 @@ func TestLogEventsPaginator(t *testing.T) {
 
 				page, err := paginator.NextPage(t.Context())
 
-				if tc.expectResults && len(page.LogEvents) == 0 {
+				if test.expectResults && len(page.LogEvents) == 0 {
 					t.Fatalf("No results in page %d", pageCount+1)
 				}
 
-				if tc.expectError == nil && err != nil {
+				if test.expectError == nil && err != nil {
 					t.Fatalf("Unexpected error querying for nth page: %d", pageCount+1)
 				}
 
-				if tc.expectError != nil && !errors.Is(err, tc.expectError) {
-					t.Fatalf("Expected error %v, got %v", tc.expectError, err)
+				if test.expectError != nil && !errors.Is(err, test.expectError) {
+					t.Fatalf("Expected error %v, got %v", test.expectError, err)
 				}
 			}
 		})

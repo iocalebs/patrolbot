@@ -68,15 +68,15 @@ func TestLogIn(t *testing.T) {
 		},
 	}
 
-	for _, tc := range tests {
-		t.Run(tc.name, func(t *testing.T) {
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
 			t.Parallel()
 
 			srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
-				w.WriteHeader(tc.statusCode)
+				w.WriteHeader(test.statusCode)
 
-				if tc.responseBody != nil {
-					w.Write(tc.responseBody) //nolint:errcheck,gosec
+				if test.responseBody != nil {
+					w.Write(test.responseBody) //nolint:errcheck,gosec
 				}
 			}))
 			defer srv.Close()
@@ -88,17 +88,17 @@ func TestLogIn(t *testing.T) {
 
 			err := mwclient.Login(context.Background(), "token")
 
-			if tc.expectedError != nil {
+			if test.expectedError != nil {
 				if err == nil {
-					t.Fatalf("Expected error %v, got nil", tc.expectedError)
+					t.Fatalf("Expected error %v, got nil", test.expectedError)
 				}
 
-				if !errors.Is(err, tc.expectedError) {
-					t.Fatalf("Expected error %v, got %v", tc.expectedError, err)
+				if !errors.Is(err, test.expectedError) {
+					t.Fatalf("Expected error %v, got %v", test.expectedError, err)
 				}
 
-				if !strings.Contains(err.Error(), tc.expectedErrorSubstr) {
-					t.Fatalf("Expected error message to contain %q, got %q", tc.expectedErrorSubstr, err.Error())
+				if !strings.Contains(err.Error(), test.expectedErrorSubstr) {
+					t.Fatalf("Expected error message to contain %q, got %q", test.expectedErrorSubstr, err.Error())
 				}
 			}
 		})

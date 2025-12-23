@@ -11,9 +11,8 @@ linters:
 
   settings:
     varnamelen:
-      ignore-names:
-        - w # http.ResponseWriter
-        - tc # table test case
+      ignore-decls:
+        - w http.ResponseWriter
 
   exclusions:
     rules:
