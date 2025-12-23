@@ -19,7 +19,7 @@ var ErrFileNotFound = errors.New("config.yaml file not found")
 // See patrolbot config --help for more on config sources.
 func Load(flags *pflag.FlagSet) (Config, error) {
 	viper.SetEnvPrefix("PATROLBOT")
-	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_", "-", "_"))
+	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
 	viper.AutomaticEnv()
 
 	cfgFile, err := flags.GetString("config")
