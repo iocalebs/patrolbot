@@ -2,23 +2,68 @@
 // environment variables, and command-line arguments.
 package config
 
-// Config represents the PatrolBot config.
-type Config struct {
-	// Target wiki for bot commands
-	Wiki string `json:"wiki"`
+import (
+	"errors"
+	"fmt"
+	"os"
+	"strings"
 
-	// Wiki configurations
-	Wikis map[string]Wiki `json:"wikis"`
-}
+	"github.com/spf13/cobra"
+	"github.com/spf13/pflag"
+	"github.com/spf13/viper"
+)
 
-// Wiki represents bot configuration for a particular MediaWiki instance.
-type Wiki struct {
-	// Wiki URL (e.g. https://en.wikipedia.org)
-	URL string `json:"url"`
+// ErrFileNotFound indicates that no config file was found in the home directory, current directory, or at the --config
+// flag path if given.
+var ErrFileNotFound = errors.New("config.yaml file not found")
 
-	// Special:BotPasswords username (e.g. PhantomCaleb@PatrolBot)
-	Username string `json:"username"`
+// Load sources config from files, environment variables, and command-line flags and returns the merged result.
+// See patrolbot config --help for more on config sources.
+func Load(flags *pflag.FlagSet) (Config, error) {
+	viper.SetEnvPrefix("PATROLBOT")
+	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
+	viper.AutomaticEnv()
 
-	// Special:BotPasswords password
-	Password string `json:"password"`
+	cfgFile, err := flags.GetString("config")
+	if err != nil {
+		return Config{}, fmt.Errorf("error reading config flag: %w", err)
+	}
+
+	if cfgFile != "" {
+		viper.SetConfigFile(cfgFile)
+	} else {
+		home, err := os.UserHomeDir()
+		if err != nil {
+			return Config{}, fmt.Errorf("failed searching for config in home directory: %w", err)
+		}
+
+		viper.AddConfigPath(".")
+		viper.AddConfigPath(home + "/.patrolbot")
+		viper.SetConfigName("config")
+		viper.SetConfigType("yaml")
+	}
+
+	err = viper.ReadInConfig()
+	if err != nil {
+		var configFileNotFoundError viper.ConfigFileNotFoundError
+		if errors.As(err, &configFileNotFoundError) {
+			return Config{}, ErrFileNotFound
+		}
+
+		return Config{}, fmt.Errorf("failed to read config: %w", err)
+	}
+
+	err = viper.BindPFlags(flags)
+	if err != nil {
+		cobra.CheckErr(err)
+	}
+
+	var cfg Config
+
+	err = viper.Unmarshal(&cfg)
+	if err != nil {
+		return Config{}, fmt.Errorf("failed to read config: %w", err)
+	}
+
+	return cfg, nil
 }
