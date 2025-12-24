@@ -64,11 +64,15 @@ wiki: zwen
 wikis:
   zwen:
     url: https://zeldawiki.wiki
+    scriptPath: /w
+    articlePath: /wiki
     username: PhantomCaleb@Patrolbot
     password: ""
 
   zwfr:
     url: https://fr.zeldawiki.wiki
+    scriptPath: /w
+    articlePath: /wiki
     username: FantômeCaleb@Patrolbot
     password: ""
 
@@ -84,11 +88,15 @@ wiki: dunepedia
   "wikis": {
     "zwen": {
       "url": "https://zeldawiki.wiki",
+      "scriptPath": "/w",
+      "articlePath": "/wiki",
       "username": "PhantomCaleb@Patrolbot",
       "password": ""
     },
     "zwfr": {
       "url": "https://fr.zeldawiki.wiki",
+      "scriptPath": "/w",
+      "articlePath": "/wiki",
       "username": "FantômeCaleb@Patrolbot",
       "password": ""
     }
@@ -100,11 +108,15 @@ wiki: dunepedia
   "wikis": {
     "zwen": {
       "url": "https://zeldawiki.wiki",
+      "scriptPath": "/w",
+      "articlePath": "/wiki",
       "username": "PhantomCaleb@Patrolbot",
       "password": ""
     },
     "zwfr": {
       "url": "https://fr.zeldawiki.wiki",
+      "scriptPath": "/w",
+      "articlePath": "/wiki",
       "username": "FantômeCaleb@Patrolbot",
       "password": ""
     }
@@ -116,11 +128,15 @@ wiki: dunepedia
   "wikis": {
     "zwen": {
       "url": "https://zeldawiki.wiki",
+      "scriptPath": "/w",
+      "articlePath": "/wiki",
       "username": "PhantomCaleb@Patrolbot",
       "password": ""
     },
     "zwfr": {
       "url": "https://fr.zeldawiki.wiki",
+      "scriptPath": "/w",
+      "articlePath": "/wiki",
       "username": "FantômeCaleb@Patrolbot",
       "password": ""
     }
@@ -132,11 +148,15 @@ wiki: dunepedia
   "wikis": {
     "zwen": {
       "url": "https://zeldawiki.wiki",
+      "scriptPath": "/w",
+      "articlePath": "/wiki",
       "username": "PhantomCaleb@Patrolbot",
       "password": "password"
     },
     "zwfr": {
       "url": "https://fr.zeldawiki.wiki",
+      "scriptPath": "/w",
+      "articlePath": "/wiki",
       "username": "FantômeCaleb@Patrolbot",
       "password": ""
     }

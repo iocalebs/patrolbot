@@ -8,6 +8,7 @@ import (
 	"os"
 	"strings"
 
+	"github.com/go-viper/mapstructure/v2"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
@@ -60,7 +61,9 @@ func Load(flags *pflag.FlagSet) (Config, error) {
 
 	var cfg Config
 
-	err = viper.Unmarshal(&cfg)
+	err = viper.Unmarshal(&cfg, func(dc *mapstructure.DecoderConfig) {
+		dc.TagName = "json"
+	})
 	if err != nil {
 		return Config{}, fmt.Errorf("failed to read config: %w", err)
 	}

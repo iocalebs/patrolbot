@@ -31,6 +31,14 @@
           "type": "string",
           "description": "Wiki URL (e.g. https://en.wikipedia.org)"
         },
+        "scriptPath": {
+          "type": "string",
+          "description": "Wiki script path - usually \"/w\"\nSee https://www.mediawiki.org/wiki/Manual:$wgScriptPath"
+        },
+        "articlePath": {
+          "type": "string",
+          "description": "Wiki article path - usually \"/wiki\"\nSee https://www.mediawiki.org/wiki/Manual:$wgArticlePath"
+        },
         "username": {
           "type": "string",
           "description": "Special:BotPasswords username (e.g. PhantomCaleb@PatrolBot)"
@@ -44,6 +52,8 @@
       "type": "object",
       "required": [
         "url",
+        "scriptPath",
+        "articlePath",
         "username",
         "password"
       ],
