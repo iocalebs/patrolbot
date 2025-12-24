@@ -16,16 +16,19 @@ func NewCommand() *cobra.Command {
 		Use:   "config",
 		Short: "Manage bot configuration",
 		Long: `Manage patrolbot configuration.
+Configuration sources (from highest to lowest priority):
 
-patrolbot sources configuration from the following places, in order of highest to lowest priority:
-	1. Command-line flags (e.g. --wiki wikipedia)
-	2. Environment variables (e.g. PATROLBOT_WIKI=wikipedia)
-	3. A YAML file read from one of the following paths, in order of highest to lowest priority:
-		3. config.yaml file indicated by the --config flag
-		4. config.yaml file in current directory
-		5. config.yaml file in $HOME/.patrolbot.
-Configuration is read from the highest-priority file only—configuration is not merged from multiple files.
-`,
+  1. Command-line flags
+     Example: --wiki wikipedia
+
+  2. Environment variables
+     Example: PATROLBOT_WIKI=wikipedia
+
+  3. Configuration file (YAML)
+     Only one file is loaded, chosen from:
+       a. Path specified by --config
+       b. ./config.yaml
+       c. $HOME/.patrolbot/config.yaml`,
 		RunE: func(cmd *cobra.Command, _ []string) error {
 			return cmd.Help()
 		},
@@ -40,7 +43,8 @@ func view() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "view",
 		Short: "View merged configuration",
-		Long:  `View JSON representation of the merged configuration struct used by the bot.`,
+		Long: "View JSON representation of the final configuration used by PatrolBot " +
+			"after resolving command-line flags, environment variables, and config files.",
 		RunE: func(cmd *cobra.Command, _ []string) error {
 			cfg, err := config.Load(cmd.Flags())
 			if err != nil {

@@ -1,5 +1,11 @@
 env HOME=$WORK/home
 
+exec patrolbot config view --help
+cmp stdout help.golden
+
+exec patrolbot config view -h
+cmp stdout help.golden
+
 exec patrolbot config view
 cmp stdout basic-home-config.golden
 
@@ -37,6 +43,21 @@ rm config.yaml
 # -c is a shorthand for --config
 exec patrolbot config view -c dunepedia.yaml
 cmp stdout override-config-flag.golden
+
+-- help.golden --
+
+  View JSON representation of the final configuration used by PatrolBot after resolving command-line flags, environment 
+  variables, and config files.                                                                                          
+         
+  USAGE  
+         
+    patrolbot config view [--flags]  
+         
+  FLAGS  
+         
+    -c --config  Path to config file (default locations: ./config.yaml, $HOME/.patrolbot/config.yaml)
+    -h --help    Help for view
+    -w --wiki    Target wiki for bot operations
 
 -- home/.patrolbot/config.yaml --
 wiki: zwen

@@ -1,0 +1,40 @@
+exec patrolbot config 
+cmp stdout help.golden
+
+exec patrolbot config --help
+cmp stdout help.golden
+
+exec patrolbot config -
+cmp stdout help.golden
+
+-- help.golden --
+
+  Manage patrolbot configuration.                                                                                       
+  Configuration sources (from highest to lowest priority):                                                              
+                                                                                                                        
+    1. Command-line flags                                                                                               
+       Example: --wiki wikipedia                                                                                        
+                                                                                                                        
+    2. Environment variables                                                                                            
+       Example: PATROLBOT_WIKI=wikipedia                                                                                
+                                                                                                                        
+    3. Configuration file (YAML)                                                                                        
+       Only one file is loaded, chosen from:                                                                            
+         a. Path specified by --config                                                                                  
+         b. ./config.yaml                                                                                               
+         c. $HOME/.patrolbot/config.yaml                                                                                
+         
+  USAGE  
+         
+    patrolbot config [command] [--flags]  
+            
+  COMMANDS  
+            
+    view         View merged configuration
+         
+  FLAGS  
+         
+    -c --config  Path to config file (default locations: ./config.yaml, $HOME/.patrolbot/config.yaml)
+    -h --help    Help for config
+    -w --wiki    Target wiki for bot operations
+
