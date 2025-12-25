@@ -10,6 +10,9 @@ linters:
     - wsl
 
   settings:
+    mnd:
+      ignored-functions:
+        - ^os\.WriteFile
     varnamelen:
       ignore-decls:
         - w http.ResponseWriter

@@ -99,7 +99,7 @@ func (transport *capturingTransport) writeCapture(outPath string) error {
 		return fmt.Errorf("cannot stat test file: %w", err)
 	}
 
-	err = os.WriteFile(outPath, transport.captured, 0600) //nolint:mnd
+	err = os.WriteFile(outPath, transport.captured, 0600)
 	if err != nil {
 		return fmt.Errorf("error writing capture to file: %w", err)
 	}
