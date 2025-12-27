@@ -13,6 +13,7 @@ func NewCommand() *cobra.Command {
 		Use:   "config",
 		Short: "Manage bot configuration",
 		Long: `Manage PatrolBot configuration.
+
 Configuration sources (from highest to lowest priority):
 
   1. Command-line flags
