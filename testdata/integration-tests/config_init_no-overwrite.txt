@@ -1,0 +1,65 @@
+
+# Scenario: Home config already exists, user declines overwrite
+env HOME=$WORK/home
+mkdir -p $HOME/.patrolbot
+cp config.yaml $HOME/.patrolbot/config.yaml
+exec vhs cassette.tape
+scrub output.ascii
+cmp $HOME/.patrolbot/config.yaml config.yaml
+cmp output.ascii output.golden
+
+-- config.yaml --
+wiki: zwen
+
+-- cassette.tape --
+Output output.ascii
+Set Width 3000 # prevents text wrapping, which prevents the scrub command from doing its text replacements
+
+# Run command, decline overwrite by selecting default "no" option
+Hide
+Type "patrolbot config init"
+Enter
+Sleep 200ms
+Show
+Enter
+
+-- output.golden --
+
+> patrolbot config init
+┃ Configuration file already exists: $WORK/home/.patrolbot/config.yaml
+┃
+┃ Overwrite existing config?
+┃
+┃   Yes     No
+
+←/→ toggle • enter submit • y Yes • n No
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> patrolbot config init
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────

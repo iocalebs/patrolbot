@@ -1,0 +1,455 @@
+# Scenario: Home config already exists, user confirms overwrite
+env HOME=$WORK/home
+mkdir -p $HOME/.patrolbot
+cp config.yaml $HOME/.patrolbot/config.yaml
+exec vhs cassette.tape
+scrub output.ascii
+cmp $HOME/.patrolbot/config.yaml new-config.golden.yaml
+cmp output.ascii output.golden
+
+-- config.yaml --
+wiki: zwen
+
+-- cassette.tape --
+Output output.ascii
+Set Width 3000 # prevents text wrapping, which prevents the scrub command from doing its text replacements
+Set Height 1000 # prevents navigation text and error messages from being truncated
+
+# Run command, accept overwrite with "y" shortcut
+Hide
+Type "patrolbot config init"
+Enter
+Sleep 100ms
+Show
+Hide
+Type "y"
+Show
+
+# Attempt to submit empty URL, then fill out properly
+Hide
+Enter
+Show
+Hide
+Type "https://zeldawiki.wiki"
+Enter
+Show
+
+# Attempt to submit empty wiki name, then fill out properly
+Hide
+Enter
+Show
+Hide
+Type "zw"
+Enter
+Show
+
+# Use default script path and article path
+Enter
+Enter
+
+# Bot username and password
+Hide
+Type "PhantomCaleb@Patrolbot"
+Enter
+Show
+Type "password"
+Enter
+
+-- new-config.golden.yaml --
+# For more information on how PatrolBot sources config, refer to "patrolbot config --help"
+wiki: zw
+wikis:
+  zw: 
+    url: "https://zeldawiki.wiki"
+    scriptPath: "/w"
+    articlePath: "/wiki"
+    username: "PhantomCaleb@Patrolbot"
+    password: "password"
+
+-- output.golden --
+
+> patrolbot config init
+┃ Configuration file already exists: $WORK/home/.patrolbot/config.yaml
+┃
+┃ Overwrite existing config?
+┃
+┃   Yes     No
+
+←/→ toggle • enter submit • y Yes • n No
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> patrolbot config init
+┃ Wiki URL
+┃ > https://en.wikipedia.org
+
+  Wiki name
+  A short, one-word ID for use in commands.
+  >
+
+  Script path
+  You can confirm the wiki's script path by adding {{SCRIPTPATH}} to a sandbox page.
+  > /w
+
+  Article path
+  You can confirm the wiki's article path by adding {{ARTICLEPATH}} to a sandbox page. Omit the /$1 at the end.
+  > /wiki
+
+enter next
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> patrolbot config init
+┃ Wiki URL
+┃ > https://en.wikipedia.org
+
+  Wiki name
+  A short, one-word ID for use in commands.
+  >
+
+  Script path
+  You can confirm the wiki's script path by adding {{SCRIPTPATH}} to a sandbox page.
+  > /w
+
+  Article path
+  You can confirm the wiki's article path by adding {{ARTICLEPATH}} to a sandbox page. Omit the /$1 at the end.
+  > /wiki
+
+ * URL cannot be empty
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> patrolbot config init
+  Wiki URL
+  > https://zeldawiki.wiki
+
+┃ Wiki name
+┃ A short, one-word ID for use in commands.
+┃ >
+
+  Script path
+  You can confirm the wiki's script path by adding {{SCRIPTPATH}} to a sandbox page.
+  > /w
+
+  Article path
+  You can confirm the wiki's article path by adding {{ARTICLEPATH}} to a sandbox page. Omit the /$1 at the end.
+  > /wiki
+
+shift+tab back • enter next
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> patrolbot config init
+  Wiki URL
+  > https://zeldawiki.wiki
+
+┃ Wiki name
+┃ A short, one-word ID for use in commands.
+┃ >
+
+  Script path
+  You can confirm the wiki's script path by adding {{SCRIPTPATH}} to a sandbox page.
+  > /w
+
+  Article path
+  You can confirm the wiki's article path by adding {{ARTICLEPATH}} to a sandbox page. Omit the /$1 at the end.
+  > /wiki
+
+ * Wiki name cannot be empty
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> patrolbot config init
+  Wiki URL
+  > https://zeldawiki.wiki
+
+  Wiki name
+  A short, one-word ID for use in commands.
+  > zw
+
+┃ Script path
+┃ You can confirm the wiki's script path by adding {{SCRIPTPATH}} to a sandbox page.
+┃ > /w
+
+  Article path
+  You can confirm the wiki's article path by adding {{ARTICLEPATH}} to a sandbox page. Omit the /$1 at the end.
+  > /wiki
+
+shift+tab back • enter next
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> patrolbot config init
+  Wiki URL
+  > https://zeldawiki.wiki
+
+  Wiki name
+  A short, one-word ID for use in commands.
+  > zw
+
+  Script path
+  You can confirm the wiki's script path by adding {{SCRIPTPATH}} to a sandbox page.
+  > /w
+
+┃ Article path
+┃ You can confirm the wiki's article path by adding {{ARTICLEPATH}} to a sandbox page. Omit the /$1 at the end.
+┃ > /wiki
+
+shift+tab back • enter next
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> patrolbot config init
+┃ Create a bot password for patrolbot at https://zeldawiki.wiki/wiki/Special:BotPasswords
+┃
+┃ Username
+┃ > WikiUser@BotPasswordName
+
+  Password
+  >
+
+
+
+
+
+
+
+
+shift+tab back • enter next
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> patrolbot config init
+  Create a bot password for patrolbot at https://zeldawiki.wiki/wiki/Special:BotPasswords
+
+  Username
+  > PhantomCaleb@Patrolbot
+
+┃ Password
+┃ >
+
+
+
+
+
+
+
+
+shift+tab back • enter submit
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> patrolbot config init
+  Create a bot password for patrolbot at https://zeldawiki.wiki/wiki/Special:BotPasswords
+
+  Username
+  > PhantomCaleb@Patrolbot
+
+┃ Password
+┃ > password
+
+
+
+
+
+
+
+
+shift+tab back • enter submit
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> patrolbot config init
+Wrote configuration file: $WORK/home/.patrolbot/config.yaml
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────

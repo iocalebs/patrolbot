@@ -17,6 +17,7 @@ linters:
     varnamelen:
       ignore-decls:
         - w http.ResponseWriter
+        - ts *testscript.TestScript
 
   exclusions:
     rules:
