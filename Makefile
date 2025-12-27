@@ -3,11 +3,8 @@ export GOCOVERDIR := coverage
 .PHONY: build
 .PHONY: clean
 .PHONY: cover
-.PHONY: cover-int 
-.PHONY: cover-unit 
 .PHONY: docs 
 .PHONY: generate 
-.PHONY: int
 .PHONY: lint 
 .PHONY: test 
 .PHONY: update
@@ -40,29 +37,11 @@ cover:
 	mv $(GOCOVERDIR)/tmp.txt $(GOCOVERDIR)/profile-merged.txt
 	go tool cover -html=$(GOCOVERDIR)/profile-merged.txt
 
-cover-int: cover
-# Workaround to include files with 0 coverage
-	go tool gocovmerge $(GOCOVERDIR)/profile-integration.txt $(GOCOVERDIR)/profile-zero.txt > $(GOCOVERDIR)/tmp.txt
-	mv $(GOCOVERDIR)/tmp.txt $(GOCOVERDIR)/profile-integration.txt
-#
-	go tool cover -html=$(GOCOVERDIR)/profile-integration.txt
-
-cover-unit: cover
-# Workaround to include files with 0 coverage
-	go tool gocovmerge $(GOCOVERDIR)/profile-unit.txt $(GOCOVERDIR)/profile-zero.txt > $(GOCOVERDIR)/tmp.txt
-	mv $(GOCOVERDIR)/tmp.txt $(GOCOVERDIR)/profile-unit.txt
-#
-	go tool cover -html=$(GOCOVERDIR)/profile-unit.txt
-
 docs:
 	pkgsite -open .
 
 generate:
 	go generate ./...
-
-# Integration tests
-int: build
-	go test main_test.go
 
 lint:
 	golangci-lint run ./...
