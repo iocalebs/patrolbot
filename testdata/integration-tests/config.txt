@@ -9,7 +9,7 @@ cmp stdout help.golden
 
 -- help.golden --
 
-  Manage patrolbot configuration.                                                                                       
+  Manage PatrolBot configuration.                                                                                       
   Configuration sources (from highest to lowest priority):                                                              
                                                                                                                         
     1. Command-line flags                                                                                               
@@ -30,6 +30,7 @@ cmp stdout help.golden
             
   COMMANDS  
             
+    init         Initialize PatrolBot configuration file
     view         View merged configuration
          
   FLAGS  

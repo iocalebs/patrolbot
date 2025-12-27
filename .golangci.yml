@@ -13,6 +13,7 @@ linters:
     mnd:
       ignored-functions:
         - ^os\.WriteFile
+        - ^os\.MkdirAll
     varnamelen:
       ignore-decls:
         - w http.ResponseWriter

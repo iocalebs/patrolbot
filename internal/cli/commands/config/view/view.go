@@ -1,5 +1,5 @@
-// Package config implements the config command
-package config
+// Package view implements the `patrolbot config view` command
+package view
 
 import (
 	"encoding/json"
@@ -10,36 +10,8 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// NewCommand returns the `config` subcommand.
+// NewCommand returns the `config view` Cobra command.
 func NewCommand() *cobra.Command {
-	cmd := &cobra.Command{
-		Use:   "config",
-		Short: "Manage bot configuration",
-		Long: `Manage patrolbot configuration.
-Configuration sources (from highest to lowest priority):
-
-  1. Command-line flags
-     Example: --wiki wikipedia
-
-  2. Environment variables
-     Example: PATROLBOT_WIKI=wikipedia
-
-  3. Configuration file (YAML)
-     Only one file is loaded, chosen from:
-       a. Path specified by --config
-       b. ./config.yaml
-       c. $HOME/.patrolbot/config.yaml`,
-		RunE: func(cmd *cobra.Command, _ []string) error {
-			return cmd.Help()
-		},
-	}
-
-	cmd.AddCommand(view())
-
-	return cmd
-}
-
-func view() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "view",
 		Short: "View merged configuration",

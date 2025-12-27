@@ -1,0 +1,46 @@
+exec patrolbot config init --help
+cmp stdout help.golden
+
+exec patrolbot config init -h
+cmp stdout help.golden
+
+# $HOME env variable must be set
+env HOME=
+! exec patrolbot config init
+cmp stderr err-no-home.golden
+
+# patrolbot must have permissions to stat files in home dir
+mkdir $WORK/home
+env HOME=$WORK/home
+chmod 000 $HOME
+! exec patrolbot config init
+scrub stderr stderr-scrubbed
+cmp stderr-scrubbed err-stat-home-config.golden
+rm -r $HOME
+
+-- help.golden --
+
+  Interactively create an initial configuration file at $HOME/.patrolbot/config.yaml.                                   
+         
+  USAGE  
+         
+    patrolbot config init [--flags]  
+         
+  FLAGS  
+         
+    -c --config  Path to config file (default locations: ./config.yaml, $HOME/.patrolbot/config.yaml)
+    -h --help    Help for init
+    -w --wiki    Target wiki for bot operations
+
+-- err-no-home.golden --
+          
+   ERROR  
+          
+  Failed to obtain user home directory: $HOME is not defined.                                                         
+
+-- err-stat-home-config.golden --
+
+   ERROR
+
+  Error checking home config file: stat $WORK/home/.patrolbot/config.yaml: permission denied.
+

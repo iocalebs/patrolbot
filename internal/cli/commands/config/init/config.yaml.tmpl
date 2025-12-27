@@ -1,0 +1,11 @@
+# For more information on how PatrolBot sources config, refer to "patrolbot config --help"
+wiki: {{ .Wiki }}
+wikis:
+{{- range $key, $value := .Wikis }}
+  {{ $key }}: 
+    url: "{{ $value.URL }}"
+    scriptPath: "{{ $value.ScriptPath }}"
+    articlePath: "{{ $value.ArticlePath }}"
+    username: "{{ $value.Username }}"
+    password: "{{ $value.Password }}"
+{{ end }}

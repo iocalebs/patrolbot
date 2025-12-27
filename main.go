@@ -3,8 +3,6 @@ package main
 
 import "github.com/iocalebs/patrolbot/internal/cli"
 
-// TODO: patrolbot init
-
 //go:generate go run internal/tools/genschema/genschema.go
 
 func main() {
