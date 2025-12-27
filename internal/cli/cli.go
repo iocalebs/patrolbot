@@ -19,16 +19,6 @@ func Execute() {
 		SilenceUsage: true,
 	}
 
-	commands(rootCmd)
-	flags(rootCmd)
-
-	err := fang.Execute(context.Background(), rootCmd, fang.WithColorSchemeFunc(fang.AnsiColorScheme))
-	if err != nil {
-		os.Exit(1)
-	}
-}
-
-func commands(rootCmd *cobra.Command) {
 	rootCmd.AddCommand(
 		configCmd.NewCommand(),
 	)
@@ -36,19 +26,9 @@ func commands(rootCmd *cobra.Command) {
 		Hidden: true,
 	})
 	rootCmd.CompletionOptions.DisableDefaultCmd = true
-}
 
-func flags(rootCmd *cobra.Command) {
-	rootCmd.PersistentFlags().StringP(
-		"config",
-		"c",
-		"",
-		"Path to config file (default locations: ./config.yaml, $HOME/.patrolbot/config.yaml)",
-	)
-	rootCmd.PersistentFlags().StringP(
-		"wiki",
-		"w",
-		"",
-		"Target wiki for bot operations",
-	)
+	err := fang.Execute(context.Background(), rootCmd, fang.WithColorSchemeFunc(fang.AnsiColorScheme))
+	if err != nil {
+		os.Exit(1)
+	}
 }

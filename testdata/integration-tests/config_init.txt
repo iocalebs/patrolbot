@@ -28,9 +28,7 @@ rm -r $HOME
          
   FLAGS  
          
-    -c --config  Path to config file (default locations: ./config.yaml, $HOME/.patrolbot/config.yaml)
-    -h --help    Help for init
-    -w --wiki    Target wiki for bot operations
+    -h --help  Help for init
 
 -- err-no-home.golden --
           

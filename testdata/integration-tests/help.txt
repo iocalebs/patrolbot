@@ -21,8 +21,6 @@ cmp stdout help.golden
          
   FLAGS  
          
-    -c --config       Path to config file (default locations: ./config.yaml, $HOME/.patrolbot/config.yaml)
     -h --help         Help for patrolbot
     -v --version      Version for patrolbot
-    -w --wiki         Target wiki for bot operations
 
