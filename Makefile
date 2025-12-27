@@ -6,6 +6,7 @@ export GOCOVERDIR := coverage
 .PHONY: docs 
 .PHONY: generate 
 .PHONY: lint 
+.PHONY: short
 .PHONY: test 
 .PHONY: update
 
@@ -45,6 +46,9 @@ generate:
 
 lint:
 	golangci-lint run ./...
+
+short: build
+	go test ./... -short
 
 test: build
 	go test ./...

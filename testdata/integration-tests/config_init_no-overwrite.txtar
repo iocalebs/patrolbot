@@ -1,4 +1,5 @@
 
+[short] skip
 # Scenario: Home config already exists, user declines overwrite
 env HOME=$WORK/home
 mkdir -p $HOME/.patrolbot
