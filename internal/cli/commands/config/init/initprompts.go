@@ -3,12 +3,11 @@ package init
 import (
 	"context"
 	"fmt"
-	"os"
+	"path"
 
 	"github.com/charmbracelet/huh"
 	"github.com/charmbracelet/lipgloss"
 	"github.com/iocalebs/patrolbot/internal/config"
-	"github.com/mattn/go-isatty"
 )
 
 func notEmpty(fieldName string) func(string) error {
@@ -31,7 +30,7 @@ func promptOverwrite(ctx context.Context, path string) (bool, error) {
 				WithButtonAlignment(lipgloss.Left).
 				Value(&overwrite),
 		),
-	).WithAccessible(!isatty.IsTerminal(os.Stdout.Fd()))
+	)
 
 	err := form.RunWithContext(ctx)
 	if err != nil {
@@ -71,8 +70,7 @@ func promptConfig(ctx context.Context) (config.Config, error) { //nolint:funlen
 			huh.NewInput().
 				Title("Script path").
 				Description("You can confirm the wiki's script path by adding {{SCRIPTPATH}} to a sandbox page.").
-				Value(&wiki.ScriptPath).
-				Validate(notEmpty("Script path")),
+				Value(&wiki.ScriptPath),
 
 			huh.NewInput().
 				Title("Article path").
@@ -80,24 +78,31 @@ func promptConfig(ctx context.Context) (config.Config, error) { //nolint:funlen
 					"You can confirm the wiki's article path by adding {{ARTICLEPATH}} to a sandbox page. "+
 						"Omit the /$1 at the end.",
 				).
-				Value(&wiki.ArticlePath).
-				Validate(notEmpty("Article path")),
+				Value(&wiki.ArticlePath),
 		),
 
 		huh.NewGroup(
+			huh.NewNote().
+				Title("Create a bot password for PatrolBot").
+				DescriptionFunc(func() string {
+					url := wiki.URL + path.Join(wiki.ArticlePath, "Special:BotPasswords")
+
+					return `  1. Go to ` + url + `
+  2. Create a new bot password with bot name "PatrolBot"
+  3. Grant "Patrol changes to pages", then click "Create"
+  4. Enter bot username and password below.`
+				}, []*string{&wiki.URL, &wiki.ArticlePath}),
+
 			huh.NewInput().
-				TitleFunc(func() string {
-					return "Create a bot password for patrolbot at " + wiki.URL + wiki.ArticlePath +
-						"/Special:BotPasswords\n\nUsername"
-				}, []*string{&wiki.URL, &wiki.ArticlePath}).
-				Placeholder("WikiUser@BotPasswordName").
+				Title("Username").
+				Placeholder("WikiUsername@PatrolBot").
 				Value(&wiki.Username),
 
 			huh.NewInput().
 				Title("Password").
 				Value(&wiki.Password),
 		),
-	).WithAccessible(!isatty.IsTerminal(os.Stdout.Fd()))
+	)
 
 	err := form.RunWithContext(ctx)
 	if err != nil {

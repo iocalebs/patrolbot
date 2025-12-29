@@ -315,19 +315,19 @@ shift+tab back • enter next
 
 ────────────────────────────────────────────────────────────────────────────────
 > patrolbot config init
-┃ Create a bot password for patrolbot at https://zeldawiki.wiki/wiki/Special:BotPasswords
-┃
+  Create a bot password for PatrolBot
+
+    1. Go to https://zeldawiki.wiki/wiki/Special:BotPasswords
+    2. Create a new bot password with bot name "PatrolBot"
+    3. Grant "Patrol changes to pages", then click "Create"
+    4. Enter bot username and password below.
+
+
 ┃ Username
-┃ > WikiUser@BotPasswordName
+┃ > WikiUsername@PatrolBot
 
   Password
   >
-
-
-
-
-
-
 
 
 shift+tab back • enter next
@@ -350,19 +350,19 @@ shift+tab back • enter next
 
 ────────────────────────────────────────────────────────────────────────────────
 > patrolbot config init
-  Create a bot password for patrolbot at https://zeldawiki.wiki/wiki/Special:BotPasswords
+  Create a bot password for PatrolBot
+
+    1. Go to https://zeldawiki.wiki/wiki/Special:BotPasswords
+    2. Create a new bot password with bot name "PatrolBot"
+    3. Grant "Patrol changes to pages", then click "Create"
+    4. Enter bot username and password below.
+
 
   Username
   > PhantomCaleb@Patrolbot
 
 ┃ Password
 ┃ >
-
-
-
-
-
-
 
 
 shift+tab back • enter submit
@@ -385,19 +385,19 @@ shift+tab back • enter submit
 
 ────────────────────────────────────────────────────────────────────────────────
 > patrolbot config init
-  Create a bot password for patrolbot at https://zeldawiki.wiki/wiki/Special:BotPasswords
+  Create a bot password for PatrolBot
+
+    1. Go to https://zeldawiki.wiki/wiki/Special:BotPasswords
+    2. Create a new bot password with bot name "PatrolBot"
+    3. Grant "Patrol changes to pages", then click "Create"
+    4. Enter bot username and password below.
+
 
   Username
   > PhantomCaleb@Patrolbot
 
 ┃ Password
 ┃ > password
-
-
-
-
-
-
 
 
 shift+tab back • enter submit
