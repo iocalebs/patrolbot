@@ -1,5 +1,7 @@
 package main_test
 
+// TODO: Integration test that verifies config created by init is valid.
+
 import (
 	"flag"
 	"os"

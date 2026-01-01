@@ -2,8 +2,10 @@
 wiki: "" # Env variable PATROLBOT_WIKI or flag --wiki
 wikis:
   zwen:
-    url: https://zeldawiki.wiki
-    scriptPath: /w
-    articlePath: /wiki
-    username: PhantomCaleb@PatrolBot
-    password: "" # Env variable PATROLBOT_WIKIS_ZWEN_PASSWORD
+    site:
+      url: https://zeldawiki.wiki
+      scriptPath: /w
+      articlePath: /wiki
+    client:
+      username: PhantomCaleb@PatrolBot
+      password: "" # Env variable PATROLBOT_WIKIS_ZWEN_PASSWORD

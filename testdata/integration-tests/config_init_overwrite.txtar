@@ -60,12 +60,14 @@ Enter
 # For more information on how PatrolBot sources config, refer to "patrolbot config --help"
 wiki: zw
 wikis:
-  zw: 
-    url: "https://zeldawiki.wiki"
-    scriptPath: "/w"
-    articlePath: "/wiki"
-    username: "PhantomCaleb@Patrolbot"
-    password: "password"
+  zw:
+    site:
+      url: "https://zeldawiki.wiki"
+      scriptPath: "/w"
+      articlePath: "/wiki"
+    client:
+      username: "PhantomCaleb@Patrolbot"
+      password: "password"
 
 -- output.golden --
 

@@ -22,10 +22,10 @@ cmp stdout override-wiki-flag.golden
 env PATROLBOT_WIKI=
 
 # Env variables can override nested properties.
-env PATROLBOT_WIKIS_ZWEN_PASSWORD=password
+env PATROLBOT_WIKIS_ZWEN_CLIENT_PASSWORD=password
 exec patrolbot config view
 cmp stdout override-env-nested.golden
-env PATROLBOT_WIKIS_ZWEN_PASSWORD=
+env PATROLBOT_WIKIS_ZWEN_CLIENT_PASSWORD=
 
 # config.yaml in current directory has precedence over home config.
 # Config files are not merged - only the highest precedence file is considered.
@@ -63,18 +63,22 @@ cmp stdout override-config-flag.golden
 wiki: zwen
 wikis:
   zwen:
-    url: https://zeldawiki.wiki
-    scriptPath: /w
-    articlePath: /wiki
-    username: PhantomCaleb@Patrolbot
-    password: ""
+    site:
+      url: https://zeldawiki.wiki
+      scriptPath: /w
+      articlePath: /wiki
+    client:
+      username: PhantomCaleb@Patrolbot
+      password: ""
 
   zwfr:
-    url: https://fr.zeldawiki.wiki
-    scriptPath: /w
-    articlePath: /wiki
-    username: FantômeCaleb@Patrolbot
-    password: ""
+    site:
+      url: https://fr.zeldawiki.wiki
+      scriptPath: /w
+      articlePath: /wiki
+    client:
+      username: FantômeCaleb@Patrolbot
+      password: ""
 
 -- wikipedia.yaml --
 wiki: wikipedia
@@ -87,18 +91,26 @@ wiki: dunepedia
   "wiki": "zwen",
   "wikis": {
     "zwen": {
-      "url": "https://zeldawiki.wiki",
-      "scriptPath": "/w",
-      "articlePath": "/wiki",
-      "username": "PhantomCaleb@Patrolbot",
-      "password": ""
+      "site": {
+        "url": "https://zeldawiki.wiki",
+        "scriptPath": "/w",
+        "articlePath": "/wiki"
+      },
+      "client": {
+        "username": "PhantomCaleb@Patrolbot",
+        "password": ""
+      }
     },
     "zwfr": {
-      "url": "https://fr.zeldawiki.wiki",
-      "scriptPath": "/w",
-      "articlePath": "/wiki",
-      "username": "FantômeCaleb@Patrolbot",
-      "password": ""
+      "site": {
+        "url": "https://fr.zeldawiki.wiki",
+        "scriptPath": "/w",
+        "articlePath": "/wiki"
+      },
+      "client": {
+        "username": "FantômeCaleb@Patrolbot",
+        "password": ""
+      }
     }
   }
 }
@@ -107,18 +119,26 @@ wiki: dunepedia
   "wiki": "zwfr",
   "wikis": {
     "zwen": {
-      "url": "https://zeldawiki.wiki",
-      "scriptPath": "/w",
-      "articlePath": "/wiki",
-      "username": "PhantomCaleb@Patrolbot",
-      "password": ""
+      "site": {
+        "url": "https://zeldawiki.wiki",
+        "scriptPath": "/w",
+        "articlePath": "/wiki"
+      },
+      "client": {
+        "username": "PhantomCaleb@Patrolbot",
+        "password": ""
+      }
     },
     "zwfr": {
-      "url": "https://fr.zeldawiki.wiki",
-      "scriptPath": "/w",
-      "articlePath": "/wiki",
-      "username": "FantômeCaleb@Patrolbot",
-      "password": ""
+      "site": {
+        "url": "https://fr.zeldawiki.wiki",
+        "scriptPath": "/w",
+        "articlePath": "/wiki"
+      },
+      "client": {
+        "username": "FantômeCaleb@Patrolbot",
+        "password": ""
+      }
     }
   }
 }
@@ -127,18 +147,26 @@ wiki: dunepedia
   "wiki": "wikipedia",
   "wikis": {
     "zwen": {
-      "url": "https://zeldawiki.wiki",
-      "scriptPath": "/w",
-      "articlePath": "/wiki",
-      "username": "PhantomCaleb@Patrolbot",
-      "password": ""
+      "site": {
+        "url": "https://zeldawiki.wiki",
+        "scriptPath": "/w",
+        "articlePath": "/wiki"
+      },
+      "client": {
+        "username": "PhantomCaleb@Patrolbot",
+        "password": ""
+      }
     },
     "zwfr": {
-      "url": "https://fr.zeldawiki.wiki",
-      "scriptPath": "/w",
-      "articlePath": "/wiki",
-      "username": "FantômeCaleb@Patrolbot",
-      "password": ""
+      "site": {
+        "url": "https://fr.zeldawiki.wiki",
+        "scriptPath": "/w",
+        "articlePath": "/wiki"
+      },
+      "client": {
+        "username": "FantômeCaleb@Patrolbot",
+        "password": ""
+      }
     }
   }
 }
@@ -147,18 +175,26 @@ wiki: dunepedia
   "wiki": "zwen",
   "wikis": {
     "zwen": {
-      "url": "https://zeldawiki.wiki",
-      "scriptPath": "/w",
-      "articlePath": "/wiki",
-      "username": "PhantomCaleb@Patrolbot",
-      "password": "password"
+      "site": {
+        "url": "https://zeldawiki.wiki",
+        "scriptPath": "/w",
+        "articlePath": "/wiki"
+      },
+      "client": {
+        "username": "PhantomCaleb@Patrolbot",
+        "password": "password"
+      }
     },
     "zwfr": {
-      "url": "https://fr.zeldawiki.wiki",
-      "scriptPath": "/w",
-      "articlePath": "/wiki",
-      "username": "FantômeCaleb@Patrolbot",
-      "password": ""
+      "site": {
+        "url": "https://fr.zeldawiki.wiki",
+        "scriptPath": "/w",
+        "articlePath": "/wiki"
+      },
+      "client": {
+        "username": "FantômeCaleb@Patrolbot",
+        "password": ""
+      }
     }
   }
 }

@@ -39,20 +39,28 @@ func TestCurrentWiki(t *testing.T) {
 				Wiki: "zwen",
 				Wikis: map[string]config.Wiki{
 					"zwen": {
-						URL:         "https://zeldawiki.wiki",
-						ScriptPath:  "/w",
-						ArticlePath: "/wiki",
-						Username:    "PhantomCaleb@PatrolBot",
-						Password:    "password",
+						Site: config.WikiSite{
+							URL:         "https://zeldawiki.wiki",
+							ScriptPath:  "/w",
+							ArticlePath: "/wiki",
+						},
+						Client: config.WikiClient{
+							Username: "PhantomCaleb@PatrolBot",
+							Password: "password",
+						},
 					},
 				},
 			},
 			expectResult: config.Wiki{
-				URL:         "https://zeldawiki.wiki",
-				ScriptPath:  "/w",
-				ArticlePath: "/wiki",
-				Username:    "PhantomCaleb@PatrolBot",
-				Password:    "password",
+				Site: config.WikiSite{
+					URL:         "https://zeldawiki.wiki",
+					ScriptPath:  "/w",
+					ArticlePath: "/wiki",
+				},
+				Client: config.WikiClient{
+					Username: "PhantomCaleb@PatrolBot",
+					Password: "password",
+				},
 			},
 			expectErr: nil,
 		},
@@ -62,11 +70,15 @@ func TestCurrentWiki(t *testing.T) {
 				Wiki: "",
 				Wikis: map[string]config.Wiki{
 					"zwen": {
-						URL:         "https://zeldawiki.wiki",
-						ScriptPath:  "/w",
-						ArticlePath: "/wiki",
-						Username:    "PhantomCaleb@PatrolBot",
-						Password:    "password",
+						Site: config.WikiSite{
+							URL:         "https://zeldawiki.wiki",
+							ScriptPath:  "/w",
+							ArticlePath: "/wiki",
+						},
+						Client: config.WikiClient{
+							Username: "PhantomCaleb@PatrolBot",
+							Password: "password",
+						},
 					},
 				},
 			},
@@ -87,11 +99,15 @@ func TestCurrentWiki(t *testing.T) {
 				Wiki: "zwen",
 				Wikis: map[string]config.Wiki{
 					"zwen": {
-						URL:         "https://zeldawiki.wiki",
-						ScriptPath:  "/w",
-						ArticlePath: "/wiki",
-						Username:    "",
-						Password:    "",
+						Site: config.WikiSite{
+							URL:         "https://zeldawiki.wiki",
+							ScriptPath:  "/w",
+							ArticlePath: "/wiki",
+						},
+						Client: config.WikiClient{
+							Username: "",
+							Password: "",
+						},
 					},
 				},
 			},

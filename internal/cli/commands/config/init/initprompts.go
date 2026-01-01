@@ -50,15 +50,15 @@ func promptConfig(ctx context.Context) (config.Config, error) { //nolint:funlen
 		name string
 	)
 
-	wiki.ScriptPath = "/w"
-	wiki.ArticlePath = "/wiki"
+	wiki.Site.ScriptPath = "/w"
+	wiki.Site.ArticlePath = "/wiki"
 
 	form := huh.NewForm(
 		huh.NewGroup(
 			huh.NewInput().
 				Title("Wiki URL").
 				Placeholder("https://en.wikipedia.org").
-				Value(&wiki.URL).
+				Value(&wiki.Site.URL).
 				Validate(notEmpty("URL")),
 
 			huh.NewInput().
@@ -70,7 +70,7 @@ func promptConfig(ctx context.Context) (config.Config, error) { //nolint:funlen
 			huh.NewInput().
 				Title("Script path").
 				Description("You can confirm the wiki's script path by adding {{SCRIPTPATH}} to a sandbox page.").
-				Value(&wiki.ScriptPath),
+				Value(&wiki.Site.ScriptPath),
 
 			huh.NewInput().
 				Title("Article path").
@@ -78,29 +78,29 @@ func promptConfig(ctx context.Context) (config.Config, error) { //nolint:funlen
 					"You can confirm the wiki's article path by adding {{ARTICLEPATH}} to a sandbox page. "+
 						"Omit the /$1 at the end.",
 				).
-				Value(&wiki.ArticlePath),
+				Value(&wiki.Site.ArticlePath),
 		),
 
 		huh.NewGroup(
 			huh.NewNote().
 				Title("Create a bot password for PatrolBot").
 				DescriptionFunc(func() string {
-					url := wiki.URL + path.Join(wiki.ArticlePath, "Special:BotPasswords")
+					url := wiki.Site.URL + path.Join(wiki.Site.ArticlePath, "Special:BotPasswords")
 
 					return `  1. Go to ` + url + `
   2. Create a new bot password with bot name "PatrolBot"
   3. Grant "Patrol changes to pages", then click "Create"
   4. Enter bot username and password below.`
-				}, []*string{&wiki.URL, &wiki.ArticlePath}),
+				}, []*string{&wiki.Site.URL, &wiki.Site.ArticlePath}),
 
 			huh.NewInput().
 				Title("Username").
 				Placeholder("WikiUsername@PatrolBot").
-				Value(&wiki.Username),
+				Value(&wiki.Client.Username),
 
 			huh.NewInput().
 				Title("Password").
-				Value(&wiki.Password),
+				Value(&wiki.Client.Password),
 		),
 	)
 

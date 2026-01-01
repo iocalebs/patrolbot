@@ -40,7 +40,7 @@ func (b baseResponse) errors() json.RawMessage {
 }
 
 func (c *Client) newRequest(ctx context.Context, method string, body io.Reader) (*http.Request, error) {
-	apiURL, err := url.JoinPath(c.config.URL, c.config.ScriptPath, "api.php")
+	apiURL, err := url.JoinPath(c.config.Site.URL, c.config.Site.ScriptPath, "api.php")
 	if err != nil {
 		return nil, fmt.Errorf("failed to create API URL: %w", err)
 	}
