@@ -14,11 +14,11 @@ type Wiki struct {
 	// Wiki URL (e.g. https://en.wikipedia.org)
 	URL string `json:"url"`
 
-	// Wiki script path - usually "/w"
+	// Wiki script path - typically "/w"
 	// See https://www.mediawiki.org/wiki/Manual:$wgScriptPath
 	ScriptPath string `json:"scriptPath"`
 
-	// Wiki article path - usually "/wiki"
+	// Wiki article path without /$1 ending - typically "/wiki"
 	// See https://www.mediawiki.org/wiki/Manual:$wgArticlePath
 	ArticlePath string `json:"articlePath"`
 

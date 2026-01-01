@@ -14,9 +14,20 @@ import (
 	"github.com/spf13/viper"
 )
 
-// ErrFileNotFound indicates that no config file was found in the home directory, current directory, or at the --config
-// flag path if given.
-var ErrFileNotFound = errors.New("config.yaml file not found")
+var (
+	// ErrFileNotFound indicates that no config file was found in the home directory, current directory, or at the --config
+	// flag path if given.
+	ErrFileNotFound = errors.New("config.yaml file not found")
+
+	// ErrWikiNotSet indicates that no wiki was selected via flag or env variable, and no default wiki is configured.
+	ErrWikiNotSet = errors.New("wiki not set")
+
+	// ErrWikiNotFound indicates that a wiki was selected that does not exist in the map of wikis.
+	ErrWikiNotFound = errors.New("wiki not found")
+
+	// ErrWikiInvalid indicates that the configuration of the selected wiki is invalid.
+	ErrWikiInvalid = errors.New("invalid wiki configuration")
+)
 
 // Load sources config from files, environment variables, and command-line flags and returns the merged result.
 // See patrolbot config --help for more on config sources.
@@ -69,4 +80,34 @@ func Load(flags *pflag.FlagSet) (Config, error) {
 	}
 
 	return cfg, nil
+}
+
+// CurrentWiki validates and returns the [Wiki] configuration for the selected wiki.
+func (c Config) CurrentWiki() (Wiki, error) {
+	if c.Wiki == "" {
+		return Wiki{}, ErrWikiNotSet
+	}
+
+	wiki, ok := c.Wikis[c.Wiki]
+	if !ok {
+		return Wiki{}, fmt.Errorf("%w: %s", ErrWikiNotFound, c.Wiki)
+	}
+
+	errs := []string{}
+
+	if wiki.Username == "" {
+		errs = append(errs, "username not set")
+	}
+
+	if wiki.Password == "" {
+		errs = append(errs, "password not set")
+	}
+
+	if len(errs) > 0 {
+		// TODO: integration test coverage
+		errList := "\n- " + strings.Join(errs, "\n- ")
+		return Wiki{}, fmt.Errorf("%w for %q: %s", ErrWikiInvalid, c.Wiki, errList)
+	}
+
+	return wiki, nil
 }

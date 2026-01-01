@@ -9,6 +9,7 @@ require (
 	github.com/charmbracelet/huh v0.8.0
 	github.com/charmbracelet/lipgloss v1.1.0
 	github.com/go-viper/mapstructure/v2 v2.4.0
+	github.com/google/go-cmp v0.6.0
 	github.com/invopop/jsonschema v0.13.0
 	github.com/rogpeppe/go-internal v1.14.1
 	github.com/spf13/cobra v1.10.2
