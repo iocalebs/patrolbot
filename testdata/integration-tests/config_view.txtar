@@ -71,7 +71,8 @@ wikis:
       username: PhantomCaleb@Patrolbot
       password: ""
     client:
-      userAgent: "PatrolBot/1.0 (+https://github.com/iocalebs/patrolbot)"
+      userAgent: PatrolBot/1.0 (+https://github.com/iocalebs/patrolbot)
+      timeout: 10s
 
   zwfr:
     site:
@@ -82,7 +83,8 @@ wikis:
       username: FantômeCaleb@Patrolbot
       password: ""
     client:
-      userAgent: "PatrolBot/1.0 (+https://github.com/iocalebs/patrolbot)"
+      userAgent: PatrolBot/1.0 (+https://github.com/iocalebs/patrolbot)
+      timeout: "0"
 
 -- wikipedia.yaml --
 wiki: wikipedia
@@ -105,7 +107,8 @@ wiki: dunepedia
         "password": ""
       },
       "client": {
-        "userAgent": "PatrolBot/1.0 (+https://github.com/iocalebs/patrolbot)"
+        "userAgent": "PatrolBot/1.0 (+https://github.com/iocalebs/patrolbot)",
+        "timeout": 10000000000
       }
     },
     "zwfr": {
@@ -119,7 +122,8 @@ wiki: dunepedia
         "password": ""
       },
       "client": {
-        "userAgent": "PatrolBot/1.0 (+https://github.com/iocalebs/patrolbot)"
+        "userAgent": "PatrolBot/1.0 (+https://github.com/iocalebs/patrolbot)",
+        "timeout": 0
       }
     }
   }
@@ -139,7 +143,8 @@ wiki: dunepedia
         "password": ""
       },
       "client": {
-        "userAgent": "PatrolBot/1.0 (+https://github.com/iocalebs/patrolbot)"
+        "userAgent": "PatrolBot/1.0 (+https://github.com/iocalebs/patrolbot)",
+        "timeout": 10000000000
       }
     },
     "zwfr": {
@@ -153,7 +158,8 @@ wiki: dunepedia
         "password": ""
       },
       "client": {
-        "userAgent": "PatrolBot/1.0 (+https://github.com/iocalebs/patrolbot)"
+        "userAgent": "PatrolBot/1.0 (+https://github.com/iocalebs/patrolbot)",
+        "timeout": 0
       }
     }
   }
@@ -173,7 +179,8 @@ wiki: dunepedia
         "password": ""
       },
       "client": {
-        "userAgent": "PatrolBot/1.0 (+https://github.com/iocalebs/patrolbot)"
+        "userAgent": "PatrolBot/1.0 (+https://github.com/iocalebs/patrolbot)",
+        "timeout": 10000000000
       }
     },
     "zwfr": {
@@ -187,7 +194,8 @@ wiki: dunepedia
         "password": ""
       },
       "client": {
-        "userAgent": "PatrolBot/1.0 (+https://github.com/iocalebs/patrolbot)"
+        "userAgent": "PatrolBot/1.0 (+https://github.com/iocalebs/patrolbot)",
+        "timeout": 0
       }
     }
   }
@@ -207,7 +215,8 @@ wiki: dunepedia
         "password": ""
       },
       "client": {
-        "userAgent": "PatrolBot/1.0 (+https://github.com/iocalebs/patrolbot)"
+        "userAgent": "PatrolBot/1.0 (+https://github.com/iocalebs/patrolbot)",
+        "timeout": 10000000000
       }
     },
     "zwfr": {
@@ -221,7 +230,8 @@ wiki: dunepedia
         "password": ""
       },
       "client": {
-        "userAgent": "PatrolBot/1.0 (+https://github.com/iocalebs/patrolbot)"
+        "userAgent": "PatrolBot/1.0 (+https://github.com/iocalebs/patrolbot)",
+        "timeout": 0
       }
     }
   }

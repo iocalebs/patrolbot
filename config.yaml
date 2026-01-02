@@ -11,3 +11,4 @@ wikis:
       password: "" # Env variable PATROLBOT_WIKIS_ZWEN_PASSWORD
     client:
       userAgent: "PatrolBot/1.0 (+https://github.com/iocalebs/patrolbot)"
+      timeout: "10s"

@@ -72,13 +72,18 @@
       "properties": {
         "userAgent": {
           "type": "string",
-          "description": "User-Agent header for API requests"
+          "description": "User-Agent header"
+        },
+        "timeout": {
+          "type": "string",
+          "description": "Request timeout as a string, e.g. \"2s\" or \"500ms\"\nA timeout of zero means no timeout"
         }
       },
       "additionalProperties": false,
       "type": "object",
       "required": [
-        "userAgent"
+        "userAgent",
+        "timeout"
       ],
       "description": "WikiClient represents configuration for the HTTP client used for MediaWiki API requests."
     },

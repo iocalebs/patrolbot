@@ -1,5 +1,7 @@
 package config
 
+import "time"
+
 // Config represents the PatrolBot config.
 type Config struct {
 	// Target wiki for bot commands
@@ -47,6 +49,10 @@ type WikiAuth struct {
 
 // WikiClient represents configuration for the HTTP client used for MediaWiki API requests.
 type WikiClient struct {
-	// User-Agent header for API requests
+	// User-Agent header
 	UserAgent string `json:"userAgent"`
+
+	// Request timeout as a string, e.g. "2s" or "500ms"
+	// A timeout of zero means no timeout
+	Timeout time.Duration `json:"timeout" jsonschema:"type=string,minLength=1"`
 }
