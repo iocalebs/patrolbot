@@ -60,6 +60,7 @@ cmp stdout override-config-flag.golden
     -w --wiki    Target wiki for bot operations
 
 -- home/.patrolbot/config.yaml --
+userAgent: PatrolBot/1.0 (+https://github.com/iocalebs/patrolbot)
 wiki: zwen
 wikis:
   zwen:
@@ -73,7 +74,6 @@ wikis:
     client:
       from: phantomcaleb@zeldawiki.wiki
       timeout: 10s
-      userAgent: PatrolBot/1.0 (+https://github.com/iocalebs/patrolbot)
 
   zwfr:
     site:
@@ -86,7 +86,6 @@ wikis:
     client:
       from: phantomcaleb@zeldawiki.wiki
       timeout: "0"
-      userAgent: PatrolBot/1.0 (+https://github.com/iocalebs/patrolbot)
 
 -- wikipedia.yaml --
 wiki: wikipedia
@@ -96,6 +95,7 @@ wiki: dunepedia
 
 -- basic-home-config.golden --
 {
+  "userAgent": "PatrolBot/1.0 (+https://github.com/iocalebs/patrolbot)",
   "wiki": "zwen",
   "wikis": {
     "zwen": {
@@ -110,7 +110,6 @@ wiki: dunepedia
       },
       "client": {
         "timeout": 10000000000,
-        "userAgent": "PatrolBot/1.0 (+https://github.com/iocalebs/patrolbot)",
         "from": "phantomcaleb@zeldawiki.wiki"
       }
     },
@@ -126,7 +125,6 @@ wiki: dunepedia
       },
       "client": {
         "timeout": 0,
-        "userAgent": "PatrolBot/1.0 (+https://github.com/iocalebs/patrolbot)",
         "from": "phantomcaleb@zeldawiki.wiki"
       }
     }
@@ -134,6 +132,7 @@ wiki: dunepedia
 }
 -- override-wiki-env.golden --
 {
+  "userAgent": "PatrolBot/1.0 (+https://github.com/iocalebs/patrolbot)",
   "wiki": "zwfr",
   "wikis": {
     "zwen": {
@@ -148,7 +147,6 @@ wiki: dunepedia
       },
       "client": {
         "timeout": 10000000000,
-        "userAgent": "PatrolBot/1.0 (+https://github.com/iocalebs/patrolbot)",
         "from": "phantomcaleb@zeldawiki.wiki"
       }
     },
@@ -164,7 +162,6 @@ wiki: dunepedia
       },
       "client": {
         "timeout": 0,
-        "userAgent": "PatrolBot/1.0 (+https://github.com/iocalebs/patrolbot)",
         "from": "phantomcaleb@zeldawiki.wiki"
       }
     }
@@ -172,6 +169,7 @@ wiki: dunepedia
 }
 -- override-wiki-flag.golden --
 {
+  "userAgent": "PatrolBot/1.0 (+https://github.com/iocalebs/patrolbot)",
   "wiki": "wikipedia",
   "wikis": {
     "zwen": {
@@ -186,7 +184,6 @@ wiki: dunepedia
       },
       "client": {
         "timeout": 10000000000,
-        "userAgent": "PatrolBot/1.0 (+https://github.com/iocalebs/patrolbot)",
         "from": "phantomcaleb@zeldawiki.wiki"
       }
     },
@@ -202,7 +199,6 @@ wiki: dunepedia
       },
       "client": {
         "timeout": 0,
-        "userAgent": "PatrolBot/1.0 (+https://github.com/iocalebs/patrolbot)",
         "from": "phantomcaleb@zeldawiki.wiki"
       }
     }
@@ -210,6 +206,7 @@ wiki: dunepedia
 }
 -- override-env-nested.golden --
 {
+  "userAgent": "PatrolBot/1.0 (+https://github.com/iocalebs/patrolbot)",
   "wiki": "zwen",
   "wikis": {
     "zwen": {
@@ -224,7 +221,6 @@ wiki: dunepedia
       },
       "client": {
         "timeout": 10000000000,
-        "userAgent": "PatrolBot/1.0 (+https://github.com/iocalebs/patrolbot)",
         "from": "phantomcaleb@zeldawiki.wiki"
       }
     },
@@ -240,7 +236,6 @@ wiki: dunepedia
       },
       "client": {
         "timeout": 0,
-        "userAgent": "PatrolBot/1.0 (+https://github.com/iocalebs/patrolbot)",
         "from": "phantomcaleb@zeldawiki.wiki"
       }
     }
@@ -248,11 +243,13 @@ wiki: dunepedia
 }
 -- override-curdir.golden --
 {
+  "userAgent": "",
   "wiki": "wikipedia",
   "wikis": null
 }
 -- override-config-flag.golden --
 {
+  "userAgent": "",
   "wiki": "dunepedia",
   "wikis": null
 }

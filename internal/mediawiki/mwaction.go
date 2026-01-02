@@ -51,7 +51,7 @@ func (c *Client) newRequest(ctx context.Context, method string, body io.Reader) 
 	}
 
 	req.Header.Set("From", c.config.Client.From)
-	req.Header.Set("User-Agent", c.config.Client.UserAgent)
+	req.Header.Set("User-Agent", c.userAgent)
 
 	return req, nil
 }

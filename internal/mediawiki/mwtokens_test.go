@@ -82,7 +82,7 @@ func TestLoginToken(t *testing.T) {
 			cfg := config.Wiki{}
 			cfg.Site.URL = srv.URL
 
-			mwclient := mediawiki.NewClient(cfg, http.DefaultClient, *slog.Default())
+			mwclient := mediawiki.NewClient(cfg, http.DefaultClient, *slog.Default(), "")
 			token, err := mwclient.LoginToken(context.Background())
 
 			if test.expectedError != nil {
@@ -119,11 +119,10 @@ func TestLoginTokenRequestHeaders(t *testing.T) {
 
 	cfg := config.Wiki{}
 	cfg.Site.URL = srv.URL
-	cfg.Client.UserAgent = userAgent
 	cfg.Client.From = from
 
 	httpClient, transport := newHTTPClient()
-	mwclient := mediawiki.NewClient(cfg, httpClient, *slog.Default())
+	mwclient := mediawiki.NewClient(cfg, httpClient, *slog.Default(), userAgent)
 
 	mwclient.LoginToken(context.Background()) //nolint:errcheck,gosec
 

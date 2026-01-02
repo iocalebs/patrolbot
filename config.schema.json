@@ -5,6 +5,10 @@
   "$defs": {
     "Config": {
       "properties": {
+        "userAgent": {
+          "type": "string",
+          "description": "User-Agent HTTP header for MediaWiki API requests\nhttps://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/User-Agent"
+        },
         "wiki": {
           "type": "string",
           "description": "Target wiki for bot commands"
@@ -20,6 +24,7 @@
       "additionalProperties": false,
       "type": "object",
       "required": [
+        "userAgent",
         "wiki",
         "wikis"
       ],
@@ -75,10 +80,6 @@
           "minLength": 1,
           "description": "Request timeout as a string, e.g. \"2s\" or \"500ms\"\nA timeout of zero means no timeout"
         },
-        "userAgent": {
-          "type": "string",
-          "description": "User-Agent HTTP header for API requests\nhttps://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/User-Agent"
-        },
         "from": {
           "type": "string",
           "description": "From HTTP header for API requests\nhttps://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/From"
@@ -88,7 +89,6 @@
       "type": "object",
       "required": [
         "timeout",
-        "userAgent",
         "from"
       ],
       "description": "WikiClient represents configuration for the HTTP client used for MediaWiki API requests."

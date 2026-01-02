@@ -1,4 +1,5 @@
 # yaml-language-server: $schema=config.schema.json
+userAgent: "PatrolBot/1.0 (+https://github.com/iocalebs/patrolbot)"
 wiki: "" # Env variable PATROLBOT_WIKI or flag --wiki
 wikis:
   zwen:
@@ -12,4 +13,3 @@ wikis:
     client:
       from: phantomcalebs@gmail.com
       timeout: "10s"
-      userAgent: "PatrolBot/1.0 (+https://github.com/iocalebs/patrolbot)"

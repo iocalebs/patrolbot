@@ -88,7 +88,7 @@ func TestLogEventsPaginator(t *testing.T) {
 			cfg := config.Wiki{}
 			cfg.Site.URL = srv.URL
 
-			mwclient := mediawiki.NewClient(cfg, http.DefaultClient, *slog.Default())
+			mwclient := mediawiki.NewClient(cfg, http.DefaultClient, *slog.Default(), "")
 			paginator := mediawiki.NewLogEventsPaginator(mwclient, mediawiki.LogEventsQueryParams{})
 
 			expectedPageCount := len(test.pages)
@@ -131,7 +131,7 @@ func TestLogEventsQueryParametersAll(t *testing.T) {
 	cfg := config.Wiki{}
 	cfg.Site.URL = srv.URL
 
-	mwclient := mediawiki.NewClient(cfg, http.DefaultClient, *slog.Default())
+	mwclient := mediawiki.NewClient(cfg, http.DefaultClient, *slog.Default(), "")
 	paginator := mediawiki.NewLogEventsPaginator(mwclient, mediawiki.LogEventsQueryParams{
 		LEStart: time.Now(),
 		LEEnd:   time.Now(),
@@ -170,7 +170,7 @@ func TestLogEventsQueryParametersNone(t *testing.T) {
 
 	cfg := config.Wiki{}
 	cfg.Site.URL = srv.URL
-	mwclient := mediawiki.NewClient(cfg, http.DefaultClient, *slog.Default())
+	mwclient := mediawiki.NewClient(cfg, http.DefaultClient, *slog.Default(), "")
 	paginator := mediawiki.NewLogEventsPaginator(mwclient, mediawiki.LogEventsQueryParams{})
 
 	_, err := paginator.NextPage(t.Context())
@@ -197,11 +197,10 @@ func TestLogEventsRequestHeaders(t *testing.T) {
 
 	cfg := config.Wiki{}
 	cfg.Site.URL = srv.URL
-	cfg.Client.UserAgent = userAgent
 	cfg.Client.From = from
 
 	httpClient, transport := newHTTPClient()
-	mwclient := mediawiki.NewClient(cfg, httpClient, *slog.Default())
+	mwclient := mediawiki.NewClient(cfg, httpClient, *slog.Default(), userAgent)
 	paginator := mediawiki.NewLogEventsPaginator(mwclient, mediawiki.LogEventsQueryParams{})
 
 	paginator.NextPage(t.Context()) //nolint:errcheck,gosec

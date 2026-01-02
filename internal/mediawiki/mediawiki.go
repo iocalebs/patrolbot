@@ -15,14 +15,16 @@ type Client struct {
 	config     config.Wiki
 	httpClient *http.Client
 	logger     slog.Logger
+	userAgent  string
 }
 
 // NewClient creates a new MediaWiki API client.
-func NewClient(config config.Wiki, httpClient *http.Client, logger slog.Logger) *Client {
+func NewClient(config config.Wiki, httpClient *http.Client, logger slog.Logger, userAgent string) *Client {
 	client := &Client{
 		config:     config,
 		httpClient: httpClient,
 		logger:     logger,
+		userAgent:  userAgent,
 	}
 
 	return client

@@ -4,6 +4,10 @@ import "time"
 
 // Config represents the PatrolBot config.
 type Config struct {
+	// User-Agent HTTP header for MediaWiki API requests
+	// https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/User-Agent
+	UserAgent string `json:"userAgent"`
+
 	// Target wiki for bot commands
 	Wiki string `json:"wiki"`
 
@@ -52,10 +56,6 @@ type WikiClient struct {
 	// Request timeout as a string, e.g. "2s" or "500ms"
 	// A timeout of zero means no timeout
 	Timeout time.Duration `json:"timeout" jsonschema:"type=string,minLength=1"`
-
-	// User-Agent HTTP header for API requests
-	// https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/User-Agent
-	UserAgent string `json:"userAgent"`
 
 	// From HTTP header for API requests
 	// https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/From
