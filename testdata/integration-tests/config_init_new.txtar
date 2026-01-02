@@ -39,6 +39,10 @@ Enter
 Type "password"
 Enter
 
+# Contact email
+Type "phantomcalebs@example.test"
+Enter
+
 -- new-config.golden.yaml --
 # For more information on how PatrolBot sources config, refer to "patrolbot config --help"
 wiki: zw
@@ -52,8 +56,9 @@ wikis:
       username: "PhantomCaleb@Patrolbot"
       password: "password"
     client:
-      userAgent: "PatrolBot/1.0 (+https://github.com/iocalebs/patrolbot)"
+      from: "phantomcalebs@example.test"
       timeout: "10s"
+      userAgent: "PatrolBot/1.0 (+https://github.com/iocalebs/patrolbot)"
 
 -- output.golden --
 
@@ -423,7 +428,7 @@ shift+tab back • enter next
 ┃ >
 
 
-shift+tab back • enter submit
+shift+tab back • enter next
 
 
 
@@ -456,6 +461,76 @@ shift+tab back • enter submit
 
 ┃ Password
 ┃ > password
+
+
+shift+tab back • enter next
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> patrolbot config init
+┃ Contact email address
+┃ Please provide an email address to be sent in MediaWiki API requests. This allows the wiki's system administrator to contact you if there's an issue with the bot's API usage
+┃ >
+
+
+
+
+
+
+
+
+
+
+
+
+shift+tab back • enter submit
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> patrolbot config init
+┃ Contact email address
+┃ Please provide an email address to be sent in MediaWiki API requests. This allows the wiki's system administrator to contact you if there's an issue with the bot's API usage
+┃ > phantomcalebs@example.test
+
+
+
+
+
+
+
+
+
+
 
 
 shift+tab back • enter submit

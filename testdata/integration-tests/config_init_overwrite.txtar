@@ -53,7 +53,13 @@ Hide
 Type "PhantomCaleb@Patrolbot"
 Enter
 Show
+Hide
 Type "password"
+Enter
+Show
+
+# Contact email
+Type "phantomcalebs@example.test"
 Enter
 
 -- new-config.golden.yaml --
@@ -69,8 +75,9 @@ wikis:
       username: "PhantomCaleb@Patrolbot"
       password: "password"
     client:
-      userAgent: "PatrolBot/1.0 (+https://github.com/iocalebs/patrolbot)"
+      from: "phantomcalebs@example.test"
       timeout: "10s"
+      userAgent: "PatrolBot/1.0 (+https://github.com/iocalebs/patrolbot)"
 
 -- output.golden --
 
@@ -370,6 +377,41 @@ shift+tab back • enter next
 ┃ >
 
 
+shift+tab back • enter next
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> patrolbot config init
+┃ Contact email address
+┃ Please provide an email address to be sent in MediaWiki API requests. This allows the wiki's system administrator to contact you if there's an issue with the bot's API usage
+┃ >
+
+
+
+
+
+
+
+
+
+
+
+
 shift+tab back • enter submit
 
 
@@ -390,19 +432,19 @@ shift+tab back • enter submit
 
 ────────────────────────────────────────────────────────────────────────────────
 > patrolbot config init
-  Create a bot password for PatrolBot
-
-    1. Go to https://zeldawiki.wiki/wiki/Special:BotPasswords
-    2. Create a new bot password with bot name "PatrolBot"
-    3. Grant "Patrol changes to pages", then click "Create"
-    4. Enter bot username and password below.
+┃ Contact email address
+┃ Please provide an email address to be sent in MediaWiki API requests. This allows the wiki's system administrator to contact you if there's an issue with the bot's API usage
+┃ > phantomcalebs@example.test
 
 
-  Username
-  > PhantomCaleb@Patrolbot
 
-┃ Password
-┃ > password
+
+
+
+
+
+
+
 
 
 shift+tab back • enter submit

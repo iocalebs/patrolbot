@@ -105,29 +105,34 @@ func TestLogin(t *testing.T) {
 	}
 }
 
-func TestLoginUserAgent(t *testing.T) {
+func TestLoginRequestHeaders(t *testing.T) {
 	t.Parallel()
 
-	userAgent := "myUserAgent"
-
-	var got string
-
-	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		got = r.Header.Get("User-Agent")
-
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
 		w.Write([]byte("{}")) //nolint:errcheck,gosec
 	}))
 	defer srv.Close()
 
+	userAgent := "myAgent"
+	from := "foo@example.test"
+
 	cfg := config.Wiki{}
 	cfg.Site.URL = srv.URL
 	cfg.Client.UserAgent = userAgent
+	cfg.Client.From = from
 
-	mwclient := mediawiki.NewClient(cfg, http.DefaultClient, *slog.Default())
+	httpClient, transport := newHTTPClient()
+	mwclient := mediawiki.NewClient(cfg, httpClient, *slog.Default())
 
 	mwclient.Login(context.Background(), "token") //nolint:errcheck,gosec
 
-	if userAgent != got {
-		t.Fatalf("Expected User-Agent header %q, got %q", userAgent, got)
+	gotUserAgent := transport.lastRequest.Header.Get("User-Agent")
+	if gotUserAgent != userAgent {
+		t.Errorf("Expected User-Agent header %q, got %q", userAgent, gotUserAgent)
+	}
+
+	gotFrom := transport.lastRequest.Header.Get("From")
+	if gotFrom != from {
+		t.Errorf("Expected From header %q, got %q", userAgent, gotUserAgent)
 	}
 }

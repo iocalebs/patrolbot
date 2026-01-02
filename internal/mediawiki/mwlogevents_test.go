@@ -193,9 +193,12 @@ func TestLogEventsRequestHeaders(t *testing.T) {
 	defer srv.Close()
 
 	userAgent := "myAgent"
+	from := "foo@example.test"
+
 	cfg := config.Wiki{}
 	cfg.Site.URL = srv.URL
 	cfg.Client.UserAgent = userAgent
+	cfg.Client.From = from
 
 	httpClient, transport := newHTTPClient()
 	mwclient := mediawiki.NewClient(cfg, httpClient, *slog.Default())
@@ -203,8 +206,13 @@ func TestLogEventsRequestHeaders(t *testing.T) {
 
 	paginator.NextPage(t.Context()) //nolint:errcheck,gosec
 
-	got := transport.lastRequest.Header.Get("User-Agent")
-	if got != userAgent {
-		t.Errorf("Expected user agent %q, got %q", userAgent, got)
+	gotUserAgent := transport.lastRequest.Header.Get("User-Agent")
+	if gotUserAgent != userAgent {
+		t.Errorf("Expected User-Agent header %q, got %q", userAgent, gotUserAgent)
+	}
+
+	gotFrom := transport.lastRequest.Header.Get("From")
+	if gotFrom != from {
+		t.Errorf("Expected From header %q, got %q", userAgent, gotUserAgent)
 	}
 }

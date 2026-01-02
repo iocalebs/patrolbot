@@ -121,6 +121,17 @@ func promptConfig(ctx context.Context) (config.Config, error) { //nolint:funlen
 				Title("Password").
 				Value(&wiki.Auth.Password),
 		),
+
+		huh.NewGroup(
+			huh.NewInput().
+				Title("Contact email address").
+				Description(
+					"Please provide an email address to be sent in MediaWiki API requests. "+
+						"This allows the wiki's system administrator to contact you if there's an issue with the "+
+						"bot's API usage",
+				).
+				Value(&wiki.Client.From),
+		),
 	)
 
 	err := form.RunWithContext(ctx)

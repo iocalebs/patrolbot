@@ -10,5 +10,6 @@ wikis:
       username: PhantomCaleb@PatrolBot
       password: "" # Env variable PATROLBOT_WIKIS_ZWEN_PASSWORD
     client:
-      userAgent: "PatrolBot/1.0 (+https://github.com/iocalebs/patrolbot)"
+      from: phantomcalebs@gmail.com
       timeout: "10s"
+      userAgent: "PatrolBot/1.0 (+https://github.com/iocalebs/patrolbot)"
