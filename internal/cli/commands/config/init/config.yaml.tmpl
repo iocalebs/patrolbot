@@ -7,7 +7,9 @@ wikis:
       url: "{{ $value.Site.URL }}"
       scriptPath: "{{ $value.Site.ScriptPath }}"
       articlePath: "{{ $value.Site.ArticlePath }}"
+    auth:
+      username: "{{ $value.Auth.Username }}"
+      password: "{{ $value.Auth.Password }}"
     client:
-      username: "{{ $value.Client.Username }}"
-      password: "{{ $value.Client.Password }}"
+      userAgent: "PatrolBot/1.0 (+https://github.com/iocalebs/patrolbot)"
 {{ end }}

@@ -31,20 +31,25 @@
           "$ref": "#/$defs/WikiSite",
           "description": "MediaWiki site information that PatrolBot needs to be aware of."
         },
+        "auth": {
+          "$ref": "#/$defs/WikiAuth",
+          "description": "Authentication credentials for the MediaWiki API\nSee https://www.mediawiki.org/wiki/API:Login"
+        },
         "client": {
           "$ref": "#/$defs/WikiClient",
-          "description": "Configuration for PatrolBot's MediaWiki API client"
+          "description": "Configuration for the HTTP client used for MediaWiki API requests."
         }
       },
       "additionalProperties": false,
       "type": "object",
       "required": [
         "site",
+        "auth",
         "client"
       ],
       "description": "Wiki represents bot configuration for a particular MediaWiki instance."
     },
-    "WikiClient": {
+    "WikiAuth": {
       "properties": {
         "username": {
           "type": "string",
@@ -53,7 +58,18 @@
         "password": {
           "type": "string",
           "description": "Special:BotPasswords password"
-        },
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "required": [
+        "username",
+        "password"
+      ],
+      "description": "WikiAuth represents configuration for MediaWiki API login credentials."
+    },
+    "WikiClient": {
+      "properties": {
         "userAgent": {
           "type": "string",
           "description": "User-Agent header for API requests"
@@ -62,11 +78,9 @@
       "additionalProperties": false,
       "type": "object",
       "required": [
-        "username",
-        "password",
         "userAgent"
       ],
-      "description": "WikiClient represents configuration for PatrolBot's MediaWiki API client."
+      "description": "WikiClient represents configuration for the HTTP client used for MediaWiki API requests."
     },
     "WikiSite": {
       "properties": {

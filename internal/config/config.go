@@ -95,11 +95,11 @@ func (c Config) CurrentWiki() (Wiki, error) {
 
 	errs := []string{}
 
-	if wiki.Client.Username == "" {
+	if wiki.Auth.Username == "" {
 		errs = append(errs, "username not set")
 	}
 
-	if wiki.Client.Password == "" {
+	if wiki.Auth.Password == "" {
 		errs = append(errs, "password not set")
 	}
 

@@ -44,7 +44,7 @@ func TestCurrentWiki(t *testing.T) {
 							ScriptPath:  "/w",
 							ArticlePath: "/wiki",
 						},
-						Client: config.WikiClient{
+						Auth: config.WikiAuth{
 							Username: "PhantomCaleb@PatrolBot",
 							Password: "password",
 						},
@@ -57,7 +57,7 @@ func TestCurrentWiki(t *testing.T) {
 					ScriptPath:  "/w",
 					ArticlePath: "/wiki",
 				},
-				Client: config.WikiClient{
+				Auth: config.WikiAuth{
 					Username: "PhantomCaleb@PatrolBot",
 					Password: "password",
 				},
@@ -75,7 +75,7 @@ func TestCurrentWiki(t *testing.T) {
 							ScriptPath:  "/w",
 							ArticlePath: "/wiki",
 						},
-						Client: config.WikiClient{
+						Auth: config.WikiAuth{
 							Username: "PhantomCaleb@PatrolBot",
 							Password: "password",
 						},
@@ -104,7 +104,7 @@ func TestCurrentWiki(t *testing.T) {
 							ScriptPath:  "/w",
 							ArticlePath: "/wiki",
 						},
-						Client: config.WikiClient{
+						Auth: config.WikiAuth{
 							Username: "",
 							Password: "",
 						},

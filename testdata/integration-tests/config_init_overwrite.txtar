@@ -65,9 +65,11 @@ wikis:
       url: "https://zeldawiki.wiki"
       scriptPath: "/w"
       articlePath: "/wiki"
-    client:
+    auth:
       username: "PhantomCaleb@Patrolbot"
       password: "password"
+    client:
+      userAgent: "PatrolBot/1.0 (+https://github.com/iocalebs/patrolbot)"
 
 -- output.golden --
 

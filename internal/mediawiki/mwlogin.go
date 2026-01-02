@@ -32,8 +32,8 @@ type loginResponseBody struct {
 func (c *Client) Login(ctx context.Context, token Token) error {
 	formBody := url.Values{
 		"action":        {"login"},
-		"lgname":        {c.config.Client.Username},
-		"lgpassword":    {c.config.Client.Password},
+		"lgname":        {c.config.Auth.Username},
+		"lgpassword":    {c.config.Auth.Password},
 		"lgtoken":       {string(token)},
 		"format":        {"json"},
 		"formatversion": {"2"},

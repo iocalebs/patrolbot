@@ -96,11 +96,11 @@ func promptConfig(ctx context.Context) (config.Config, error) { //nolint:funlen
 			huh.NewInput().
 				Title("Username").
 				Placeholder("WikiUsername@PatrolBot").
-				Value(&wiki.Client.Username),
+				Value(&wiki.Auth.Username),
 
 			huh.NewInput().
 				Title("Password").
-				Value(&wiki.Client.Password),
+				Value(&wiki.Auth.Password),
 		),
 	)
 

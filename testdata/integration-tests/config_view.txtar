@@ -67,20 +67,22 @@ wikis:
       url: https://zeldawiki.wiki
       scriptPath: /w
       articlePath: /wiki
-    client:
-      userAgent: "PatrolBot/1.0 (+https://github.com/iocalebs/patrolbot)"
+    auth:
       username: PhantomCaleb@Patrolbot
       password: ""
+    client:
+      userAgent: "PatrolBot/1.0 (+https://github.com/iocalebs/patrolbot)"
 
   zwfr:
     site:
       url: https://fr.zeldawiki.wiki
       scriptPath: /w
       articlePath: /wiki
-    client:
-      userAgent: "PatrolBot/1.0 (+https://github.com/iocalebs/patrolbot)"
+    auth:
       username: FantômeCaleb@Patrolbot
       password: ""
+    client:
+      userAgent: "PatrolBot/1.0 (+https://github.com/iocalebs/patrolbot)"
 
 -- wikipedia.yaml --
 wiki: wikipedia
@@ -98,9 +100,11 @@ wiki: dunepedia
         "scriptPath": "/w",
         "articlePath": "/wiki"
       },
-      "client": {
+      "auth": {
         "username": "PhantomCaleb@Patrolbot",
-        "password": "",
+        "password": ""
+      },
+      "client": {
         "userAgent": "PatrolBot/1.0 (+https://github.com/iocalebs/patrolbot)"
       }
     },
@@ -110,9 +114,11 @@ wiki: dunepedia
         "scriptPath": "/w",
         "articlePath": "/wiki"
       },
-      "client": {
+      "auth": {
         "username": "FantômeCaleb@Patrolbot",
-        "password": "",
+        "password": ""
+      },
+      "client": {
         "userAgent": "PatrolBot/1.0 (+https://github.com/iocalebs/patrolbot)"
       }
     }
@@ -128,9 +134,11 @@ wiki: dunepedia
         "scriptPath": "/w",
         "articlePath": "/wiki"
       },
-      "client": {
+      "auth": {
         "username": "PhantomCaleb@Patrolbot",
-        "password": "",
+        "password": ""
+      },
+      "client": {
         "userAgent": "PatrolBot/1.0 (+https://github.com/iocalebs/patrolbot)"
       }
     },
@@ -140,9 +148,11 @@ wiki: dunepedia
         "scriptPath": "/w",
         "articlePath": "/wiki"
       },
-      "client": {
+      "auth": {
         "username": "FantômeCaleb@Patrolbot",
-        "password": "",
+        "password": ""
+      },
+      "client": {
         "userAgent": "PatrolBot/1.0 (+https://github.com/iocalebs/patrolbot)"
       }
     }
@@ -158,9 +168,11 @@ wiki: dunepedia
         "scriptPath": "/w",
         "articlePath": "/wiki"
       },
-      "client": {
+      "auth": {
         "username": "PhantomCaleb@Patrolbot",
-        "password": "",
+        "password": ""
+      },
+      "client": {
         "userAgent": "PatrolBot/1.0 (+https://github.com/iocalebs/patrolbot)"
       }
     },
@@ -170,9 +182,11 @@ wiki: dunepedia
         "scriptPath": "/w",
         "articlePath": "/wiki"
       },
-      "client": {
+      "auth": {
         "username": "FantômeCaleb@Patrolbot",
-        "password": "",
+        "password": ""
+      },
+      "client": {
         "userAgent": "PatrolBot/1.0 (+https://github.com/iocalebs/patrolbot)"
       }
     }
@@ -188,9 +202,11 @@ wiki: dunepedia
         "scriptPath": "/w",
         "articlePath": "/wiki"
       },
-      "client": {
+      "auth": {
         "username": "PhantomCaleb@Patrolbot",
-        "password": "password",
+        "password": ""
+      },
+      "client": {
         "userAgent": "PatrolBot/1.0 (+https://github.com/iocalebs/patrolbot)"
       }
     },
@@ -200,9 +216,11 @@ wiki: dunepedia
         "scriptPath": "/w",
         "articlePath": "/wiki"
       },
-      "client": {
+      "auth": {
         "username": "FantômeCaleb@Patrolbot",
-        "password": "",
+        "password": ""
+      },
+      "client": {
         "userAgent": "PatrolBot/1.0 (+https://github.com/iocalebs/patrolbot)"
       }
     }

@@ -14,7 +14,11 @@ type Wiki struct {
 	// MediaWiki site information that PatrolBot needs to be aware of.
 	Site WikiSite `json:"site"`
 
-	// Configuration for PatrolBot's MediaWiki API client
+	// Authentication credentials for the MediaWiki API
+	// See https://www.mediawiki.org/wiki/API:Login
+	Auth WikiAuth `json:"auth"`
+
+	// Configuration for the HTTP client used for MediaWiki API requests.
 	Client WikiClient `json:"client"`
 }
 
@@ -32,14 +36,17 @@ type WikiSite struct {
 	ArticlePath string `json:"articlePath"`
 }
 
-// WikiClient represents configuration for PatrolBot's MediaWiki API client.
-type WikiClient struct {
+// WikiAuth represents configuration for MediaWiki API login credentials.
+type WikiAuth struct {
 	// Special:BotPasswords username (e.g. PhantomCaleb@PatrolBot)
 	Username string `json:"username"`
 
 	// Special:BotPasswords password
 	Password string `json:"password"`
+}
 
+// WikiClient represents configuration for the HTTP client used for MediaWiki API requests.
+type WikiClient struct {
 	// User-Agent header for API requests
 	UserAgent string `json:"userAgent"`
 }
