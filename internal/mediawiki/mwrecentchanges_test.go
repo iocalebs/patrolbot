@@ -110,7 +110,7 @@ func TestRecentChangesPaginator(t *testing.T) {
 			cfg := config.Wiki{}
 			cfg.Site.URL = srv.URL
 
-			mwclient := mediawiki.NewClient(cfg, http.DefaultClient, *slog.Default(), "")
+			mwclient := mediawiki.NewClient(cfg, http.DefaultClient, slog.Default(), "")
 			paginator := mediawiki.NewRecentChangesPaginator(mwclient, mediawiki.RecentChangesQueryParams{})
 
 			expectedPageCount := len(test.pages)
@@ -153,7 +153,7 @@ func TestRecentChangesQueryParametersAll(t *testing.T) {
 	cfg := config.Wiki{}
 	cfg.Site.URL = srv.URL
 
-	mwclient := mediawiki.NewClient(cfg, http.DefaultClient, *slog.Default(), "")
+	mwclient := mediawiki.NewClient(cfg, http.DefaultClient, slog.Default(), "")
 	paginator := mediawiki.NewRecentChangesPaginator(mwclient, mediawiki.RecentChangesQueryParams{
 		RCStart: time.Now(),
 		RCEnd:   time.Now(),
@@ -191,7 +191,7 @@ func TestRecentChangesQueryParametersNone(t *testing.T) {
 	cfg := config.Wiki{}
 	cfg.Site.URL = srv.URL
 
-	mwclient := mediawiki.NewClient(cfg, http.DefaultClient, *slog.Default(), "")
+	mwclient := mediawiki.NewClient(cfg, http.DefaultClient, slog.Default(), "")
 	paginator := mediawiki.NewRecentChangesPaginator(mwclient, mediawiki.RecentChangesQueryParams{})
 
 	_, err := paginator.NextPage(t.Context())
@@ -221,7 +221,7 @@ func TestRecentChangesRequestHeaders(t *testing.T) {
 	cfg.Client.From = from
 
 	httpClient, transport := newHTTPClient()
-	mwclient := mediawiki.NewClient(cfg, httpClient, *slog.Default(), userAgent)
+	mwclient := mediawiki.NewClient(cfg, httpClient, slog.Default(), userAgent)
 	paginator := mediawiki.NewRecentChangesPaginator(mwclient, mediawiki.RecentChangesQueryParams{})
 
 	paginator.NextPage(t.Context()) //nolint:errcheck,gosec

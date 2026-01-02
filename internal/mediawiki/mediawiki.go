@@ -14,12 +14,12 @@ import (
 type Client struct {
 	config     config.Wiki
 	httpClient *http.Client
-	logger     slog.Logger
+	logger     *slog.Logger
 	userAgent  string
 }
 
 // NewClient creates a new MediaWiki API client.
-func NewClient(config config.Wiki, httpClient *http.Client, logger slog.Logger, userAgent string) *Client {
+func NewClient(config config.Wiki, httpClient *http.Client, logger *slog.Logger, userAgent string) *Client {
 	client := &Client{
 		config:     config,
 		httpClient: httpClient,

@@ -65,7 +65,7 @@ func setup(cfg config.Wiki, overwrite bool) (*mediawiki.Client, *capturingTransp
 		Jar:       jar,
 		Transport: transport,
 	}
-	mwclient := mediawiki.NewClient(cfg, client, *slog.Default(), "")
+	mwclient := mediawiki.NewClient(cfg, client, slog.Default(), "")
 
 	return mwclient, transport, nil
 }
