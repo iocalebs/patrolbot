@@ -2,18 +2,22 @@ package init
 
 import (
 	"context"
+	"errors"
 	"fmt"
-	"path"
+	"net/url"
 
 	"github.com/charmbracelet/huh"
 	"github.com/charmbracelet/lipgloss"
 	"github.com/iocalebs/patrolbot/internal/config"
 )
 
+// Capitalized user-facing error message.
+var errInvalidInput = errors.New("Invalid input") //nolint:staticcheck
+
 func notEmpty(fieldName string) func(string) error {
 	return func(fieldValue string) error {
 		if fieldValue == "" {
-			return fmt.Errorf("%s cannot be empty", fieldName) //nolint:err113
+			return fmt.Errorf("%w: %s cannot be empty", errInvalidInput, fieldName)
 		}
 
 		return nil
@@ -48,6 +52,7 @@ func promptConfig(ctx context.Context) (config.Config, error) { //nolint:funlen
 	var (
 		wiki config.Wiki
 		name string
+		url  url.URL
 	)
 
 	wiki.Site.ScriptPath = "/w"
@@ -59,7 +64,21 @@ func promptConfig(ctx context.Context) (config.Config, error) { //nolint:funlen
 				Title("Wiki URL").
 				Placeholder("https://en.wikipedia.org").
 				Value(&wiki.Site.URL).
-				Validate(notEmpty("URL")),
+				Validate(func(input string) error {
+					if input == "" {
+						return fmt.Errorf("%w: URL cannot be empty", errInvalidInput)
+					}
+
+					u, err := url.Parse(input)
+					if err != nil {
+						// Capitalized user-facing error message.
+						return fmt.Errorf("Invalid URL: %w", err) //nolint:staticcheck
+					}
+
+					url = *u
+
+					return nil
+				}),
 
 			huh.NewInput().
 				Title("Wiki name").
@@ -85,9 +104,9 @@ func promptConfig(ctx context.Context) (config.Config, error) { //nolint:funlen
 			huh.NewNote().
 				Title("Create a bot password for PatrolBot").
 				DescriptionFunc(func() string {
-					url := wiki.Site.URL + path.Join(wiki.Site.ArticlePath, "Special:BotPasswords")
+					botPasswordsURL := url.JoinPath(wiki.Site.ArticlePath, "Special:BotPasswords")
 
-					return `  1. Go to ` + url + `
+					return `  1. Go to ` + botPasswordsURL.String() + `
   2. Create a new bot password with bot name "PatrolBot"
   3. Grant "Patrol changes to pages", then click "Create"
   4. Enter bot username and password below.`

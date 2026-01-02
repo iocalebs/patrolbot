@@ -159,7 +159,7 @@ enter next
   You can confirm the wiki's article path by adding {{ARTICLEPATH}} to a sandbox page. Omit the /$1 at the end.
   > /wiki
 
- * URL cannot be empty
+ * Invalid input: URL cannot be empty
 
 
 
@@ -229,7 +229,7 @@ shift+tab back • enter next
   You can confirm the wiki's article path by adding {{ARTICLEPATH}} to a sandbox page. Omit the /$1 at the end.
   > /wiki
 
- * Wiki name cannot be empty
+ * Invalid input: Wiki name cannot be empty
 
 
 
