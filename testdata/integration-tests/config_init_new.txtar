@@ -1,58 +1,41 @@
 [short] skip
-# Scenario: Home config already exists, user confirms overwrite
+# Scenario: No existing home config
+# User inputs empty values for scriptPath and articlePath, which would be the case for wikis that configure everything
+# To be under the root path
 env HOME=$WORK/home
 mkdir -p $HOME/.patrolbot
-cp config.yaml $HOME/.patrolbot/config.yaml
 exec vhs cassette.tape
 scrub output.ascii
 cmp $HOME/.patrolbot/config.yaml new-config.golden.yaml
 cmp output.ascii output.golden
-
--- config.yaml --
-wiki: zwen
 
 -- cassette.tape --
 Output output.ascii
 Set Width 3000 # prevents text wrapping, which prevents the scrub command from doing its text replacements
 Set Height 1000 # prevents navigation text and error messages from being truncated
 
-# Run command, accept overwrite with "y" shortcut
+# Run command
 Hide
 Type "patrolbot config init"
 Enter
 Sleep 100ms
 Show
-Hide
-Type "y"
-Show
-Hide
 
-# Attempt to submit empty URL, then fill out properly
-Enter
-Show
-Hide
+# Input URL and wiki name
 Type "https://zeldawiki.wiki"
 Enter
-Show
-Hide
-
-# Attempt to submit empty wiki name, then fill out properly
-Enter
-Show
-Hide
 Type "zw"
 Enter
-Show
 
-# Use default script path and article path
+# Erase default script path and article path, submit as empty
+Backspace 2 # /w
 Enter
+Backspace 5 # /wiki
 Enter
 
 # Bot username and password
-Hide
 Type "PhantomCaleb@Patrolbot"
 Enter
-Show
 Type "password"
 Enter
 
@@ -63,8 +46,8 @@ wikis:
   zw:
     site:
       url: "https://zeldawiki.wiki"
-      scriptPath: "/w"
-      articlePath: "/wiki"
+      scriptPath: ""
+      articlePath: ""
     auth:
       username: "PhantomCaleb@Patrolbot"
       password: "password"
@@ -73,41 +56,6 @@ wikis:
 
 -- output.golden --
 
-> patrolbot config init
-┃ Configuration file already exists: $WORK/home/.patrolbot/config.yaml
-┃
-┃ Overwrite existing config?
-┃
-┃   Yes     No
-
-←/→ toggle • enter submit • y Yes • n No
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-────────────────────────────────────────────────────────────────────────────────
 > patrolbot config init
 ┃ Wiki URL
 ┃ > https://en.wikipedia.org
@@ -145,7 +93,7 @@ enter next
 ────────────────────────────────────────────────────────────────────────────────
 > patrolbot config init
 ┃ Wiki URL
-┃ > https://en.wikipedia.org
+┃ > https://zeldawiki.wiki
 
   Wiki name
   A short, one-word ID for use in commands.
@@ -159,7 +107,7 @@ enter next
   You can confirm the wiki's article path by adding {{ARTICLEPATH}} to a sandbox page. Omit the /$1 at the end.
   > /wiki
 
- * URL cannot be empty
+enter next
 
 
 
@@ -219,7 +167,7 @@ shift+tab back • enter next
 
 ┃ Wiki name
 ┃ A short, one-word ID for use in commands.
-┃ >
+┃ > zw
 
   Script path
   You can confirm the wiki's script path by adding {{SCRIPTPATH}} to a sandbox page.
@@ -229,7 +177,7 @@ shift+tab back • enter next
   You can confirm the wiki's article path by adding {{ARTICLEPATH}} to a sandbox page. Omit the /$1 at the end.
   > /wiki
 
- * Wiki name cannot be empty
+shift+tab back • enter next
 
 
 
@@ -291,9 +239,44 @@ shift+tab back • enter next
   A short, one-word ID for use in commands.
   > zw
 
+┃ Script path
+┃ You can confirm the wiki's script path by adding {{SCRIPTPATH}} to a sandbox page.
+┃ >
+
+  Article path
+  You can confirm the wiki's article path by adding {{ARTICLEPATH}} to a sandbox page. Omit the /$1 at the end.
+  > /wiki
+
+shift+tab back • enter next
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> patrolbot config init
+  Wiki URL
+  > https://zeldawiki.wiki
+
+  Wiki name
+  A short, one-word ID for use in commands.
+  > zw
+
   Script path
   You can confirm the wiki's script path by adding {{SCRIPTPATH}} to a sandbox page.
-  > /w
+  >
 
 ┃ Article path
 ┃ You can confirm the wiki's article path by adding {{ARTICLEPATH}} to a sandbox page. Omit the /$1 at the end.
@@ -319,9 +302,44 @@ shift+tab back • enter next
 
 ────────────────────────────────────────────────────────────────────────────────
 > patrolbot config init
+  Wiki URL
+  > https://zeldawiki.wiki
+
+  Wiki name
+  A short, one-word ID for use in commands.
+  > zw
+
+  Script path
+  You can confirm the wiki's script path by adding {{SCRIPTPATH}} to a sandbox page.
+  >
+
+┃ Article path
+┃ You can confirm the wiki's article path by adding {{ARTICLEPATH}} to a sandbox page. Omit the /$1 at the end.
+┃ >
+
+shift+tab back • enter next
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> patrolbot config init
   Create a bot password for PatrolBot
 
-    1. Go to https://zeldawiki.wiki/wiki/Special:BotPasswords
+    1. Go to https://zeldawiki.wikiSpecial:BotPasswords
     2. Create a new bot password with bot name "PatrolBot"
     3. Grant "Patrol changes to pages", then click "Create"
     4. Enter bot username and password below.
@@ -356,7 +374,42 @@ shift+tab back • enter next
 > patrolbot config init
   Create a bot password for PatrolBot
 
-    1. Go to https://zeldawiki.wiki/wiki/Special:BotPasswords
+    1. Go to https://zeldawiki.wikiSpecial:BotPasswords
+    2. Create a new bot password with bot name "PatrolBot"
+    3. Grant "Patrol changes to pages", then click "Create"
+    4. Enter bot username and password below.
+
+
+┃ Username
+┃ > PhantomCaleb@Patrolbot
+
+  Password
+  >
+
+
+shift+tab back • enter next
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> patrolbot config init
+  Create a bot password for PatrolBot
+
+    1. Go to https://zeldawiki.wikiSpecial:BotPasswords
     2. Create a new bot password with bot name "PatrolBot"
     3. Grant "Patrol changes to pages", then click "Create"
     4. Enter bot username and password below.
@@ -391,7 +444,7 @@ shift+tab back • enter submit
 > patrolbot config init
   Create a bot password for PatrolBot
 
-    1. Go to https://zeldawiki.wiki/wiki/Special:BotPasswords
+    1. Go to https://zeldawiki.wikiSpecial:BotPasswords
     2. Create a new bot password with bot name "PatrolBot"
     3. Grant "Patrol changes to pages", then click "Create"
     4. Enter bot username and password below.
