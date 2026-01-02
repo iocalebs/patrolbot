@@ -184,7 +184,6 @@ func TestRecentChangesQueryParametersNone(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		url = r.URL
 
-		w.WriteHeader(http.StatusOK)
 		w.Write([]byte("{}")) //nolint:errcheck,gosec
 	}))
 	defer srv.Close()
@@ -203,5 +202,30 @@ func TestRecentChangesQueryParametersNone(t *testing.T) {
 	expectedQuery := "action=query&format=json&formatversion=2&list=recentchanges"
 	if url.RawQuery != expectedQuery {
 		t.Errorf("Expected URL query %q, got %q", expectedQuery, url.RawQuery)
+	}
+}
+
+func TestRecentChangesRequestHeaders(t *testing.T) {
+	t.Parallel()
+
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+		w.Write([]byte("{}")) //nolint:errcheck,gosec
+	}))
+	defer srv.Close()
+
+	userAgent := "myAgent"
+	cfg := config.Wiki{}
+	cfg.Site.URL = srv.URL
+	cfg.Client.UserAgent = userAgent
+
+	httpClient, transport := newHTTPClient()
+	mwclient := mediawiki.NewClient(cfg, httpClient, *slog.Default())
+	paginator := mediawiki.NewRecentChangesPaginator(mwclient, mediawiki.RecentChangesQueryParams{})
+
+	paginator.NextPage(t.Context()) //nolint:errcheck,gosec
+
+	got := transport.lastRequest.Header.Get("User-Agent")
+	if got != userAgent {
+		t.Errorf("Expected user agent %q, got %q", userAgent, got)
 	}
 }

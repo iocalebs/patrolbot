@@ -183,3 +183,28 @@ func TestLogEventsQueryParametersNone(t *testing.T) {
 		t.Errorf("Expected URL query %q, got %q", expectedQuery, url.RawQuery)
 	}
 }
+
+func TestLogEventsRequestHeaders(t *testing.T) {
+	t.Parallel()
+
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+		w.Write([]byte("{}")) //nolint:errcheck,gosec
+	}))
+	defer srv.Close()
+
+	userAgent := "myAgent"
+	cfg := config.Wiki{}
+	cfg.Site.URL = srv.URL
+	cfg.Client.UserAgent = userAgent
+
+	httpClient, transport := newHTTPClient()
+	mwclient := mediawiki.NewClient(cfg, httpClient, *slog.Default())
+	paginator := mediawiki.NewLogEventsPaginator(mwclient, mediawiki.LogEventsQueryParams{})
+
+	paginator.NextPage(t.Context()) //nolint:errcheck,gosec
+
+	got := transport.lastRequest.Header.Get("User-Agent")
+	if got != userAgent {
+		t.Errorf("Expected user agent %q, got %q", userAgent, got)
+	}
+}
