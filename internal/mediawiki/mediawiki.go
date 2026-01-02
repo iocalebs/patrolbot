@@ -1,6 +1,8 @@
 // Package mediawiki provides a client for interacting with the MediaWiki Action API.
 package mediawiki
 
+//go:generate go run ../tools/gentestdata --config ../../config.yaml
+
 import (
 	"log/slog"
 	"net/http"

@@ -39,4 +39,7 @@ type WikiClient struct {
 
 	// Special:BotPasswords password
 	Password string `json:"password"`
+
+	// User-Agent header for API requests
+	UserAgent string `json:"userAgent"`
 }

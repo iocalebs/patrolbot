@@ -6,8 +6,6 @@ import (
 	"testing"
 )
 
-//go:generate go run ../tools/gentestdata --config ../../config.yaml
-
 func readFile(t *testing.T, filename string) []byte {
 	t.Helper()
 

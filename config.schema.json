@@ -53,13 +53,18 @@
         "password": {
           "type": "string",
           "description": "Special:BotPasswords password"
+        },
+        "userAgent": {
+          "type": "string",
+          "description": "User-Agent header for API requests"
         }
       },
       "additionalProperties": false,
       "type": "object",
       "required": [
         "username",
-        "password"
+        "password",
+        "userAgent"
       ],
       "description": "WikiClient represents configuration for PatrolBot's MediaWiki API client."
     },

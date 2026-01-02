@@ -68,6 +68,7 @@ wikis:
       scriptPath: /w
       articlePath: /wiki
     client:
+      userAgent: "PatrolBot/1.0 (+https://github.com/iocalebs/patrolbot)"
       username: PhantomCaleb@Patrolbot
       password: ""
 
@@ -77,6 +78,7 @@ wikis:
       scriptPath: /w
       articlePath: /wiki
     client:
+      userAgent: "PatrolBot/1.0 (+https://github.com/iocalebs/patrolbot)"
       username: FantômeCaleb@Patrolbot
       password: ""
 
@@ -98,7 +100,8 @@ wiki: dunepedia
       },
       "client": {
         "username": "PhantomCaleb@Patrolbot",
-        "password": ""
+        "password": "",
+        "userAgent": "PatrolBot/1.0 (+https://github.com/iocalebs/patrolbot)"
       }
     },
     "zwfr": {
@@ -109,7 +112,8 @@ wiki: dunepedia
       },
       "client": {
         "username": "FantômeCaleb@Patrolbot",
-        "password": ""
+        "password": "",
+        "userAgent": "PatrolBot/1.0 (+https://github.com/iocalebs/patrolbot)"
       }
     }
   }
@@ -126,7 +130,8 @@ wiki: dunepedia
       },
       "client": {
         "username": "PhantomCaleb@Patrolbot",
-        "password": ""
+        "password": "",
+        "userAgent": "PatrolBot/1.0 (+https://github.com/iocalebs/patrolbot)"
       }
     },
     "zwfr": {
@@ -137,7 +142,8 @@ wiki: dunepedia
       },
       "client": {
         "username": "FantômeCaleb@Patrolbot",
-        "password": ""
+        "password": "",
+        "userAgent": "PatrolBot/1.0 (+https://github.com/iocalebs/patrolbot)"
       }
     }
   }
@@ -154,7 +160,8 @@ wiki: dunepedia
       },
       "client": {
         "username": "PhantomCaleb@Patrolbot",
-        "password": ""
+        "password": "",
+        "userAgent": "PatrolBot/1.0 (+https://github.com/iocalebs/patrolbot)"
       }
     },
     "zwfr": {
@@ -165,7 +172,8 @@ wiki: dunepedia
       },
       "client": {
         "username": "FantômeCaleb@Patrolbot",
-        "password": ""
+        "password": "",
+        "userAgent": "PatrolBot/1.0 (+https://github.com/iocalebs/patrolbot)"
       }
     }
   }
@@ -182,7 +190,8 @@ wiki: dunepedia
       },
       "client": {
         "username": "PhantomCaleb@Patrolbot",
-        "password": "password"
+        "password": "password",
+        "userAgent": "PatrolBot/1.0 (+https://github.com/iocalebs/patrolbot)"
       }
     },
     "zwfr": {
@@ -193,7 +202,8 @@ wiki: dunepedia
       },
       "client": {
         "username": "FantômeCaleb@Patrolbot",
-        "password": ""
+        "password": "",
+        "userAgent": "PatrolBot/1.0 (+https://github.com/iocalebs/patrolbot)"
       }
     }
   }

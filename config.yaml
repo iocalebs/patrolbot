@@ -9,3 +9,4 @@ wikis:
     client:
       username: PhantomCaleb@PatrolBot
       password: "" # Env variable PATROLBOT_WIKIS_ZWEN_PASSWORD
+      userAgent: "PatrolBot/1.0 (+https://github.com/iocalebs/patrolbot)"

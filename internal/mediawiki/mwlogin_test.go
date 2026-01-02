@@ -13,7 +13,7 @@ import (
 	"github.com/iocalebs/patrolbot/internal/mediawiki"
 )
 
-func TestLogIn(t *testing.T) {
+func TestLogin(t *testing.T) {
 	t.Parallel()
 
 	tests := []struct {
@@ -102,5 +102,32 @@ func TestLogIn(t *testing.T) {
 				}
 			}
 		})
+	}
+}
+
+func TestLoginUserAgent(t *testing.T) {
+	t.Parallel()
+
+	userAgent := "myUserAgent"
+
+	var got string
+
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		got = r.Header.Get("User-Agent")
+
+		w.Write([]byte("{}")) //nolint:errcheck,gosec
+	}))
+	defer srv.Close()
+
+	cfg := config.Wiki{}
+	cfg.Site.URL = srv.URL
+	cfg.Client.UserAgent = userAgent
+
+	mwclient := mediawiki.NewClient(cfg, http.DefaultClient, *slog.Default())
+
+	mwclient.Login(context.Background(), "token") //nolint:errcheck,gosec
+
+	if userAgent != got {
+		t.Fatalf("Expected User-Agent header %q, got %q", userAgent, got)
 	}
 }

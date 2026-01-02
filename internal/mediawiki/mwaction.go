@@ -50,7 +50,7 @@ func (c *Client) newRequest(ctx context.Context, method string, body io.Reader) 
 		return nil, fmt.Errorf("failed to create MediaWiki request: %w", err)
 	}
 
-	req.Header.Set("User-Agent", "PatrolBot/1.0 (+https://github.com/iocalebs/patrolbot; phantomcalebs@gmail.com)")
+	req.Header.Set("User-Agent", c.config.Client.UserAgent)
 
 	return req, nil
 }
