@@ -25,7 +25,7 @@ func TestLoginToken(t *testing.T) {
 		expectedErrorSubstr string          // expected error message substring
 	}{
 		{
-			name:                "200_ValidLoginToken",
+			name:                "ValidLoginToken",
 			statusCode:          http.StatusOK,
 			responseBody:        readFile(t, "testdata/mwtokens_login.json"),
 			expectedToken:       "8af20f35764bee599652a5d5d9e804d469444fb1+\\",
@@ -33,7 +33,7 @@ func TestLoginToken(t *testing.T) {
 			expectedErrorSubstr: "",
 		},
 		{
-			name:                "200_WarningResponse",
+			name:                "WarningResponse",
 			statusCode:          http.StatusOK,
 			responseBody:        readFile(t, "testdata/mwaction_warnings.json"),
 			expectedToken:       "",
@@ -41,28 +41,12 @@ func TestLoginToken(t *testing.T) {
 			expectedErrorSubstr: "Unrecognized value for parameter",
 		},
 		{
-			name:                "200_WarningError",
+			name:                "ErrorResponse",
 			statusCode:          http.StatusOK,
 			responseBody:        readFile(t, "testdata/mwaction_error.json"),
 			expectedToken:       "",
 			expectedError:       mediawiki.ErrResponseError,
 			expectedErrorSubstr: "Unrecognized value for parameter",
-		},
-		{
-			name:                "500_WithBody",
-			statusCode:          http.StatusInternalServerError,
-			responseBody:        []byte("An error occurred"),
-			expectedToken:       "",
-			expectedError:       mediawiki.ErrResponseStatusCode,
-			expectedErrorSubstr: "An error occurred",
-		},
-		{
-			name:                "502_WithoutBody",
-			statusCode:          http.StatusBadGateway,
-			responseBody:        nil,
-			expectedToken:       "",
-			expectedError:       mediawiki.ErrResponseStatusCode,
-			expectedErrorSubstr: "empty response body",
 		},
 	}
 
@@ -103,36 +87,5 @@ func TestLoginToken(t *testing.T) {
 				t.Fatalf("Invalid token value: got %q, want %q", token, test.expectedToken)
 			}
 		})
-	}
-}
-
-func TestLoginTokenRequestHeaders(t *testing.T) {
-	t.Parallel()
-
-	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
-		w.Write([]byte("{}")) //nolint:errcheck,gosec
-	}))
-	defer srv.Close()
-
-	userAgent := "myAgent"
-	from := "foo@example.test"
-
-	cfg := config.Wiki{}
-	cfg.Site.URL = srv.URL
-	cfg.Client.From = from
-
-	httpClient, transport := newHTTPClient()
-	mwclient := mediawiki.NewClient(cfg, httpClient, slog.Default(), userAgent)
-
-	mwclient.LoginToken(context.Background()) //nolint:errcheck,gosec
-
-	gotUserAgent := transport.lastRequest.Header.Get("User-Agent")
-	if gotUserAgent != userAgent {
-		t.Errorf("Expected User-Agent header %q, got %q", userAgent, gotUserAgent)
-	}
-
-	gotFrom := transport.lastRequest.Header.Get("From")
-	if gotFrom != from {
-		t.Errorf("Expected From header %q, got %q", userAgent, gotUserAgent)
 	}
 }

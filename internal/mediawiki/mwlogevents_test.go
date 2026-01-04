@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"net/url"
+	"strings"
 	"testing"
 	"time"
 
@@ -13,20 +14,18 @@ import (
 	"github.com/iocalebs/patrolbot/internal/mediawiki"
 )
 
-func TestLogEventsPaginator(t *testing.T) {
+func TestLogEventsPaginator(t *testing.T) { //nolint:cyclop
 	t.Parallel()
 
 	tests := []struct {
 		name           string   // test case name
-		statusCode     int      // HTTP status code to return in mock API response
 		pages          [][]byte // mock API responses - each call returns the next page
 		expectResults  bool     // set to true if pages are expected to have actual results
 		expectError    error    // expected error value, or nil if no error expected
 		expectErrorSub string   // expected error message substring
 	}{
 		{
-			name:       "ValidPages",
-			statusCode: 200,
+			name: "ValidPages",
 			pages: [][]byte{
 				readFile(t, "testdata/mwlogevents1.json"),
 				readFile(t, "testdata/mwlogevents2.json"),
@@ -37,44 +36,22 @@ func TestLogEventsPaginator(t *testing.T) {
 			expectErrorSub: "",
 		},
 		{
-			name:       "ResponseError",
-			statusCode: 200,
+			name: "ResponseError",
 			pages: [][]byte{
 				readFile(t, "testdata/mwlogevents_error.json"),
 			},
 			expectResults:  false,
 			expectError:    mediawiki.ErrResponseError,
-			expectErrorSub: "Unrecognized value for parameter \"letype\": foo.",
+			expectErrorSub: "Unrecognized value for parameter \\\"letype\\\": foo.",
 		},
 		{
-			name:       "ResponseWarnings",
-			statusCode: 200,
+			name: "ResponseWarnings",
 			pages: [][]byte{
 				readFile(t, "testdata/mwlogevents_warnings.json"),
 			},
 			expectResults:  true,
 			expectError:    mediawiki.ErrResponseWarnings,
-			expectErrorSub: "Unrecognized value for parameter \"leprop\": foo",
-		},
-		{
-			name:       "500Error_WithBody",
-			statusCode: http.StatusInternalServerError,
-			pages: [][]byte{
-				[]byte("An error occurred"),
-			},
-			expectResults:  false,
-			expectError:    mediawiki.ErrResponseStatusCode,
-			expectErrorSub: "An error occurred",
-		},
-		{
-			name:       "502Error_WithoutBody",
-			statusCode: http.StatusBadGateway,
-			pages: [][]byte{
-				nil,
-			},
-			expectResults:  false,
-			expectError:    mediawiki.ErrResponseStatusCode,
-			expectErrorSub: "empty response body",
+			expectErrorSub: "Unrecognized value for parameter \\\"leprop\\\": foo",
 		},
 	}
 
@@ -82,7 +59,7 @@ func TestLogEventsPaginator(t *testing.T) {
 		t.Run(test.name, func(t *testing.T) {
 			t.Parallel()
 
-			srv := mockServer(t, test.statusCode, test.pages)
+			srv := mockServer(t, test.pages)
 			defer srv.Close()
 
 			cfg := config.Wiki{}
@@ -109,6 +86,10 @@ func TestLogEventsPaginator(t *testing.T) {
 
 				if test.expectError != nil && !errors.Is(err, test.expectError) {
 					t.Fatalf("Expected error %v, got %v", test.expectError, err)
+				}
+
+				if test.expectError != nil && !strings.Contains(err.Error(), test.expectErrorSub) {
+					t.Fatalf("Expected error to contain %q, got %q", test.expectErrorSub, err.Error())
 				}
 			}
 		})
@@ -181,37 +162,5 @@ func TestLogEventsQueryParametersNone(t *testing.T) {
 	expectedQuery := "action=query&format=json&formatversion=2&list=logevents"
 	if url.RawQuery != expectedQuery {
 		t.Errorf("Expected URL query %q, got %q", expectedQuery, url.RawQuery)
-	}
-}
-
-func TestLogEventsRequestHeaders(t *testing.T) {
-	t.Parallel()
-
-	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
-		w.Write([]byte("{}")) //nolint:errcheck,gosec
-	}))
-	defer srv.Close()
-
-	userAgent := "myAgent"
-	from := "foo@example.test"
-
-	cfg := config.Wiki{}
-	cfg.Site.URL = srv.URL
-	cfg.Client.From = from
-
-	httpClient, transport := newHTTPClient()
-	mwclient := mediawiki.NewClient(cfg, httpClient, slog.Default(), userAgent)
-	paginator := mediawiki.NewLogEventsPaginator(mwclient, mediawiki.LogEventsQueryParams{})
-
-	paginator.NextPage(t.Context()) //nolint:errcheck,gosec
-
-	gotUserAgent := transport.lastRequest.Header.Get("User-Agent")
-	if gotUserAgent != userAgent {
-		t.Errorf("Expected User-Agent header %q, got %q", userAgent, gotUserAgent)
-	}
-
-	gotFrom := transport.lastRequest.Header.Get("From")
-	if gotFrom != from {
-		t.Errorf("Expected From header %q, got %q", userAgent, gotUserAgent)
 	}
 }

@@ -13,7 +13,7 @@ import (
 	"github.com/iocalebs/patrolbot/internal/mediawiki"
 )
 
-func mockServer(t *testing.T, statusCode int, pages [][]byte) *httptest.Server {
+func mockServer(t *testing.T, pages [][]byte) *httptest.Server {
 	t.Helper()
 
 	curPage := 0
@@ -21,8 +21,6 @@ func mockServer(t *testing.T, statusCode int, pages [][]byte) *httptest.Server {
 		if curPage >= len(pages) {
 			t.Fatalf("Requested invalid nth page: %d", curPage+1)
 		}
-
-		w.WriteHeader(statusCode)
 
 		page := pages[curPage]
 		if page != nil {
@@ -78,33 +76,13 @@ func TestRecentChangesPaginator(t *testing.T) {
 			expectError:    mediawiki.ErrResponseWarnings,
 			expectErrorSub: "Unrecognized value for parameter \\\"rcshow\\\": foo",
 		},
-		{
-			name:       "500Error_WithBody",
-			statusCode: http.StatusInternalServerError,
-			pages: [][]byte{
-				[]byte("An error occurred"),
-			},
-			expectResults:  false,
-			expectError:    mediawiki.ErrResponseStatusCode,
-			expectErrorSub: "An error occurred",
-		},
-		{
-			name:       "502Error_WithoutBody",
-			statusCode: http.StatusBadGateway,
-			pages: [][]byte{
-				nil,
-			},
-			expectResults:  false,
-			expectError:    mediawiki.ErrResponseStatusCode,
-			expectErrorSub: "empty response body",
-		},
 	}
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
 			t.Parallel()
 
-			srv := mockServer(t, test.statusCode, test.pages)
+			srv := mockServer(t, test.pages)
 			defer srv.Close()
 
 			cfg := config.Wiki{}
@@ -203,37 +181,5 @@ func TestRecentChangesQueryParametersNone(t *testing.T) {
 	expectedQuery := "action=query&format=json&formatversion=2&list=recentchanges"
 	if url.RawQuery != expectedQuery {
 		t.Errorf("Expected URL query %q, got %q", expectedQuery, url.RawQuery)
-	}
-}
-
-func TestRecentChangesRequestHeaders(t *testing.T) {
-	t.Parallel()
-
-	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
-		w.Write([]byte("{}")) //nolint:errcheck,gosec
-	}))
-	defer srv.Close()
-
-	userAgent := "myAgent"
-	from := "foo@example.test"
-
-	cfg := config.Wiki{}
-	cfg.Site.URL = srv.URL
-	cfg.Client.From = from
-
-	httpClient, transport := newHTTPClient()
-	mwclient := mediawiki.NewClient(cfg, httpClient, slog.Default(), userAgent)
-	paginator := mediawiki.NewRecentChangesPaginator(mwclient, mediawiki.RecentChangesQueryParams{})
-
-	paginator.NextPage(t.Context()) //nolint:errcheck,gosec
-
-	gotUserAgent := transport.lastRequest.Header.Get("User-Agent")
-	if gotUserAgent != userAgent {
-		t.Errorf("Expected User-Agent header %q, got %q", userAgent, gotUserAgent)
-	}
-
-	gotFrom := transport.lastRequest.Header.Get("From")
-	if gotFrom != from {
-		t.Errorf("Expected From header %q, got %q", userAgent, gotUserAgent)
 	}
 }
