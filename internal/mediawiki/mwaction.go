@@ -12,14 +12,21 @@ import (
 
 var (
 	// ErrResponseWarnings indicates that the MediaWiki API response body contained warnings.
-	ErrResponseWarnings = errors.New("MediaWiki response body contains warnings")
+	ErrResponseWarnings = errors.New("MediaWiki API response body contains warnings")
 
 	// ErrResponseError indicates that the MediaWiki API response body contained errors.
-	ErrResponseError = errors.New("MediaWiki response body contains errors")
-
-	// ErrResponseStatusCode indicates that the MediaWiki API returned a 400+ status code.
-	ErrResponseStatusCode = errors.New("MediaWiki API returned error status code")
+	ErrResponseError = errors.New("MediaWiki API response body contains errors")
 )
+
+// HTTPStatusError represents a non-2xx HTTP response from the MediaWiki API.
+type HTTPStatusError struct {
+	StatusCode int    // HTTP status code
+	Body       []byte // Response body, if any
+}
+
+func (e HTTPStatusError) Error() string {
+	return fmt.Sprintf("MediaWiki API error response: %d %s", e.StatusCode, http.StatusText(e.StatusCode))
+}
 
 type baseResponse struct {
 	Warnings json.RawMessage `json:"warnings"`
@@ -84,19 +91,21 @@ func (c *Client) do(ctx context.Context, req *http.Request, res response) error 
 		}
 	}()
 
-	if resp.StatusCode >= http.StatusBadRequest {
-		bodyBytes, err := io.ReadAll(resp.Body)
+	if resp.StatusCode >= 300 { //nolint:mnd
+		body, err := io.ReadAll(resp.Body)
 		if err != nil {
 			c.logger.WarnContext(ctx, "Failed to read response body", "error", err)
 
-			return fmt.Errorf("%w: %d", ErrResponseStatusCode, resp.StatusCode)
+			return HTTPStatusError{
+				StatusCode: resp.StatusCode,
+				Body:       []byte(""),
+			}
 		}
 
-		if len(bodyBytes) == 0 {
-			return fmt.Errorf("%w: %d with empty response body", ErrResponseStatusCode, resp.StatusCode)
+		return HTTPStatusError{
+			StatusCode: resp.StatusCode,
+			Body:       body,
 		}
-
-		return fmt.Errorf("%w: %d, response body: %s", ErrResponseStatusCode, resp.StatusCode, string(bodyBytes))
 	}
 
 	err = json.NewDecoder(resp.Body).Decode(&res)

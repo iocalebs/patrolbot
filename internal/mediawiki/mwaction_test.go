@@ -2,6 +2,7 @@ package mediawiki_test
 
 import (
 	"context"
+	"errors"
 	"log/slog"
 	"net/http"
 	"net/http/httptest"
@@ -107,14 +108,31 @@ func TestErrorStatusCodesNoBody(t *testing.T) {
 			mwclient := mediawiki.NewClient(cfg, http.DefaultClient, slog.Default(), "")
 
 			err := test.requestFunc(t.Context(), mwclient)
-			want := "MediaWiki API returned error status code: 502 with empty response body"
 
-			if err == nil {
-				t.Fatalf("Expected error %q but got nil", want)
+			var httpStatusCodeErr mediawiki.HTTPStatusError
+			if !errors.As(err, &httpStatusCodeErr) {
+				t.Fatalf("Expected HTTPStatusError, got: %v", err)
 			}
 
-			if err.Error() != want {
-				t.Fatalf("Expected error %q but got %q", want, err.Error())
+			wantMsg := "MediaWiki API error response: 502 Bad Gateway"
+			if httpStatusCodeErr.Error() != wantMsg {
+				t.Errorf("Unexpected error message, got: %q, want %q", httpStatusCodeErr.Error(), wantMsg)
+			}
+
+			if httpStatusCodeErr.StatusCode != http.StatusBadGateway {
+				t.Errorf(
+					"Unexpected HTTPStatusError.StatusCode, got: %d, want %d",
+					httpStatusCodeErr.StatusCode,
+					http.StatusBadGateway,
+				)
+			}
+
+			if httpStatusCodeErr.Body == nil {
+				t.Fatal("Expected empty HTTPStatusError.Body, got nil")
+			}
+
+			if len(httpStatusCodeErr.Body) != 0 {
+				t.Fatalf("Expected empty HTTPStatusError.Body, got %q", string(httpStatusCodeErr.Body))
 			}
 		})
 	}
@@ -138,14 +156,28 @@ func TestErrorStatusCodesWithBody(t *testing.T) {
 			mwclient := mediawiki.NewClient(cfg, http.DefaultClient, slog.Default(), "")
 
 			err := test.requestFunc(t.Context(), mwclient)
-			want := "MediaWiki API returned error status code: 500, response body: an error occurred"
 
-			if err == nil {
-				t.Fatalf("Expected error %q but got nil", want)
+			var httpStatusCodeErr mediawiki.HTTPStatusError
+			if !errors.As(err, &httpStatusCodeErr) {
+				t.Fatalf("Expected HTTPStatusError, got: %v", err)
 			}
 
-			if err.Error() != want {
-				t.Fatalf("Expected error %q but got %q", want, err.Error())
+			wantMsg := "MediaWiki API error response: 500 Internal Server Error"
+			if httpStatusCodeErr.Error() != wantMsg {
+				t.Errorf("Unexpected error message, got: %q, want %q", httpStatusCodeErr.Error(), wantMsg)
+			}
+
+			if httpStatusCodeErr.StatusCode != http.StatusInternalServerError {
+				t.Errorf(
+					"Unexpected HTTPStatusError.StatusCode, got: %d, want %d",
+					httpStatusCodeErr.StatusCode,
+					http.StatusInternalServerError,
+				)
+			}
+
+			wantBody := "an error occurred"
+			if string(httpStatusCodeErr.Body) != wantBody {
+				t.Fatalf("Unexpected HTTPStatusError.StatusCode, got %q, want %q", string(httpStatusCodeErr.Body), wantBody)
 			}
 		})
 	}
