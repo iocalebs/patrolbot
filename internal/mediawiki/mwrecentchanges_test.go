@@ -24,7 +24,7 @@ func mockServer(t *testing.T, pages [][]byte) *httptest.Server {
 
 		page := pages[curPage]
 		if page != nil {
-			w.Write(pages[curPage]) //nolint:errcheck,gosec
+			w.Write(pages[curPage])
 		}
 
 		curPage++
@@ -124,7 +124,7 @@ func TestRecentChangesQueryParametersAll(t *testing.T) {
 		url = r.URL
 
 		w.WriteHeader(http.StatusOK)
-		w.Write([]byte("{}")) //nolint:errcheck,gosec
+		w.Write([]byte("{}"))
 	}))
 	defer srv.Close()
 
@@ -163,7 +163,7 @@ func TestRecentChangesQueryParametersNone(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		url = r.URL
 
-		w.Write([]byte("{}")) //nolint:errcheck,gosec
+		w.Write([]byte("{}"))
 	}))
 	defer srv.Close()
 

@@ -105,7 +105,7 @@ func TestLogEventsQueryParametersAll(t *testing.T) {
 		url = r.URL
 
 		w.WriteHeader(http.StatusOK)
-		w.Write([]byte("{}")) //nolint:errcheck,gosec
+		w.Write([]byte("{}"))
 	}))
 	defer srv.Close()
 
@@ -145,7 +145,7 @@ func TestLogEventsQueryParametersNone(t *testing.T) {
 		url = r.URL
 
 		w.WriteHeader(http.StatusOK)
-		w.Write([]byte("{}")) //nolint:errcheck,gosec
+		w.Write([]byte("{}"))
 	}))
 	defer srv.Close()
 

@@ -62,7 +62,7 @@ func TestRequestHeaders(t *testing.T) {
 			t.Parallel()
 
 			srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
-				w.Write([]byte("{}")) //nolint:errcheck,gosec
+				w.Write([]byte("{}"))
 			}))
 			defer srv.Close()
 
@@ -147,7 +147,7 @@ func TestErrorStatusCodesWithBody(t *testing.T) {
 
 			srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
 				w.WriteHeader(http.StatusInternalServerError)
-				w.Write([]byte("an error occurred")) //nolint:errcheck,gosec
+				w.Write([]byte("an error occurred"))
 			}))
 			defer srv.Close()
 

@@ -27,6 +27,11 @@ linters:
           - dupl
           - funlen
           - goconst
+      - path: _test\.go
+        source: w\.Write
+        linters:
+          - errcheck
+          - gosec
       - path: tools/.*\.go
         linters:
           - err113

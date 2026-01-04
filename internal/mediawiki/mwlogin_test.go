@@ -62,7 +62,7 @@ func TestLogin(t *testing.T) {
 				w.WriteHeader(test.statusCode)
 
 				if test.responseBody != nil {
-					w.Write(test.responseBody) //nolint:errcheck,gosec
+					w.Write(test.responseBody)
 				}
 			}))
 			defer srv.Close()
