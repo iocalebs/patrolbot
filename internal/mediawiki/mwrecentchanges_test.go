@@ -157,6 +157,7 @@ func TestRecentChangesQueryParametersAll(t *testing.T) {
 	paginator := mediawiki.NewRecentChangesPaginator(mwclient, mediawiki.RecentChangesQueryParams{
 		RCStart: time.Now(),
 		RCEnd:   time.Now(),
+		RCDir:   "newer",
 		RCShow:  "foo",
 		RCLimit: 10,
 	})
@@ -168,7 +169,7 @@ func TestRecentChangesQueryParametersAll(t *testing.T) {
 
 	urlParams := url.Query()
 
-	expectedParams := []string{"rcstart", "rcend", "rcshow", "rclimit"}
+	expectedParams := []string{"rcstart", "rcend", "rcdir", "rcshow", "rclimit"}
 	for _, param := range expectedParams {
 		if !urlParams.Has(param) {
 			t.Errorf("Expected query URL to have param %q. URL: %s", param, url)

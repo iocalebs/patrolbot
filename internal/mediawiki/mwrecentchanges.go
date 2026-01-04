@@ -16,6 +16,11 @@ type RecentChangesQueryParams struct {
 	// The timestamp to end enumerating.
 	RCEnd time.Time
 
+	// In which direction to enumerate.
+	// older (default): List newest first - rcstart has to be later than rcend.
+	// newer: List oldest first - rcstart has to be before rcend.
+	RCDir string
+
 	// Show only items that meet these criteria.
 	// For example, to see only minor edits done by logged-in users, set rcshow=minor|!anon.
 	RCShow string
@@ -95,6 +100,10 @@ func (p *RecentChangesPaginator) NextPage(ctx context.Context) (RecentChangesPag
 
 	if p.params.RCShow != "" {
 		query.Set("rcshow", p.params.RCShow)
+	}
+
+	if p.params.RCDir != "" {
+		query.Set("rcdir", p.params.RCDir)
 	}
 
 	if p.params.RCLimit != 0 {
