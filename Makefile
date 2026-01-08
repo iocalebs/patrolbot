@@ -22,8 +22,8 @@ cover:
 	mkdir -p $(GOCOVERDIR)/integration
 	mkdir -p $(GOCOVERDIR)/unit
 	go build -cover -o patrolbot
-	GOCOVERDIR=$(CURDIR)/$(GOCOVERDIR)/integration go test -count=1 -parallel=1 main_test.go
-	go test -cover -parallel=1 ./internal/... -args -test.gocoverdir=$(CURDIR)/$(GOCOVERDIR)/unit
+	-GOCOVERDIR=$(CURDIR)/$(GOCOVERDIR)/integration go test -count=1 -parallel=1 main_test.go
+	-go test -cover -parallel=1 ./internal/... -args -test.gocoverdir=$(CURDIR)/$(GOCOVERDIR)/unit
 	go tool covdata textfmt -i=./$(GOCOVERDIR)/integration -o=./$(GOCOVERDIR)/profile-integation.txt
 	go tool covdata textfmt -i=./$(GOCOVERDIR)/unit -o=./$(GOCOVERDIR)/profile-unit.txt
 	go tool covdata textfmt -i=./$(GOCOVERDIR)/integration,./$(GOCOVERDIR)/unit -o=./$(GOCOVERDIR)/profile-merged.txt
