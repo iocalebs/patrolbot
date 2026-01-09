@@ -1,0 +1,15 @@
+## Weekly patrol report
+Unpatrolled edits are expiring soon:
+{{- range .PatrolExpiring.Windows }}
+- {{ .Count }} in the next 
+    {{- if false }}
+    {{- else if gt .Duration.Weeks 1 }} {{ .Duration.Weeks }} weeks
+    {{- else if eq .Duration.Weeks 1 }} week
+    {{- else if gt .Duration.Days 1 }} {{ .Duration.Days }} days
+    {{- else if eq .Duration.Days 1 }} day
+    {{- else if gt .Duration.Hours 1 }} {{ .Duration.Hours }} hours
+    {{- else if eq .Duration.Hours 1 }} hour
+    {{- else }} {{ printf "%+v" .Duration }}
+    {{- end }}
+{{- end }}
+Link to patrol backlog: <{{ .Config.Site.URL }}{{ .Config.Site.ArticlePath }}/Special:RecentChanges?reviewStatus=unpatrolled&limit={{ .Config.Site.RCLinkLimit }}&days={{ .Config.Site.RCMaxAgeDays }}&urlversion=2>

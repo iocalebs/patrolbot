@@ -17,10 +17,11 @@ cmp stdout help.golden
             
   COMMANDS  
             
-    config [command]  Manage bot configuration
+    config [command]         Manage bot configuration
+    report <type> [--flags]  Generate a report
          
   FLAGS  
          
-    -h --help         Help for patrolbot
-    -v --version      Version for patrolbot
+    -h --help                Help for patrolbot
+    -v --version             Version for patrolbot
 

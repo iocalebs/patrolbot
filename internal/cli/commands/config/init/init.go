@@ -1,6 +1,8 @@
 // Package init implements the `patrolbot config init` command
 package init
 
+// TODO: Add report config
+
 import (
 	"bytes"
 	"embed"

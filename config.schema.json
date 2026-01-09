@@ -28,7 +28,96 @@
         "wiki",
         "wikis"
       ],
-      "description": "Config represents the PatrolBot config."
+      "description": "Config represents the configuration for PatrolBot."
+    },
+    "Duration": {
+      "properties": {
+        "hours": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "days": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "weeks": {
+          "type": "integer",
+          "minimum": 1
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "description": "Duration represents a span of time expressed in hours, days, or weeks."
+    },
+    "PatrolExpiring": {
+      "properties": {
+        "windows": {
+          "items": {
+            "$ref": "#/$defs/Duration"
+          },
+          "type": "array",
+          "description": "Durations of time before changes reach $wgRCMaxAge and expire from Special:RecentChanges."
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "required": [
+        "windows"
+      ],
+      "description": "PatrolExpiring represents the configuration for the github.com/iocalebs/patrolbot/internal/report/data.PatrolExpiring data source."
+    },
+    "ReportData": {
+      "properties": {
+        "patrolExpiring": {
+          "$ref": "#/$defs/PatrolExpiring",
+          "description": "Counts unpatrolled edits via API:RecentChanges"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "description": "ReportData represents the configuration for the data sources used for a report type."
+    },
+    "ReportType": {
+      "properties": {
+        "template": {
+          "type": "string",
+          "description": "File name of the template to use for the report"
+        },
+        "data": {
+          "$ref": "#/$defs/ReportData",
+          "description": "Data to use in the report"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "required": [
+        "template",
+        "data"
+      ],
+      "description": "ReportType represents the configuration for a specific report type."
+    },
+    "Reports": {
+      "properties": {
+        "templateDir": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Path to directory containing report templates"
+        },
+        "types": {
+          "additionalProperties": {
+            "$ref": "#/$defs/ReportType"
+          },
+          "type": "object",
+          "description": "Defines the types of reports that can be generated using the `report` command"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "required": [
+        "templateDir",
+        "types"
+      ],
+      "description": "Reports represents the configuration for generating reports."
     },
     "Wiki": {
       "properties": {
@@ -43,6 +132,10 @@
         "client": {
           "$ref": "#/$defs/WikiClient",
           "description": "Configuration for the HTTP client used for MediaWiki API requests."
+        },
+        "reports": {
+          "$ref": "#/$defs/Reports",
+          "description": "Configuration for the wiki's reports"
         }
       },
       "additionalProperties": false,
@@ -50,9 +143,10 @@
       "required": [
         "site",
         "auth",
-        "client"
+        "client",
+        "reports"
       ],
-      "description": "Wiki represents bot configuration for a particular MediaWiki instance."
+      "description": "Wiki represents the configuration for a particular MediaWiki instance."
     },
     "WikiAuth": {
       "properties": {
@@ -71,7 +165,7 @@
         "username",
         "password"
       ],
-      "description": "WikiAuth represents configuration for MediaWiki API login credentials."
+      "description": "WikiAuth represents the configuration for the bot's MediaWiki API login credentials."
     },
     "WikiClient": {
       "properties": {
@@ -106,6 +200,14 @@
         "articlePath": {
           "type": "string",
           "description": "Wiki article path without /$1 ending - typically \"/wiki\"\nSee https://www.mediawiki.org/wiki/Manual:$wgArticlePath"
+        },
+        "rcMaxAgeDays": {
+          "type": "integer",
+          "description": "The wiki's recent changes retention period in days\nSee https://www.mediawiki.org/wiki/Manual:$wgRCMaxAge"
+        },
+        "rcLinkLimit": {
+          "type": "integer",
+          "description": "Maximum results that can be shown in the wikis' Special:RecentChanges\nSee https://www.mediawiki.org/wiki/Manual:$wgRCLinkLimits"
         }
       },
       "additionalProperties": false,
@@ -113,7 +215,9 @@
       "required": [
         "url",
         "scriptPath",
-        "articlePath"
+        "articlePath",
+        "rcMaxAgeDays",
+        "rcLinkLimit"
       ],
       "description": "WikiSite represents MediaWiki instance configuration (namely $wg variables) that PatrolBot needs to be aware of."
     }

@@ -68,24 +68,50 @@ wikis:
       url: https://zeldawiki.wiki
       scriptPath: /w
       articlePath: /wiki
+      rcLinkLimit: 1000
+      rcMaxAgeDays: 90
     auth:
       username: PhantomCaleb@Patrolbot
       password: ""
     client:
       from: phantomcaleb@zeldawiki.wiki
       timeout: 10s
+    reports:
+      templateDir: ./reports
+      types:
+        weekly:
+          template: weekly.tmpl
+          data:
+            patrolExpiring:
+              windows:
+                - days: 7
+                - days: 14
+                - days: 30
 
   zwfr:
     site:
       url: https://fr.zeldawiki.wiki
       scriptPath: /w
       articlePath: /wiki
+      rcLinkLimit: 1000
+      rcMaxAgeDays: 90
     auth:
       username: FantômeCaleb@Patrolbot
       password: ""
     client:
       from: phantomcaleb@zeldawiki.wiki
       timeout: "0"
+    reports:
+      templateDir: ./reports
+      types:
+        weekly:
+          template: weekly.tmpl
+          data:
+            patrolExpiring:
+              windows:
+                - days: 7
+                - days: 14
+                - days: 30
 
 -- wikipedia.yaml --
 wiki: wikipedia
@@ -102,7 +128,9 @@ wiki: dunepedia
       "site": {
         "url": "https://zeldawiki.wiki",
         "scriptPath": "/w",
-        "articlePath": "/wiki"
+        "articlePath": "/wiki",
+        "rcMaxAgeDays": 90,
+        "rcLinkLimit": 1000
       },
       "auth": {
         "username": "PhantomCaleb@Patrolbot",
@@ -111,13 +139,38 @@ wiki: dunepedia
       "client": {
         "timeout": 10000000000,
         "from": "phantomcaleb@zeldawiki.wiki"
+      },
+      "reports": {
+        "templateDir": "./reports",
+        "types": {
+          "weekly": {
+            "template": "weekly.tmpl",
+            "data": {
+              "patrolExpiring": {
+                "windows": [
+                  {
+                    "days": 7
+                  },
+                  {
+                    "days": 14
+                  },
+                  {
+                    "days": 30
+                  }
+                ]
+              }
+            }
+          }
+        }
       }
     },
     "zwfr": {
       "site": {
         "url": "https://fr.zeldawiki.wiki",
         "scriptPath": "/w",
-        "articlePath": "/wiki"
+        "articlePath": "/wiki",
+        "rcMaxAgeDays": 90,
+        "rcLinkLimit": 1000
       },
       "auth": {
         "username": "FantômeCaleb@Patrolbot",
@@ -126,6 +179,29 @@ wiki: dunepedia
       "client": {
         "timeout": 0,
         "from": "phantomcaleb@zeldawiki.wiki"
+      },
+      "reports": {
+        "templateDir": "./reports",
+        "types": {
+          "weekly": {
+            "template": "weekly.tmpl",
+            "data": {
+              "patrolExpiring": {
+                "windows": [
+                  {
+                    "days": 7
+                  },
+                  {
+                    "days": 14
+                  },
+                  {
+                    "days": 30
+                  }
+                ]
+              }
+            }
+          }
+        }
       }
     }
   }
@@ -139,7 +215,9 @@ wiki: dunepedia
       "site": {
         "url": "https://zeldawiki.wiki",
         "scriptPath": "/w",
-        "articlePath": "/wiki"
+        "articlePath": "/wiki",
+        "rcMaxAgeDays": 90,
+        "rcLinkLimit": 1000
       },
       "auth": {
         "username": "PhantomCaleb@Patrolbot",
@@ -148,13 +226,38 @@ wiki: dunepedia
       "client": {
         "timeout": 10000000000,
         "from": "phantomcaleb@zeldawiki.wiki"
+      },
+      "reports": {
+        "templateDir": "./reports",
+        "types": {
+          "weekly": {
+            "template": "weekly.tmpl",
+            "data": {
+              "patrolExpiring": {
+                "windows": [
+                  {
+                    "days": 7
+                  },
+                  {
+                    "days": 14
+                  },
+                  {
+                    "days": 30
+                  }
+                ]
+              }
+            }
+          }
+        }
       }
     },
     "zwfr": {
       "site": {
         "url": "https://fr.zeldawiki.wiki",
         "scriptPath": "/w",
-        "articlePath": "/wiki"
+        "articlePath": "/wiki",
+        "rcMaxAgeDays": 90,
+        "rcLinkLimit": 1000
       },
       "auth": {
         "username": "FantômeCaleb@Patrolbot",
@@ -163,6 +266,29 @@ wiki: dunepedia
       "client": {
         "timeout": 0,
         "from": "phantomcaleb@zeldawiki.wiki"
+      },
+      "reports": {
+        "templateDir": "./reports",
+        "types": {
+          "weekly": {
+            "template": "weekly.tmpl",
+            "data": {
+              "patrolExpiring": {
+                "windows": [
+                  {
+                    "days": 7
+                  },
+                  {
+                    "days": 14
+                  },
+                  {
+                    "days": 30
+                  }
+                ]
+              }
+            }
+          }
+        }
       }
     }
   }
@@ -176,7 +302,9 @@ wiki: dunepedia
       "site": {
         "url": "https://zeldawiki.wiki",
         "scriptPath": "/w",
-        "articlePath": "/wiki"
+        "articlePath": "/wiki",
+        "rcMaxAgeDays": 90,
+        "rcLinkLimit": 1000
       },
       "auth": {
         "username": "PhantomCaleb@Patrolbot",
@@ -185,13 +313,38 @@ wiki: dunepedia
       "client": {
         "timeout": 10000000000,
         "from": "phantomcaleb@zeldawiki.wiki"
+      },
+      "reports": {
+        "templateDir": "./reports",
+        "types": {
+          "weekly": {
+            "template": "weekly.tmpl",
+            "data": {
+              "patrolExpiring": {
+                "windows": [
+                  {
+                    "days": 7
+                  },
+                  {
+                    "days": 14
+                  },
+                  {
+                    "days": 30
+                  }
+                ]
+              }
+            }
+          }
+        }
       }
     },
     "zwfr": {
       "site": {
         "url": "https://fr.zeldawiki.wiki",
         "scriptPath": "/w",
-        "articlePath": "/wiki"
+        "articlePath": "/wiki",
+        "rcMaxAgeDays": 90,
+        "rcLinkLimit": 1000
       },
       "auth": {
         "username": "FantômeCaleb@Patrolbot",
@@ -200,6 +353,29 @@ wiki: dunepedia
       "client": {
         "timeout": 0,
         "from": "phantomcaleb@zeldawiki.wiki"
+      },
+      "reports": {
+        "templateDir": "./reports",
+        "types": {
+          "weekly": {
+            "template": "weekly.tmpl",
+            "data": {
+              "patrolExpiring": {
+                "windows": [
+                  {
+                    "days": 7
+                  },
+                  {
+                    "days": 14
+                  },
+                  {
+                    "days": 30
+                  }
+                ]
+              }
+            }
+          }
+        }
       }
     }
   }
@@ -213,7 +389,9 @@ wiki: dunepedia
       "site": {
         "url": "https://zeldawiki.wiki",
         "scriptPath": "/w",
-        "articlePath": "/wiki"
+        "articlePath": "/wiki",
+        "rcMaxAgeDays": 90,
+        "rcLinkLimit": 1000
       },
       "auth": {
         "username": "PhantomCaleb@Patrolbot",
@@ -222,13 +400,38 @@ wiki: dunepedia
       "client": {
         "timeout": 10000000000,
         "from": "phantomcaleb@zeldawiki.wiki"
+      },
+      "reports": {
+        "templateDir": "./reports",
+        "types": {
+          "weekly": {
+            "template": "weekly.tmpl",
+            "data": {
+              "patrolExpiring": {
+                "windows": [
+                  {
+                    "days": 7
+                  },
+                  {
+                    "days": 14
+                  },
+                  {
+                    "days": 30
+                  }
+                ]
+              }
+            }
+          }
+        }
       }
     },
     "zwfr": {
       "site": {
         "url": "https://fr.zeldawiki.wiki",
         "scriptPath": "/w",
-        "articlePath": "/wiki"
+        "articlePath": "/wiki",
+        "rcMaxAgeDays": 90,
+        "rcLinkLimit": 1000
       },
       "auth": {
         "username": "FantômeCaleb@Patrolbot",
@@ -237,6 +440,29 @@ wiki: dunepedia
       "client": {
         "timeout": 0,
         "from": "phantomcaleb@zeldawiki.wiki"
+      },
+      "reports": {
+        "templateDir": "./reports",
+        "types": {
+          "weekly": {
+            "template": "weekly.tmpl",
+            "data": {
+              "patrolExpiring": {
+                "windows": [
+                  {
+                    "days": 7
+                  },
+                  {
+                    "days": 14
+                  },
+                  {
+                    "days": 30
+                  }
+                ]
+              }
+            }
+          }
+        }
       }
     }
   }

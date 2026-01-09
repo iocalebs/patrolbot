@@ -1,5 +1,6 @@
 package main_test
 
+// TODO: Integration test report with errors
 // TODO: Integration test that verifies config created by init is valid.
 
 import (

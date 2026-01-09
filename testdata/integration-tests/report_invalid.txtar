@@ -1,0 +1,38 @@
+! exec patrolbot report weekly --wiki invalidconfig
+cmp stderr stderr-invalid-config.golden
+
+! exec patrolbot report foo --wiki zwen
+cmp stderr stderr-invalid-report-type.golden
+
+-- stderr-invalid-config.golden --
+          
+   ERROR  
+          
+  Invalid wiki configuration: invalid wiki configuration for "invalidconfig": - .auth.username not set -              
+  .auth.password not set - .reports.templateDir not set.                                                              
+
+-- stderr-invalid-report-type.golden --
+          
+   ERROR  
+          
+  Error generating report: invalid report type: foo.                                                                  
+
+  Use --list to see available report types.
+
+-- config.yaml --
+wikis:
+  invalidconfig:
+    reports:
+      types:
+        weekly:
+          template: ""
+        monthly:
+          template: ""
+  zwen:
+    site:
+      url: https://zeldawiki.wiki
+    auth:
+      username: "user"
+      password: "pass"
+    reports:
+      templateDir: "foo"

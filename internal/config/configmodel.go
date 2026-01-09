@@ -2,7 +2,7 @@ package config
 
 import "time"
 
-// Config represents the PatrolBot config.
+// Config represents the configuration for PatrolBot.
 type Config struct {
 	// User-Agent HTTP header for MediaWiki API requests
 	// https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/User-Agent
@@ -15,7 +15,7 @@ type Config struct {
 	Wikis map[string]Wiki `json:"wikis"`
 }
 
-// Wiki represents bot configuration for a particular MediaWiki instance.
+// Wiki represents the configuration for a particular MediaWiki instance.
 type Wiki struct {
 	// MediaWiki site information that PatrolBot needs to be aware of.
 	Site WikiSite `json:"site"`
@@ -26,6 +26,9 @@ type Wiki struct {
 
 	// Configuration for the HTTP client used for MediaWiki API requests.
 	Client WikiClient `json:"client"`
+
+	// Configuration for the wiki's reports
+	Reports Reports `json:"reports"`
 }
 
 // WikiSite represents MediaWiki instance configuration (namely $wg variables) that PatrolBot needs to be aware of.
@@ -40,15 +43,54 @@ type WikiSite struct {
 	// Wiki article path without /$1 ending - typically "/wiki"
 	// See https://www.mediawiki.org/wiki/Manual:$wgArticlePath
 	ArticlePath string `json:"articlePath"`
+
+	// The wiki's recent changes retention period in days
+	// See https://www.mediawiki.org/wiki/Manual:$wgRCMaxAge
+	RCMaxAgeDays int `json:"rcMaxAgeDays"`
+
+	// Maximum results that can be shown in the wikis' Special:RecentChanges
+	// See https://www.mediawiki.org/wiki/Manual:$wgRCLinkLimits
+	RCLinkLimit int `json:"rcLinkLimit"`
 }
 
-// WikiAuth represents configuration for MediaWiki API login credentials.
+// WikiAuth represents the configuration for the bot's MediaWiki API login credentials.
 type WikiAuth struct {
 	// Special:BotPasswords username (e.g. PhantomCaleb@PatrolBot)
 	Username string `json:"username"`
 
 	// Special:BotPasswords password
 	Password string `json:"password"`
+}
+
+// Reports represents the configuration for generating reports.
+type Reports struct {
+	// Path to directory containing report templates
+	TemplateDir string `json:"templateDir" jsonschema:"minLength=1"`
+
+	// Defines the types of reports that can be generated using the `report` command
+	Types map[string]ReportType `json:"types"`
+}
+
+// ReportType represents the configuration for a specific report type.
+type ReportType struct {
+	// File name of the template to use for the report
+	Template string `json:"template"`
+
+	// Data to use in the report
+	Data ReportData `json:"data"`
+}
+
+// ReportData represents the configuration for the data sources used for a report type.
+type ReportData struct {
+	// Counts unpatrolled edits via API:RecentChanges
+	PatrolExpiring *PatrolExpiring `json:"patrolExpiring,omitempty"`
+}
+
+// PatrolExpiring represents the configuration for the
+// [github.com/iocalebs/patrolbot/internal/report/data.PatrolExpiring] data source.
+type PatrolExpiring struct {
+	// Durations of time before changes reach $wgRCMaxAge and expire from Special:RecentChanges.
+	Windows []Duration `json:"windows"`
 }
 
 // WikiClient represents configuration for the HTTP client used for MediaWiki API requests.

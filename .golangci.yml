@@ -16,10 +16,14 @@ linters:
         - ^os\.MkdirAll
     varnamelen:
       ignore-decls:
+        - i int
+        - q net/url.Values
         - q url.Values
         - ts *testscript.TestScript
         - u *url.URL
+        - r *http.Request
         - w http.ResponseWriter
+        - w io.Writer
 
   exclusions:
     rules:

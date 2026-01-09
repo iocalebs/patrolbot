@@ -95,16 +95,23 @@ func (c Config) CurrentWiki() (Wiki, error) {
 
 	errs := []string{}
 
+	if wiki.Site.URL == "" {
+		errs = append(errs, ".site.url not set")
+	}
+
 	if wiki.Auth.Username == "" {
-		errs = append(errs, "username not set")
+		errs = append(errs, ".auth.username not set")
 	}
 
 	if wiki.Auth.Password == "" {
-		errs = append(errs, "password not set")
+		errs = append(errs, ".auth.password not set")
+	}
+
+	if wiki.Reports.TemplateDir == "" {
+		errs = append(errs, ".reports.templateDir not set")
 	}
 
 	if len(errs) > 0 {
-		// TODO: integration test coverage
 		errList := "\n- " + strings.Join(errs, "\n- ")
 		return Wiki{}, fmt.Errorf("%w for %q: %s", ErrWikiInvalid, c.Wiki, errList)
 	}

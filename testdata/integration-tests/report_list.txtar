@@ -1,6 +1,12 @@
-# yaml-language-server: $schema=config.schema.json
+exec patrolbot report --list
+cmp stdout stdout.golden
+
+-- stdout.golden --
+monthly
+weekly
+-- config.yaml --
 userAgent: "PatrolBot/1.0 (+https://github.com/iocalebs/patrolbot)"
-wiki: "" # Env variable PATROLBOT_WIKI or flag --wiki
+wiki: "zwen"
 wikis:
   zwen:
     site:
@@ -11,18 +17,14 @@ wikis:
       rcMaxAgeDays: 90
     auth:
       username: PhantomCaleb@PatrolBot
-      password: "" # Env variable PATROLBOT_WIKIS_ZWEN_PASSWORD
+      password: "password"
     client:
       from: phantomcalebs@gmail.com
       timeout: 10s
     reports:
-      templateDir: ./reports
+      templateDir: ./templates
       types:
         weekly:
           template: weekly.tmpl
-          data:
-            patrolExpiring:
-              windows:
-                - days: 7
-                - days: 14
-                - days: 30
+        monthly:
+          template: monthly.tmpl

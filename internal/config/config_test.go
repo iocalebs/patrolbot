@@ -48,6 +48,9 @@ func TestCurrentWiki(t *testing.T) {
 							Username: "PhantomCaleb@PatrolBot",
 							Password: "password",
 						},
+						Reports: config.Reports{
+							TemplateDir: "./templates",
+						},
 					},
 				},
 			},
@@ -60,6 +63,9 @@ func TestCurrentWiki(t *testing.T) {
 				Auth: config.WikiAuth{
 					Username: "PhantomCaleb@PatrolBot",
 					Password: "password",
+				},
+				Reports: config.Reports{
+					TemplateDir: "./templates",
 				},
 			},
 			expectErr: nil,
@@ -94,7 +100,7 @@ func TestCurrentWiki(t *testing.T) {
 			expectErr:    config.ErrWikiNotFound,
 		},
 		{
-			name: "username and password not set",
+			name: "required config not set",
 			cfg: config.Config{
 				Wiki: "zwen",
 				Wikis: map[string]config.Wiki{
@@ -108,11 +114,17 @@ func TestCurrentWiki(t *testing.T) {
 							Username: "",
 							Password: "",
 						},
+						Reports: config.Reports{
+							TemplateDir: "",
+						},
 					},
 				},
 			},
-			expectErr:    config.ErrWikiInvalid,
-			expectErrMsg: "invalid wiki configuration for \"zwen\": \n- username not set\n- password not set",
+			expectErr: config.ErrWikiInvalid,
+			expectErrMsg: `invalid wiki configuration for "zwen": 
+- .auth.username not set
+- .auth.password not set
+- .reports.templateDir not set`,
 		},
 	}
 
