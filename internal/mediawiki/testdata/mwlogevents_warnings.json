@@ -14,9 +14,16 @@
       {}
     ]
   },
-  "warnings": {
-    "logevents": {
-      "warnings": "Unrecognized value for parameter \"leprop\": foo"
+  "warnings": [
+    {
+      "code": "unrecognizedvalues",
+      "data": {
+        "values": [
+          "foo"
+        ]
+      },
+      "module": "query+logevents",
+      "text": "Unrecognized value for parameter \"leprop\": foo"
     }
-  }
+  ]
 }

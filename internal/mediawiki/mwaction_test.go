@@ -109,19 +109,19 @@ func TestErrorStatusCodesNoBody(t *testing.T) {
 
 			err := test.requestFunc(t.Context(), mwclient)
 
-			var httpStatusCodeErr mediawiki.HTTPStatusError
+			var httpStatusCodeErr *mediawiki.HTTPStatusError
 			if !errors.As(err, &httpStatusCodeErr) {
 				t.Fatalf("Expected HTTPStatusError, got: %v", err)
 			}
 
-			wantMsg := "MediaWiki API error response: 502 Bad Gateway"
+			wantMsg := "502 Bad Gateway"
 			if httpStatusCodeErr.Error() != wantMsg {
 				t.Errorf("Unexpected error message, got: %q, want %q", httpStatusCodeErr.Error(), wantMsg)
 			}
 
 			if httpStatusCodeErr.StatusCode != http.StatusBadGateway {
 				t.Errorf(
-					"Unexpected HTTPStatusError.StatusCode, got: %d, want %d",
+					"HTTPStatusError.StatusCode = %d, want %d",
 					httpStatusCodeErr.StatusCode,
 					http.StatusBadGateway,
 				)
@@ -157,19 +157,19 @@ func TestErrorStatusCodesWithBody(t *testing.T) {
 
 			err := test.requestFunc(t.Context(), mwclient)
 
-			var httpStatusCodeErr mediawiki.HTTPStatusError
+			var httpStatusCodeErr *mediawiki.HTTPStatusError
 			if !errors.As(err, &httpStatusCodeErr) {
 				t.Fatalf("Expected HTTPStatusError, got: %v", err)
 			}
 
-			wantMsg := "MediaWiki API error response: 500 Internal Server Error"
+			wantMsg := "500 Internal Server Error"
 			if httpStatusCodeErr.Error() != wantMsg {
-				t.Errorf("Unexpected error message, got: %q, want %q", httpStatusCodeErr.Error(), wantMsg)
+				t.Errorf("Error() = %q, want %q", httpStatusCodeErr.Error(), wantMsg)
 			}
 
 			if httpStatusCodeErr.StatusCode != http.StatusInternalServerError {
 				t.Errorf(
-					"Unexpected HTTPStatusError.StatusCode, got: %d, want %d",
+					"HTTPStatusError.StatusCode = %d, want %d",
 					httpStatusCodeErr.StatusCode,
 					http.StatusInternalServerError,
 				)
@@ -177,7 +177,7 @@ func TestErrorStatusCodesWithBody(t *testing.T) {
 
 			wantBody := "an error occurred"
 			if string(httpStatusCodeErr.Body) != wantBody {
-				t.Fatalf("Unexpected HTTPStatusError.StatusCode, got %q, want %q", string(httpStatusCodeErr.Body), wantBody)
+				t.Fatalf("HTTPStatusError.Body = %q, want %q", string(httpStatusCodeErr.Body), wantBody)
 			}
 		})
 	}

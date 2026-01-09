@@ -35,8 +35,10 @@ func (c *Client) Login(ctx context.Context, token Token) error {
 		"lgname":        {c.config.Auth.Username},
 		"lgpassword":    {c.config.Auth.Password},
 		"lgtoken":       {string(token)},
+		"errorformat":   {"plaintext"},
 		"format":        {"json"},
 		"formatversion": {"2"},
+		"uselang":       {"user"},
 	}.Encode()
 
 	req, err := c.newRequest(ctx, http.MethodPost, strings.NewReader(formBody))

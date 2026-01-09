@@ -4,109 +4,116 @@
     "recentchanges": [
       {
         "ns": 0,
-        "old_revid": 1248944,
-        "pageid": 176162,
-        "rcid": 415223,
-        "revid": 1307359,
-        "timestamp": "2025-12-19T14:33:00Z",
-        "title": "Smoothie",
+        "old_revid": 1312243,
+        "pageid": 194022,
+        "rcid": 420196,
+        "revid": 1312285,
+        "timestamp": "2026-01-08T20:30:41Z",
+        "title": "Ailing Soldiers",
         "type": "edit"
       },
       {
         "ns": 0,
-        "old_revid": 1303540,
-        "pageid": 2192,
-        "rcid": 415222,
-        "revid": 1307358,
-        "timestamp": "2025-12-19T14:29:53Z",
-        "title": "Potion",
+        "old_revid": 1304016,
+        "pageid": 192400,
+        "rcid": 420195,
+        "revid": 1312284,
+        "timestamp": "2026-01-08T20:30:17Z",
+        "title": "Aiding Lord Raphica",
         "type": "edit"
       },
       {
         "ns": 0,
-        "old_revid": 1307356,
-        "pageid": 176161,
-        "rcid": 415221,
-        "revid": 1307357,
-        "timestamp": "2025-12-19T14:28:39Z",
-        "title": "Smoothie Shop",
+        "old_revid": 1304011,
+        "pageid": 192491,
+        "rcid": 420194,
+        "revid": 1312283,
+        "timestamp": "2026-01-08T20:29:58Z",
+        "title": "Aiding Lord Agraston",
         "type": "edit"
       },
       {
         "ns": 0,
-        "old_revid": 1222115,
-        "pageid": 176161,
-        "rcid": 415220,
-        "revid": 1307356,
-        "timestamp": "2025-12-19T14:22:31Z",
-        "title": "Smoothie Shop",
+        "old_revid": 1303993,
+        "pageid": 192206,
+        "rcid": 420193,
+        "revid": 1312282,
+        "timestamp": "2026-01-08T20:29:33Z",
+        "title": "Aiding Lady Zelda",
         "type": "edit"
       },
       {
-        "ns": 2,
-        "old_revid": 0,
-        "pageid": 153798,
-        "rcid": 415219,
-        "revid": 0,
-        "timestamp": "2025-12-19T12:28:37Z",
-        "title": "User:VexIsBot",
-        "type": "log"
-      },
-      {
-        "ns": 2,
-        "old_revid": 0,
-        "pageid": 152111,
-        "rcid": 415218,
-        "revid": 0,
-        "timestamp": "2025-12-19T12:28:20Z",
-        "title": "User:Mollborg",
-        "type": "log"
+        "ns": 0,
+        "old_revid": 1304064,
+        "pageid": 192501,
+        "rcid": 420192,
+        "revid": 1312281,
+        "timestamp": "2026-01-08T20:29:08Z",
+        "title": "Aiding Lady Qia",
+        "type": "edit"
       },
       {
         "ns": 0,
-        "old_revid": 1307317,
-        "pageid": 66564,
-        "rcid": 415217,
-        "revid": 1307355,
-        "timestamp": "2025-12-19T12:15:35Z",
-        "title": "Speedrun Records",
+        "old_revid": 1304014,
+        "pageid": 192414,
+        "rcid": 420191,
+        "revid": 1312280,
+        "timestamp": "2026-01-08T20:28:35Z",
+        "title": "Aiding Lady Mineru",
+        "type": "edit"
+      },
+      {
+        "ns": 0,
+        "old_revid": 1311483,
+        "pageid": 192511,
+        "rcid": 420190,
+        "revid": 1312279,
+        "timestamp": "2026-01-08T20:27:54Z",
+        "title": "Aiding Lady Ardi",
+        "type": "edit"
+      },
+      {
+        "ns": 0,
+        "old_revid": 1303992,
+        "pageid": 192397,
+        "rcid": 420189,
+        "revid": 1312278,
+        "timestamp": "2026-01-08T20:27:13Z",
+        "title": "Aiding King Rauru",
         "type": "edit"
       },
       {
         "ns": 6,
-        "old_revid": 1307353,
-        "pageid": 120969,
-        "rcid": 415216,
-        "revid": 1307354,
-        "timestamp": "2025-12-19T11:23:16Z",
-        "title": "File:TPHD Letter Closed Icon.png",
-        "type": "edit"
-      },
-      {
-        "ns": 6,
         "old_revid": 0,
-        "pageid": 120969,
-        "rcid": 415215,
-        "revid": 1307353,
-        "timestamp": "2025-12-19T11:22:40Z",
-        "title": "File:TPHD Letter Closed Icon.png",
-        "type": "log"
+        "pageid": 194028,
+        "rcid": 420188,
+        "revid": 1312277,
+        "timestamp": "2026-01-08T20:26:47Z",
+        "title": "File:ZW Thumb Aside Quest.png",
+        "type": "new"
       },
       {
-        "ns": 6,
-        "old_revid": 1307351,
-        "pageid": 120966,
-        "rcid": 415214,
-        "revid": 1307352,
-        "timestamp": "2025-12-19T11:22:06Z",
-        "title": "File:TPHD Letter Open Icon.png",
+        "ns": 0,
+        "old_revid": 1311889,
+        "pageid": 193845,
+        "rcid": 420187,
+        "revid": 1312276,
+        "timestamp": "2026-01-08T20:25:05Z",
+        "title": "A Step Toward Strength",
         "type": "edit"
       }
     ]
   },
-  "warnings": {
-    "recentchanges": {
-      "warnings": "Unrecognized value for parameter \"rcshow\": foo"
+  "warnings": [
+    {
+      "code": "unrecognizedvalues",
+      "data": {
+        "values": [
+          "foo"
+        ]
+      },
+      "module": "query+recentchanges",
+      "text": "Unrecognized value for parameter \"rcshow\": foo"
     }
-  }
+  ]
 }

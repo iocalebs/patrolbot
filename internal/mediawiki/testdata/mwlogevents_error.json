@@ -1,7 +1,0 @@
-{
-  "error": {
-    "code": "badvalue",
-    "info": "Unrecognized value for parameter \"letype\": foo.",
-    "docref": "See https://zeldawiki.wiki/w/api.php for API usage. Subscribe to the mediawiki-api-announce mailing list at \u0026lt;https://lists.wikimedia.org/postorius/lists/mediawiki-api-announce.lists.wikimedia.org/\u0026gt; for notice of API deprecations and breaking changes."
-  }
-}

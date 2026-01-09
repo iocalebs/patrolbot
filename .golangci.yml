@@ -16,6 +16,7 @@ linters:
         - ^os\.MkdirAll
     varnamelen:
       ignore-decls:
+        - q url.Values
         - ts *testscript.TestScript
         - u *url.URL
         - w http.ResponseWriter

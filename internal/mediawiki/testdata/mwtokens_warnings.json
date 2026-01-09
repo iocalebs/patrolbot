@@ -1,0 +1,18 @@
+{
+  "batchcomplete": true,
+  "warnings": [
+    {
+      "code": "unrecognizedvalues",
+      "text": "Unrecognized value for parameter \"type\": foo",
+      "data": {
+        "values": [
+          "foo"
+        ]
+      },
+      "module": "query+tokens"
+    }
+  ],
+  "query": {
+    "tokens": {}
+  }
+}

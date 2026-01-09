@@ -3,47 +3,42 @@ package mediawiki
 import (
 	"context"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"io"
 	"net/http"
 	"net/url"
 )
 
-var (
-	// ErrResponseWarnings indicates that the MediaWiki API response body contained warnings.
-	ErrResponseWarnings = errors.New("MediaWiki API response body contains warnings")
-
-	// ErrResponseError indicates that the MediaWiki API response body contained errors.
-	ErrResponseError = errors.New("MediaWiki API response body contains errors")
-)
-
-// HTTPStatusError represents a non-2xx HTTP response from the MediaWiki API.
-type HTTPStatusError struct {
-	StatusCode int    // HTTP status code
-	Body       []byte // Response body, if any
-}
-
-func (e HTTPStatusError) Error() string {
-	return fmt.Sprintf("MediaWiki API error response: %d %s", e.StatusCode, http.StatusText(e.StatusCode))
+type mediaWikiError struct {
+	Text string `json:"text"`
 }
 
 type baseResponse struct {
-	Warnings json.RawMessage `json:"warnings"`
-	Error    json.RawMessage `json:"error"`
+	Warnings []mediaWikiError `json:"warnings"`
+	Errors   []mediaWikiError `json:"errors"`
 }
 
 type response interface {
-	warnings() json.RawMessage
-	errors() json.RawMessage
+	warnings() []string
+	errors() []string
 }
 
-func (b baseResponse) warnings() json.RawMessage {
-	return b.Warnings
+func (b baseResponse) warnings() []string {
+	warnings := make([]string, len(b.Warnings))
+	for i, warning := range b.Warnings {
+		warnings[i] = warning.Text
+	}
+
+	return warnings
 }
 
-func (b baseResponse) errors() json.RawMessage {
-	return b.Error
+func (b baseResponse) errors() []string {
+	errs := make([]string, len(b.Errors))
+	for i, err := range b.Errors {
+		errs[i] = err.Text
+	}
+
+	return errs
 }
 
 func (c *Client) newRequest(ctx context.Context, method string, body io.Reader) (*http.Request, error) {
@@ -71,8 +66,10 @@ func (c *Client) newQuery(ctx context.Context) (*http.Request, error) {
 
 	q := req.URL.Query()
 	q.Set("action", "query")
+	q.Set("errorformat", "plaintext")
 	q.Set("format", "json")
 	q.Set("formatversion", "2")
+	q.Set("uselang", "user")
 	req.URL.RawQuery = q.Encode()
 
 	return req, nil
@@ -96,13 +93,13 @@ func (c *Client) do(ctx context.Context, req *http.Request, res response) error 
 		if err != nil {
 			c.logger.WarnContext(ctx, "Failed to read response body", "error", err)
 
-			return HTTPStatusError{
+			return &HTTPStatusError{
 				StatusCode: resp.StatusCode,
 				Body:       []byte(""),
 			}
 		}
 
-		return HTTPStatusError{
+		return &HTTPStatusError{
 			StatusCode: resp.StatusCode,
 			Body:       body,
 		}
@@ -113,12 +110,14 @@ func (c *Client) do(ctx context.Context, req *http.Request, res response) error 
 		return fmt.Errorf("failed to decode MediaWiki response body: %w", err)
 	}
 
-	if errs := res.errors(); len(errs) != 0 {
-		return fmt.Errorf("%w: %s", ErrResponseError, string(errs))
-	}
+	errs := res.errors()
+	warnings := res.warnings()
 
-	if warnings := res.warnings(); len(warnings) != 0 {
-		return fmt.Errorf("%w: %s", ErrResponseWarnings, string(warnings))
+	if len(errs) > 0 || len(warnings) > 0 {
+		return &APIError{
+			Errors:   errs,
+			Warnings: warnings,
+		}
 	}
 
 	return nil

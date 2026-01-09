@@ -17,40 +17,25 @@ func TestLogin(t *testing.T) {
 	t.Parallel()
 
 	tests := []struct {
-		name                string // test case name
-		statusCode          int    // HTTP status code to return in mock API response
-		responseBody        []byte // mock API response body
-		expectedError       error  // expected error value, or nil if no error expected
-		expectedErrorSubstr string // expected error message substring
+		name         string // test case name
+		statusCode   int    // HTTP status code to return in mock API response
+		responseBody []byte // mock API response body
+		wantErr      error  // expected error value, or nil if no error expected
+		wantErrSub   string // // expected error message substring
 	}{
 		{
 
-			name:                "Success",
-			statusCode:          http.StatusOK,
-			responseBody:        readFile(t, "testdata/mwlogin_success.json"),
-			expectedError:       nil,
-			expectedErrorSubstr: "",
+			name:         "Success",
+			statusCode:   http.StatusOK,
+			responseBody: readFile(t, "testdata/mwlogin_success.json"),
+			wantErr:      nil,
 		},
 		{
-			name:                "FailedWrongToken",
-			statusCode:          http.StatusOK,
-			responseBody:        readFile(t, "testdata/mwlogin_failed_wrongtoken.json"),
-			expectedError:       mediawiki.ErrLoginFailed,
-			expectedErrorSubstr: "WrongToken",
-		},
-		{
-			name:                "WarningResponse",
-			statusCode:          http.StatusOK,
-			responseBody:        readFile(t, "testdata/mwaction_warnings.json"),
-			expectedError:       mediawiki.ErrResponseWarnings,
-			expectedErrorSubstr: "Unrecognized value for parameter",
-		},
-		{
-			name:                "ErrorResponse",
-			statusCode:          http.StatusOK,
-			responseBody:        readFile(t, "testdata/mwaction_error.json"),
-			expectedError:       mediawiki.ErrResponseError,
-			expectedErrorSubstr: "Unrecognized value for parameter",
+			name:         "FailedWrongToken",
+			statusCode:   http.StatusOK,
+			responseBody: readFile(t, "testdata/mwlogin_wrongtoken.json"),
+			wantErr:      mediawiki.ErrLoginFailed,
+			wantErrSub:   "WrongToken",
 		},
 	}
 
@@ -74,17 +59,17 @@ func TestLogin(t *testing.T) {
 
 			err := mwclient.Login(context.Background(), "token")
 
-			if test.expectedError != nil {
+			if test.wantErr != nil {
 				if err == nil {
-					t.Fatalf("Expected error %v, got nil", test.expectedError)
+					t.Fatalf("Expected error %v, got nil", test.wantErr)
 				}
 
-				if !errors.Is(err, test.expectedError) {
-					t.Fatalf("Expected error %v, got %v", test.expectedError, err)
+				if !errors.Is(err, test.wantErr) {
+					t.Fatalf("Expected error %v, got %v", test.wantErr, err)
 				}
 
-				if !strings.Contains(err.Error(), test.expectedErrorSubstr) {
-					t.Fatalf("Expected error message to contain %q, got %q", test.expectedErrorSubstr, err.Error())
+				if !strings.Contains(err.Error(), test.wantErrSub) {
+					t.Fatalf("Expected error message to contain %q, got %q", test.wantErr, err.Error())
 				}
 			}
 		})

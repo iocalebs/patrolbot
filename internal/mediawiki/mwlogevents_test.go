@@ -1,28 +1,27 @@
 package mediawiki_test
 
 import (
-	"errors"
 	"log/slog"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
-	"strings"
+	"reflect"
 	"testing"
 	"time"
 
+	"github.com/google/go-cmp/cmp"
 	"github.com/iocalebs/patrolbot/internal/config"
 	"github.com/iocalebs/patrolbot/internal/mediawiki"
 )
 
-func TestLogEventsPaginator(t *testing.T) { //nolint:cyclop
+func TestLogEventsPaginator(t *testing.T) {
 	t.Parallel()
 
 	tests := []struct {
-		name           string   // test case name
-		pages          [][]byte // mock API responses - each call returns the next page
-		expectResults  bool     // set to true if pages are expected to have actual results
-		expectError    error    // expected error value, or nil if no error expected
-		expectErrorSub string   // expected error message substring
+		name        string   // test case name
+		pages       [][]byte // mock API responses - each call returns the next page
+		wantResults bool     // set to true if pages are expected to have actual results
+		wantErr     error    // expected error value, or nil if no error expected
 	}{
 		{
 			name: "ValidPages",
@@ -31,27 +30,34 @@ func TestLogEventsPaginator(t *testing.T) { //nolint:cyclop
 				readFile(t, "testdata/mwlogevents2.json"),
 				readFile(t, "testdata/mwlogevents3.json"),
 			},
-			expectResults:  true,
-			expectError:    nil,
-			expectErrorSub: "",
+			wantResults: true,
+			wantErr:     nil,
 		},
 		{
 			name: "ResponseError",
 			pages: [][]byte{
-				readFile(t, "testdata/mwlogevents_error.json"),
+				readFile(t, "testdata/mwlogevents_errors.json"),
 			},
-			expectResults:  false,
-			expectError:    mediawiki.ErrResponseError,
-			expectErrorSub: "Unrecognized value for parameter \\\"letype\\\": foo.",
+			wantResults: false,
+			wantErr: &mediawiki.APIError{
+				Errors: []string{
+					"Unrecognized value for parameter \"letype\": foo.",
+				},
+				Warnings: []string{},
+			},
 		},
 		{
 			name: "ResponseWarnings",
 			pages: [][]byte{
 				readFile(t, "testdata/mwlogevents_warnings.json"),
 			},
-			expectResults:  true,
-			expectError:    mediawiki.ErrResponseWarnings,
-			expectErrorSub: "Unrecognized value for parameter \\\"leprop\\\": foo",
+			wantResults: true,
+			wantErr: &mediawiki.APIError{
+				Errors: []string{},
+				Warnings: []string{
+					"Unrecognized value for parameter \"leprop\": foo",
+				},
+			},
 		},
 	}
 
@@ -76,20 +82,22 @@ func TestLogEventsPaginator(t *testing.T) { //nolint:cyclop
 
 				page, err := paginator.NextPage(t.Context())
 
-				if test.expectResults && len(page.LogEvents) == 0 {
+				if test.wantResults && len(page.LogEvents) == 0 {
 					t.Fatalf("No results in page %d", pageCount+1)
 				}
 
-				if test.expectError == nil && err != nil {
+				if test.wantErr != nil {
+					wantType := reflect.TypeOf(test.wantErr)
+					if wantType != reflect.TypeOf(err) {
+						t.Fatalf("got error of type %T, want %T", err, test.wantErr)
+					}
+
+					diff := cmp.Diff(test.wantErr, err)
+					if diff != "" {
+						t.Fatalf("Error mismatch (-want +got):\n%s", diff)
+					}
+				} else if err != nil {
 					t.Fatalf("Unexpected error querying for nth page: %d", pageCount+1)
-				}
-
-				if test.expectError != nil && !errors.Is(err, test.expectError) {
-					t.Fatalf("Expected error %v, got %v", test.expectError, err)
-				}
-
-				if test.expectError != nil && !strings.Contains(err.Error(), test.expectErrorSub) {
-					t.Fatalf("Expected error to contain %q, got %q", test.expectErrorSub, err.Error())
 				}
 			}
 		})
@@ -159,8 +167,8 @@ func TestLogEventsQueryParametersNone(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	expectedQuery := "action=query&format=json&formatversion=2&list=logevents"
+	expectedQuery := "action=query&errorformat=plaintext&format=json&formatversion=2&list=logevents&uselang=user"
 	if url.RawQuery != expectedQuery {
-		t.Errorf("Expected URL query %q, got %q", expectedQuery, url.RawQuery)
+		t.Errorf("unexpected URL query string: got %q, want %q", url.RawQuery, expectedQuery)
 	}
 }
