@@ -57,7 +57,7 @@ cmp stdout override-config-flag.golden
          
     -c --config  Path to config file (default locations: ./config.yaml, $HOME/.patrolbot/config.yaml)
     -h --help    Help for view
-    -w --wiki    Target wiki for bot operations
+    -w --wiki    Target wiki
 
 -- home/.patrolbot/config.yaml --
 userAgent: PatrolBot/1.0 (+https://github.com/iocalebs/patrolbot)

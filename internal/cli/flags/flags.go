@@ -17,6 +17,6 @@ func Config(cmd *cobra.Command) {
 		"wiki",
 		"w",
 		"",
-		"Target wiki for bot operations",
+		"Target wiki",
 	)
 }
