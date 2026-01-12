@@ -31,7 +31,6 @@ cmp stdout help.golden
             
   COMMANDS  
             
-    init            Initialize PatrolBot configuration file
     view [--flags]  View merged configuration
          
   FLAGS  

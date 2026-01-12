@@ -18,7 +18,7 @@ Set Height 1000 # prevents navigation text and error messages from being truncat
 
 # Run command, accept overwrite with "y" shortcut
 Hide
-Type "patrolbot config init"
+Type "patrolbot init"
 Enter
 Sleep 100ms
 Show
@@ -81,7 +81,7 @@ wikis:
 
 -- output.golden --
 
-> patrolbot config init
+> patrolbot init
 ┃ Configuration file already exists: $WORK/home/.patrolbot/config.yaml
 ┃
 ┃ Overwrite existing config?
@@ -116,7 +116,7 @@ wikis:
 
 
 ────────────────────────────────────────────────────────────────────────────────
-> patrolbot config init
+> patrolbot init
 ┃ Wiki URL
 ┃ > https://en.wikipedia.org
 
@@ -151,7 +151,7 @@ enter next
 
 
 ────────────────────────────────────────────────────────────────────────────────
-> patrolbot config init
+> patrolbot init
 ┃ Wiki URL
 ┃ > https://en.wikipedia.org
 
@@ -186,7 +186,7 @@ enter next
 
 
 ────────────────────────────────────────────────────────────────────────────────
-> patrolbot config init
+> patrolbot init
   Wiki URL
   > https://zeldawiki.wiki
 
@@ -221,7 +221,7 @@ shift+tab back • enter next
 
 
 ────────────────────────────────────────────────────────────────────────────────
-> patrolbot config init
+> patrolbot init
   Wiki URL
   > https://zeldawiki.wiki
 
@@ -256,7 +256,7 @@ shift+tab back • enter next
 
 
 ────────────────────────────────────────────────────────────────────────────────
-> patrolbot config init
+> patrolbot init
   Wiki URL
   > https://zeldawiki.wiki
 
@@ -291,7 +291,7 @@ shift+tab back • enter next
 
 
 ────────────────────────────────────────────────────────────────────────────────
-> patrolbot config init
+> patrolbot init
   Wiki URL
   > https://zeldawiki.wiki
 
@@ -326,7 +326,7 @@ shift+tab back • enter next
 
 
 ────────────────────────────────────────────────────────────────────────────────
-> patrolbot config init
+> patrolbot init
   Create a bot password for PatrolBot
 
     1. Go to https://zeldawiki.wiki/wiki/Special:BotPasswords
@@ -361,7 +361,7 @@ shift+tab back • enter next
 
 
 ────────────────────────────────────────────────────────────────────────────────
-> patrolbot config init
+> patrolbot init
   Create a bot password for PatrolBot
 
     1. Go to https://zeldawiki.wiki/wiki/Special:BotPasswords
@@ -396,7 +396,7 @@ shift+tab back • enter next
 
 
 ────────────────────────────────────────────────────────────────────────────────
-> patrolbot config init
+> patrolbot init
 ┃ Contact email address
 ┃ Please provide an email address to be sent in MediaWiki API requests. This allows the wiki's system administrator to contact you if there's an issue with the bot's API usage
 ┃ >
@@ -431,7 +431,7 @@ shift+tab back • enter submit
 
 
 ────────────────────────────────────────────────────────────────────────────────
-> patrolbot config init
+> patrolbot init
 ┃ Contact email address
 ┃ Please provide an email address to be sent in MediaWiki API requests. This allows the wiki's system administrator to contact you if there's an issue with the bot's API usage
 ┃ > phantomcalebs@example.test
@@ -466,7 +466,7 @@ shift+tab back • enter submit
 
 
 ────────────────────────────────────────────────────────────────────────────────
-> patrolbot config init
+> patrolbot init
 Wrote configuration file: $WORK/home/.patrolbot/config.yaml
 >
 

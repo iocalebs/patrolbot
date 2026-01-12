@@ -63,7 +63,7 @@ func scrub(ts *testscript.TestScript, _ bool, args []string) {
 
 // Replaces $WORK value (a random test dir) with placeholder so that tests that output subdirs can use the
 // `cmp` testscript command. `cmpenv` is not ideal as it cannot update golden files and can expand
-// text that is not actually an env variable (e.g. /$1 as used in `patrolbot config init` help).
+// text that is not actually an env variable (e.g. /$1 as used in `patrolbot init` help).
 func scrubWorkDir(file string, workDir string) string {
 	// Need to account for newlines wrapping the path, due to how fang wraps error messages.
 	workDir = regexp.QuoteMeta(workDir)

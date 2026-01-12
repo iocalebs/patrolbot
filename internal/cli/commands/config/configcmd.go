@@ -2,7 +2,6 @@
 package config
 
 import (
-	initCmd "github.com/iocalebs/patrolbot/internal/cli/commands/config/init"
 	"github.com/iocalebs/patrolbot/internal/cli/commands/config/view"
 	"github.com/spf13/cobra"
 )
@@ -11,7 +10,7 @@ import (
 func NewCommand() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "config",
-		Short: "Manage bot configuration",
+		Short: "Manage PatrolBot configuration",
 		Long: `Manage PatrolBot configuration.
 
 Configuration sources (from highest to lowest priority):
@@ -33,7 +32,6 @@ Configuration sources (from highest to lowest priority):
 	}
 
 	cmd.AddCommand(
-		initCmd.NewCommand(),
 		view.NewCommand(),
 	)
 

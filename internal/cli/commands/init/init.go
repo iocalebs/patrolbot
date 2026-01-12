@@ -1,4 +1,4 @@
-// Package init implements the `patrolbot config init` command
+// Package init implements the `patrolbot init` command
 package init
 
 // TODO: Add report config
@@ -23,7 +23,7 @@ var templateFS embed.FS
 func NewCommand() *cobra.Command {
 	return &cobra.Command{
 		Use:   "init",
-		Short: "Initialize PatrolBot configuration file",
+		Short: "Initialize PatrolBot configuration",
 		Long:  "Interactively create an initial configuration file at $HOME/.patrolbot/config.yaml.",
 		RunE: func(cmd *cobra.Command, _ []string) error {
 			home, err := os.UserHomeDir()

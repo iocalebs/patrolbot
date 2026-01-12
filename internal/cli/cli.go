@@ -14,6 +14,7 @@ import (
 	"github.com/charmbracelet/x/term"
 	"github.com/iocalebs/patrolbot/internal/cli/clierr"
 	configCmd "github.com/iocalebs/patrolbot/internal/cli/commands/config"
+	initCmd "github.com/iocalebs/patrolbot/internal/cli/commands/init"
 	reportCmd "github.com/iocalebs/patrolbot/internal/cli/commands/report"
 	reporter "github.com/iocalebs/patrolbot/internal/report"
 	"github.com/spf13/cobra"
@@ -29,6 +30,7 @@ func Execute() {
 
 	rootCmd.AddCommand(
 		configCmd.NewCommand(),
+		initCmd.NewCommand(),
 		reportCmd.NewCommand(),
 	)
 	rootCmd.SetHelpCommand(&cobra.Command{

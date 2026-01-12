@@ -18,7 +18,7 @@ Set Width 3000 # prevents text wrapping, which prevents the scrub command from d
 
 # Run command, decline overwrite by selecting default "no" option
 Hide
-Type "patrolbot config init"
+Type "patrolbot init"
 Enter
 Sleep 200ms
 Show
@@ -26,7 +26,7 @@ Enter
 
 -- output.golden --
 
-> patrolbot config init
+> patrolbot init
 ┃ Configuration file already exists: $WORK/home/.patrolbot/config.yaml
 ┃
 ┃ Overwrite existing config?
@@ -45,7 +45,7 @@ Enter
 
 
 ────────────────────────────────────────────────────────────────────────────────
-> patrolbot config init
+> patrolbot init
 >
 
 

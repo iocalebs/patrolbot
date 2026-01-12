@@ -17,7 +17,8 @@ cmp stdout help.golden
             
   COMMANDS  
             
-    config [command]         Manage bot configuration
+    config [command]         Manage PatrolBot configuration
+    init                     Initialize PatrolBot configuration
     report <type> [--flags]  Generate a report
          
   FLAGS  
