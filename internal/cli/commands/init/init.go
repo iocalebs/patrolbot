@@ -1,14 +1,14 @@
 // Package init implements the `patrolbot init` command
 package init
 
-// TODO: Add report config
-
 import (
 	"bytes"
 	"embed"
 	"errors"
 	"fmt"
 	"html/template"
+	"io"
+	"io/fs"
 	"os"
 	"path/filepath"
 
@@ -16,8 +16,13 @@ import (
 	"github.com/spf13/cobra"
 )
 
-//go:embed config.yaml.tmpl
-var templateFS embed.FS
+var (
+	//go:embed config.yaml.tmpl
+	configTemplateFS embed.FS
+
+	//go:embed templates/*
+	templateDirFS embed.FS
+)
 
 // NewCommand returns the `config init` Cobra command.
 func NewCommand() *cobra.Command {
@@ -31,16 +36,17 @@ func NewCommand() *cobra.Command {
 				return fmt.Errorf("failed to obtain user home directory: %w", err)
 			}
 
-			path := filepath.Join(home, ".patrolbot", "config.yaml")
+			dir := filepath.Join(home, ".patrolbot")
+			path := filepath.Join(dir, "config.yaml")
 
-			_, err = os.Stat(path)
+			_, err = os.Stat(dir)
 			if err != nil && !errors.Is(err, os.ErrNotExist) {
-				return fmt.Errorf("error checking home config file: %w", err)
+				return fmt.Errorf("error checking home config directory: %w", err)
 			}
 
 			exists := err == nil
 			if exists {
-				overwrite, err := promptOverwrite(cmd.Context(), path)
+				overwrite, err := promptOverwrite(cmd.Context(), dir)
 				if err != nil {
 					return err
 				}
@@ -48,6 +54,11 @@ func NewCommand() *cobra.Command {
 				if !overwrite {
 					return nil
 				}
+			}
+
+			err = copyTemplates(dir)
+			if err != nil {
+				return err
 			}
 
 			cfg, err := promptConfig(cmd.Context())
@@ -67,8 +78,45 @@ func NewCommand() *cobra.Command {
 	}
 }
 
+func copyTemplates(dir string) error {
+	//nolint: wrapcheck
+	// error returned from WalkDir is wrapped once instead of wrapping each specific error
+	err := fs.WalkDir(templateDirFS, "templates", func(path string, entry fs.DirEntry, err error) error {
+		if err != nil {
+			return err
+		}
+
+		destPath := filepath.Join(dir, path)
+
+		if entry.IsDir() {
+			return os.MkdirAll(destPath, 0750)
+		}
+
+		src, err := templateDirFS.Open(path)
+		if err != nil {
+			return err
+		}
+		defer src.Close() //nolint:errcheck
+
+		dest, err := os.Create(filepath.Clean(destPath))
+		if err != nil {
+			return err
+		}
+		defer dest.Close() //nolint:errcheck
+
+		_, err = io.Copy(dest, src)
+
+		return err
+	})
+	if err != nil {
+		return fmt.Errorf("error copying report templates to home config directory: %w", err)
+	}
+
+	return nil
+}
+
 func writeConfig(cfg config.Config, path string) error {
-	tmpl, err := template.ParseFS(templateFS, "config.yaml.tmpl")
+	tmpl, err := template.ParseFS(configTemplateFS, "config.yaml.tmpl")
 	if err != nil {
 		return fmt.Errorf("error parsing config template: %w", err)
 	}

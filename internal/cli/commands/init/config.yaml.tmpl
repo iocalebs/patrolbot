@@ -8,10 +8,23 @@ wikis:
       url: "{{ $value.Site.URL }}"
       scriptPath: "{{ $value.Site.ScriptPath }}"
       articlePath: "{{ $value.Site.ArticlePath }}"
+      rcLinkLimit: 1000
+      rcMaxAgeDays: 90
     auth:
       username: "{{ $value.Auth.Username }}"
       password: "{{ $value.Auth.Password }}"
     client:
       from: "{{ $value.Client.From }}"
       timeout: "10s"
+    reports:
+      templateDir: ./templates
+      types:
+        weekly:
+          template: weekly.tmpl
+          data:
+            patrolExpiring:
+              windows:
+                - days: 7
+                - days: 14
+                - days: 30
 {{ end }}

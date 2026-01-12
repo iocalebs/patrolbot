@@ -40,5 +40,5 @@ rm -r $HOME
 
    ERROR
 
-  Error checking home config file: stat $WORK/home/.patrolbot/config.yaml: permission denied.
+  Error checking home config directory: stat $WORK/home/.patrolbot: permission denied.
 

@@ -4,13 +4,20 @@
 env HOME=$WORK/home
 mkdir -p $HOME/.patrolbot
 cp config.yaml $HOME/.patrolbot/config.yaml
+mkdir -p $HOME/.patrolbot/templates
+cp weekly.tmpl $HOME/.patrolbot/templates/weekly.tmpl
+
 exec vhs cassette.tape
 scrub output.ascii
 cmp $HOME/.patrolbot/config.yaml config.yaml
+cmp $HOME/.patrolbot/templates/weekly.tmpl weekly.tmpl
 cmp output.ascii output.golden
 
 -- config.yaml --
 wiki: zwen
+
+-- weekly.tmpl --
+Pre-existing template
 
 -- cassette.tape --
 Output output.ascii
@@ -27,7 +34,7 @@ Enter
 -- output.golden --
 
 > patrolbot init
-┃ Configuration file already exists: $WORK/home/.patrolbot/config.yaml
+┃ Configuration already exists at $WORK/home/.patrolbot
 ┃
 ┃ Overwrite existing config?
 ┃

@@ -3,11 +3,16 @@
 # User inputs empty values for scriptPath and articlePath, which would be the case for wikis that configure everything
 # To be under the root path
 env HOME=$WORK/home
-mkdir -p $HOME/.patrolbot
 exec vhs cassette.tape
 scrub output.ascii
 cmp $HOME/.patrolbot/config.yaml new-config.golden.yaml
 cmp output.ascii output.golden
+
+exec ls $HOME/.patrolbot
+cmp stdout config-dir.golden
+
+exec ls $HOME/.patrolbot/templates
+cmp stdout templates-subdir.golden
 
 -- cassette.tape --
 Output output.ascii
@@ -43,6 +48,11 @@ Enter
 Type "phantomcalebs@example.test"
 Enter
 
+-- config-dir.golden --
+config.yaml
+templates
+-- templates-subdir.golden --
+weekly.tmpl
 -- new-config.golden.yaml --
 # For more information on how PatrolBot sources config, refer to "patrolbot config --help"
 userAgent: "PatrolBot/1.0 (+https://github.com/iocalebs/patrolbot)"
@@ -53,12 +63,25 @@ wikis:
       url: "https://zeldawiki.wiki"
       scriptPath: ""
       articlePath: ""
+      rcLinkLimit: 1000
+      rcMaxAgeDays: 90
     auth:
       username: "PhantomCaleb@Patrolbot"
       password: "password"
     client:
       from: "phantomcalebs@example.test"
       timeout: "10s"
+    reports:
+      templateDir: ./templates
+      types:
+        weekly:
+          template: weekly.tmpl
+          data:
+            patrolExpiring:
+              windows:
+                - days: 7
+                - days: 14
+                - days: 30
 
 -- output.golden --
 

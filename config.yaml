@@ -16,7 +16,7 @@ wikis:
       from: phantomcalebs@gmail.com
       timeout: 10s
     reports:
-      templateDir: ./reports
+      templateDir: ./templates
       types:
         weekly:
           template: weekly.tmpl

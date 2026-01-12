@@ -24,7 +24,7 @@ func NewCommand() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "report <type>",
 		Short: "Generate a report",
-		Long:  "", // TODO - documentation
+		Long:  "Generate a report using data from MediaWiki Action API queries.",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			list, err := cmd.Flags().GetBool("list")
 			if err != nil {

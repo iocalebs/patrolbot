@@ -30,7 +30,7 @@ func promptOverwrite(ctx context.Context, path string) (bool, error) {
 	form := huh.NewForm(
 		huh.NewGroup(
 			huh.NewConfirm().
-				Title("Configuration file already exists: " + path + "\n\nOverwrite existing config?").
+				Title("Configuration already exists at " + path + "\n\nOverwrite existing config?").
 				WithButtonAlignment(lipgloss.Left).
 				Value(&overwrite),
 		),
