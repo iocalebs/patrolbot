@@ -3,34 +3,64 @@
   "query": {
     "recentchanges": [
       {
-        "type": "edit",
-        "ns": 0,
-        "title": "Rolling Ridge Base",
-        "pageid": 79634,
-        "revid": 1307260,
-        "old_revid": 1306720,
-        "rcid": 415122,
-        "timestamp": "2025-12-19T04:33:53Z"
+        "ns": 6,
+        "timestamp": "2026-01-09T05:30:49Z",
+        "title": "File:ZW Thumb Frostbite Trousers.png",
+        "type": "new"
       },
       {
-        "type": "edit",
-        "ns": 0,
-        "title": "Long Hook",
-        "pageid": 2670,
-        "revid": 1307259,
-        "old_revid": 802582,
-        "rcid": 415121,
-        "timestamp": "2025-12-19T04:31:50Z"
+        "ns": 6,
+        "timestamp": "2026-01-09T05:30:24Z",
+        "title": "File:ZW Thumb Ember Trousers.png",
+        "type": "new"
       },
       {
-        "type": "edit",
-        "ns": 0,
-        "title": "Tuni Nut",
-        "pageid": 4000,
-        "revid": 1307258,
-        "old_revid": 1222712,
-        "rcid": 415120,
-        "timestamp": "2025-12-19T04:29:50Z"
+        "ns": 6,
+        "timestamp": "2026-01-09T05:30:05Z",
+        "title": "File:ZW Thumb Charged Trousers.png",
+        "type": "new"
+      },
+      {
+        "ns": 6,
+        "timestamp": "2026-01-09T05:29:42Z",
+        "title": "File:ZW Thumb Hylian Trousers.png",
+        "type": "new"
+      },
+      {
+        "ns": 6,
+        "timestamp": "2026-01-09T05:29:25Z",
+        "title": "File:ZW Thumb Desert Voe Trousers.png",
+        "type": "new"
+      },
+      {
+        "ns": 6,
+        "timestamp": "2026-01-09T05:28:56Z",
+        "title": "File:ZW Thumb Dark Trousers.png",
+        "type": "new"
+      },
+      {
+        "ns": 6,
+        "timestamp": "2026-01-09T05:27:52Z",
+        "title": "File:ZW Thumb Fierce Deity Boots.png",
+        "type": "new"
+      },
+      {
+        "ns": 6,
+        "timestamp": "2026-01-09T05:27:26Z",
+        "title": "File:ZW Thumb Royal Guard Boots.png",
+        "type": "new"
+      },
+      {
+        "ns": 6,
+        "timestamp": "2026-01-09T05:27:02Z",
+        "title": "File:ZW Thumb Flamebreaker Boots.png",
+        "type": "new"
+      },
+      {
+        "ns": 6,
+        "timestamp": "2026-01-09T05:26:35Z",
+        "title": "File:ZW Thumb Climbing Boots.png",
+        "type": "new"
       }
     ]
   }

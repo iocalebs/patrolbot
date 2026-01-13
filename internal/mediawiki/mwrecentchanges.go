@@ -3,6 +3,7 @@ package mediawiki
 import (
 	"context"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -20,6 +21,9 @@ type RecentChangesQueryParams struct {
 	// older (default): List newest first - rcstart has to be later than rcend.
 	// newer: List oldest first - rcstart has to be before rcend.
 	RCDir string
+
+	// Which properties to get.
+	RCProp []string
 
 	// Show only items that meet these criteria.
 	// For example, to see only minor edits done by logged-in users, set rcshow=minor|!anon.
@@ -104,6 +108,10 @@ func (p *RecentChangesPaginator) NextPage(ctx context.Context) (RecentChangesPag
 
 	if p.params.RCDir != "" {
 		query.Set("rcdir", p.params.RCDir)
+	}
+
+	if len(p.params.RCProp) > 0 {
+		query.Set("rcprop", strings.Join(p.params.RCProp, "|"))
 	}
 
 	if p.params.RCLimit != 0 {

@@ -13,7 +13,7 @@ import (
 func main() {
 	flagset := pflag.NewFlagSet("gentestdata", pflag.ExitOnError)
 	overwrite := flagset.Bool("overwrite", false, "overwrite existing testdata files")
-	flagset.String("config", "../../config.yaml", "path to patrolbot config file")
+	flagset.String("config", "../../../config.yaml", "path to patrolbot config file")
 
 	err := flagset.Parse(os.Args[1:])
 	if err != nil {

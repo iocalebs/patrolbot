@@ -131,10 +131,10 @@ func TestRecentChangesPaginator(t *testing.T) {
 func TestRecentChangesQueryParametersAll(t *testing.T) {
 	t.Parallel()
 
-	var url *url.URL
+	var gotURL *url.URL
 
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		url = r.URL
+		gotURL = r.URL
 
 		w.WriteHeader(http.StatusOK)
 		w.Write([]byte("{}"))
@@ -144,11 +144,13 @@ func TestRecentChangesQueryParametersAll(t *testing.T) {
 	cfg := config.Wiki{}
 	cfg.Site.URL = srv.URL
 
+	time := time.Date(2026, 01, 13, 0, 0, 0, 0, time.UTC)
 	mwclient := mediawiki.NewClient(cfg, http.DefaultClient, slog.Default(), "")
 	paginator := mediawiki.NewRecentChangesPaginator(mwclient, mediawiki.RecentChangesQueryParams{
-		RCStart: time.Now(),
-		RCEnd:   time.Now(),
+		RCStart: time,
+		RCEnd:   time,
 		RCDir:   "newer",
+		RCProp:  []string{"timestamp", "title"},
 		RCShow:  "foo",
 		RCLimit: 10,
 	})
@@ -158,23 +160,34 @@ func TestRecentChangesQueryParametersAll(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	urlParams := url.Query()
+	want := url.Values{
+		"action":        []string{"query"},
+		"errorformat":   []string{"plaintext"},
+		"format":        []string{"json"},
+		"formatversion": []string{"2"},
+		"list":          []string{"recentchanges"},
+		"rcdir":         []string{"newer"},
+		"rcend":         []string{"2026-01-13T00:00:00Z"},
+		"rclimit":       []string{"10"},
+		"rcprop":        []string{"timestamp|title"},
+		"rcshow":        []string{"foo"},
+		"rcstart":       []string{"2026-01-13T00:00:00Z"},
+		"uselang":       []string{"user"},
+	}
 
-	expectedParams := []string{"rcstart", "rcend", "rcdir", "rcshow", "rclimit"}
-	for _, param := range expectedParams {
-		if !urlParams.Has(param) {
-			t.Errorf("Expected query URL to have param %q. URL: %s", param, url)
-		}
+	diff := cmp.Diff(want, gotURL.Query())
+	if diff != "" {
+		t.Errorf("Query parameters mismatch (-want +got):\n%s", diff)
 	}
 }
 
 func TestRecentChangesQueryParametersNone(t *testing.T) {
 	t.Parallel()
 
-	var url *url.URL
+	var gotURL *url.URL
 
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		url = r.URL
+		gotURL = r.URL
 
 		w.Write([]byte("{}"))
 	}))
@@ -191,8 +204,17 @@ func TestRecentChangesQueryParametersNone(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	expectedQuery := "action=query&errorformat=plaintext&format=json&formatversion=2&list=recentchanges&uselang=user"
-	if url.RawQuery != expectedQuery {
-		t.Errorf("unexpected URL query string: got %q, want %q", url.RawQuery, expectedQuery)
+	want := url.Values{
+		"action":        []string{"query"},
+		"errorformat":   []string{"plaintext"},
+		"format":        []string{"json"},
+		"formatversion": []string{"2"},
+		"list":          []string{"recentchanges"},
+		"uselang":       []string{"user"},
+	}
+
+	diff := cmp.Diff(want, gotURL.Query())
+	if diff != "" {
+		t.Errorf("Query parameters mismatch (-want +got):\n%s", diff)
 	}
 }
