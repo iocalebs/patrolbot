@@ -136,7 +136,7 @@ func TestProvider_Data_LoginError(t *testing.T) {
 						}
 					}
 				`))
-		case r.FormValue("action") == "login":
+		case q.Get("action") == "login":
 			w.WriteHeader(http.StatusInternalServerError)
 			w.Write([]byte("an error occurred"))
 		default:
@@ -255,16 +255,6 @@ func TestProvider_Data_PatrolExpiring(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		q := r.URL.Query()
 		switch {
-		case r.FormValue("action") == "login":
-			w.Write([]byte(`
-				{
-					"login": {
-						"result": "Success",
-						"lguserid": 45359339,
-						"lgusername": "PhantomCaleb"
-					}
-				}
-			`))
 		case q.Get("action") == "query" && q.Get("meta") == "tokens" && q.Get("type") == "login":
 			w.Write([]byte(`
 				{
@@ -272,6 +262,16 @@ func TestProvider_Data_PatrolExpiring(t *testing.T) {
 						"tokens": {
 							"logintoken": "8af20f35764bee599652a5d5d9e804d469444fb1+\\"
 						}
+					}
+				}
+			`))
+		case q.Get("action") == "login":
+			w.Write([]byte(`
+				{
+					"login": {
+						"result": "Success",
+						"lguserid": 45359339,
+						"lgusername": "PhantomCaleb"
 					}
 				}
 			`))

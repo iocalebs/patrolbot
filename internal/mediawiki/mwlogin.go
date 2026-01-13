@@ -31,20 +31,23 @@ type loginResponseBody struct {
 // [API:Login]: https://www.mediawiki.org/wiki/API:Login
 func (c *Client) Login(ctx context.Context, token Token) error {
 	formBody := url.Values{
-		"action":        {"login"},
-		"lgname":        {c.config.Auth.Username},
-		"lgpassword":    {c.config.Auth.Password},
-		"lgtoken":       {string(token)},
-		"errorformat":   {"plaintext"},
-		"format":        {"json"},
-		"formatversion": {"2"},
-		"uselang":       {"user"},
+		"lgname":     {c.config.Auth.Username},
+		"lgpassword": {c.config.Auth.Password},
+		"lgtoken":    {string(token)},
 	}.Encode()
 
 	req, err := c.newRequest(ctx, http.MethodPost, strings.NewReader(formBody))
 	if err != nil {
 		return err
 	}
+
+	q := req.URL.Query()
+	q.Set("action", "login")
+	q.Set("errorformat", "plaintext")
+	q.Set("format", "json")
+	q.Set("formatversion", "2")
+	q.Set("uselang", "user")
+	req.URL.RawQuery = q.Encode()
 
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 

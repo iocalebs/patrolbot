@@ -1,6 +1,9 @@
 package mediawiki
 
-import "context"
+import (
+	"context"
+	"net/http"
+)
 
 // Token represents a MediaWiki API token.
 type Token string
@@ -19,12 +22,13 @@ type queryResponseTokens struct {
 //
 // [API:Tokens]: https://www.mediawiki.org/wiki/API:Tokens
 func (c *Client) LoginToken(ctx context.Context) (Token, error) {
-	req, err := c.newQuery(ctx)
+	req, err := c.newRequest(ctx, http.MethodGet, nil)
 	if err != nil {
 		return "", err
 	}
 
 	q := req.URL.Query()
+	q.Set("action", "query")
 	q.Set("meta", "tokens")
 	q.Set("type", "login")
 	req.URL.RawQuery = q.Encode()

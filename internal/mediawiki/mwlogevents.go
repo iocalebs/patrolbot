@@ -2,6 +2,7 @@ package mediawiki
 
 import (
 	"context"
+	"net/http"
 	"strconv"
 	"time"
 )
@@ -77,12 +78,13 @@ func (p *LogEventsPaginator) HasMorePages() bool {
 
 // NextPage requests the next page of logs.
 func (p *LogEventsPaginator) NextPage(ctx context.Context) (LogEventsPage, error) {
-	req, err := p.client.newQuery(ctx)
+	req, err := p.client.newRequest(ctx, http.MethodGet, nil)
 	if err != nil {
 		return LogEventsPage{}, err
 	}
 
 	query := req.URL.Query()
+	query.Set("action", "query")
 	query.Set("list", "logevents")
 
 	if p.params.LEProp != "" {

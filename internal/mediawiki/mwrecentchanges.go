@@ -2,6 +2,7 @@ package mediawiki
 
 import (
 	"context"
+	"net/http"
 	"strconv"
 	"strings"
 	"time"
@@ -86,12 +87,13 @@ func (p *RecentChangesPaginator) HasMorePages() bool {
 
 // NextPage requests the next page of recent changes.
 func (p *RecentChangesPaginator) NextPage(ctx context.Context) (RecentChangesPage, error) {
-	req, err := p.client.newQuery(ctx)
+	req, err := p.client.newRequest(ctx, http.MethodGet, nil)
 	if err != nil {
 		return RecentChangesPage{}, err
 	}
 
 	query := req.URL.Query()
+	query.Set("action", "query")
 	query.Set("list", "recentchanges")
 
 	if !p.params.RCStart.IsZero() {

@@ -55,17 +55,7 @@ func (c *Client) newRequest(ctx context.Context, method string, body io.Reader) 
 	req.Header.Set("From", c.config.Client.From)
 	req.Header.Set("User-Agent", c.userAgent)
 
-	return req, nil
-}
-
-func (c *Client) newQuery(ctx context.Context) (*http.Request, error) {
-	req, err := c.newRequest(ctx, http.MethodGet, nil)
-	if err != nil {
-		return nil, err
-	}
-
 	q := req.URL.Query()
-	q.Set("action", "query")
 	q.Set("errorformat", "plaintext")
 	q.Set("format", "json")
 	q.Set("formatversion", "2")
