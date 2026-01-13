@@ -8,8 +8,11 @@ cmp stderr stderr-invalid-report-type.golden
           
    ERROR  
           
-  Invalid wiki configuration: invalid wiki configuration for "invalidconfig": - .auth.username not set -              
-  .auth.password not set - .reports.templateDir not set.                                                              
+  Invalid wiki configuration: invalid wiki configuration for "invalidconfig":                                         
+  - .site.url not set                                                                                                 
+  - .auth.username not set                                                                                            
+  - .auth.password not set                                                                                            
+  - .reports.templateDir not set                                                                                      
 
 -- stderr-invalid-report-type.golden --
           

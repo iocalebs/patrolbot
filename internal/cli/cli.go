@@ -64,7 +64,20 @@ func errHandler(w io.Writer, styles fang.Styles, err error) {
 	}
 
 	_, _ = fmt.Fprintln(w, styles.ErrorHeader.String())
-	_, _ = fmt.Fprintln(w, styles.ErrorText.Render(err.Error()+"."))
+
+	var multiError *clierr.MultiError
+	if errors.As(err, &multiError) {
+		style := styles.ErrorText.UnsetTransform().Transform(func(s string) string {
+			if s == "" {
+				return s
+			}
+
+			return strings.ToUpper(s[0:1]) + s[1:]
+		})
+		_, _ = fmt.Fprintln(w, style.Render(err.Error()))
+	} else {
+		_, _ = fmt.Fprintln(w, styles.ErrorText.Render(err.Error()+"."))
+	}
 
 	_, _ = fmt.Fprintln(w)
 	if errors.Is(err, reporter.ErrReportTypeNotFound) {

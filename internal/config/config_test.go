@@ -1,8 +1,6 @@
 package config_test
 
 import (
-	"errors"
-	"strings"
 	"testing"
 
 	"github.com/google/go-cmp/cmp"
@@ -27,11 +25,10 @@ func TestCurrentWiki(t *testing.T) {
 	t.Parallel()
 
 	tests := []struct {
-		name         string
-		cfg          config.Config
-		expectResult config.Wiki
-		expectErr    error
-		expectErrMsg string
+		name    string
+		cfg     config.Config
+		want    config.Wiki
+		wantErr string
 	}{
 		{
 			name: "Valid wiki config",
@@ -54,7 +51,7 @@ func TestCurrentWiki(t *testing.T) {
 					},
 				},
 			},
-			expectResult: config.Wiki{
+			want: config.Wiki{
 				Site: config.WikiSite{
 					URL:         "https://zeldawiki.wiki",
 					ScriptPath:  "/w",
@@ -68,7 +65,7 @@ func TestCurrentWiki(t *testing.T) {
 					TemplateDir: "./templates",
 				},
 			},
-			expectErr: nil,
+			wantErr: "",
 		},
 		{
 			name: "wiki not set",
@@ -88,16 +85,15 @@ func TestCurrentWiki(t *testing.T) {
 					},
 				},
 			},
-			expectResult: config.Wiki{},
-			expectErr:    config.ErrWikiNotSet,
+			want:    config.Wiki{},
+			wantErr: config.ErrWikiNotSet.Error(),
 		},
 		{
 			name: "wiki not found",
 			cfg: config.Config{
 				Wiki: "foo",
 			},
-			expectResult: config.Wiki{},
-			expectErr:    config.ErrWikiNotFound,
+			wantErr: "wiki not found: foo",
 		},
 		{
 			name: "required config not set",
@@ -120,8 +116,7 @@ func TestCurrentWiki(t *testing.T) {
 					},
 				},
 			},
-			expectErr: config.ErrWikiInvalid,
-			expectErrMsg: `invalid wiki configuration for "zwen": 
+			wantErr: `invalid wiki configuration for "zwen":
 - .auth.username not set
 - .auth.password not set
 - .reports.templateDir not set`,
@@ -134,17 +129,17 @@ func TestCurrentWiki(t *testing.T) {
 
 			got, err := test.cfg.CurrentWiki()
 
-			diff := cmp.Diff(test.expectResult, got)
+			diff := cmp.Diff(test.want, got)
 			if diff != "" {
 				t.Errorf("result mismatch (-want +got):\n%s", diff)
 			}
 
-			if !errors.Is(err, test.expectErr) {
-				t.Errorf("Expected error %v, got %v", test.expectErr, err)
+			if err != nil && test.wantErr == "" {
+				t.Errorf("Unexpected error: %v", err)
 			}
 
-			if err != nil && !strings.Contains(err.Error(), test.expectErrMsg) {
-				t.Errorf("Expected error message to contain %q, got %q", test.expectErrMsg, err.Error())
+			if err != nil && test.wantErr != "" && err.Error() != test.wantErr {
+				t.Errorf("Got error message %q, want %q", err.Error(), test.wantErr)
 			}
 		})
 	}

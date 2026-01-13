@@ -9,6 +9,7 @@ import (
 	"strings"
 
 	"github.com/go-viper/mapstructure/v2"
+	"github.com/iocalebs/patrolbot/internal/cli/clierr"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
@@ -112,8 +113,8 @@ func (c Config) CurrentWiki() (Wiki, error) {
 	}
 
 	if len(errs) > 0 {
-		errList := "\n- " + strings.Join(errs, "\n- ")
-		return Wiki{}, fmt.Errorf("%w for %q: %s", ErrWikiInvalid, c.Wiki, errList)
+		msg := fmt.Sprintf("invalid wiki configuration for %q", c.Wiki)
+		return Wiki{}, clierr.NewMultiError(msg, errs)
 	}
 
 	return wiki, nil
