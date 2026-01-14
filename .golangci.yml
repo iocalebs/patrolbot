@@ -14,6 +14,10 @@ linters:
       ignored-functions:
         - ^os\.WriteFile
         - ^os\.MkdirAll
+    tagliatelle:
+      case:
+        rules:
+          json: goCamel
     varnamelen:
       ignore-decls:
         - i int

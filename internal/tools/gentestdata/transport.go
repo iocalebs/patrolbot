@@ -11,11 +11,16 @@ import (
 	"os"
 )
 
+type capturedResponse struct {
+	statusCode int
+	body       []byte
+}
+
 type capturingTransport struct {
 	rt             http.RoundTripper
 	overwrite      bool                    // if true, overwrite existing files when writing captures
 	requestMutator func(req *http.Request) // to mutate request before it is sent
-	captured       []byte                  // captured response body
+	captured       *capturedResponse       // captured response
 }
 
 func (transport *capturingTransport) RoundTrip(req *http.Request) (*http.Response, error) {
@@ -50,7 +55,10 @@ func (transport *capturingTransport) RoundTrip(req *http.Request) (*http.Respons
 	}
 
 	bodyBytes = append(bodyBytes, '\n')
-	transport.captured = bodyBytes
+	transport.captured = &capturedResponse{
+		statusCode: resp.StatusCode,
+		body:       bodyBytes,
+	}
 
 	// Restore the response body so it can be read again
 	resp.Body = io.NopCloser(bytes.NewBuffer(bodyBytes))
@@ -67,19 +75,19 @@ func (transport *capturingTransport) removePagination() error {
 
 	var respBody map[string]any
 
-	err := json.Unmarshal(transport.captured, &respBody)
+	err := json.Unmarshal(transport.captured.body, &respBody)
 	if err != nil {
 		return fmt.Errorf("error unmarshaling response body: %w", err)
 	}
 
 	delete(respBody, "continue")
 
-	transport.captured, err = json.MarshalIndent(respBody, "", "  ")
+	transport.captured.body, err = json.MarshalIndent(respBody, "", "  ")
 	if err != nil {
 		return err
 	}
 
-	transport.captured = append(transport.captured, '\n')
+	transport.captured.body = append(transport.captured.body, '\n')
 
 	return nil
 }
@@ -99,10 +107,12 @@ func (transport *capturingTransport) writeCapture(outPath string) error {
 		return fmt.Errorf("cannot stat test file: %w", err)
 	}
 
-	err = os.WriteFile(outPath, transport.captured, 0600)
+	err = os.WriteFile(outPath, transport.captured.body, 0600)
 	if err != nil {
 		return fmt.Errorf("error writing capture to file: %w", err)
 	}
+
+	log.Printf("%d %s: %s", transport.captured.statusCode, http.StatusText(transport.captured.statusCode), outPath)
 
 	return nil
 }

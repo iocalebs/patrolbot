@@ -2,6 +2,7 @@
 package report
 
 import (
+	"bytes"
 	"fmt"
 	"log/slog"
 	"net/http"
@@ -9,15 +10,19 @@ import (
 	"os"
 	"time"
 
+	"github.com/charmbracelet/huh"
 	"github.com/iocalebs/patrolbot/internal/cli/clierr"
 	"github.com/iocalebs/patrolbot/internal/cli/flags"
 	"github.com/iocalebs/patrolbot/internal/clock"
 	"github.com/iocalebs/patrolbot/internal/config"
+	"github.com/iocalebs/patrolbot/internal/discord"
 	"github.com/iocalebs/patrolbot/internal/mediawiki"
 	reporter "github.com/iocalebs/patrolbot/internal/report"
 	"github.com/iocalebs/patrolbot/internal/report/provider"
 	"github.com/spf13/cobra"
 )
+
+const discordTimeout = 10 * time.Second
 
 // NewCommand returns the `report` Cobra command.
 func NewCommand() *cobra.Command {
@@ -31,12 +36,19 @@ func NewCommand() *cobra.Command {
 				return fmt.Errorf("error checking --list flag: %w", err)
 			}
 
+			sendDiscord, err := cmd.Flags().GetBool("send-discord")
+			if err != nil {
+				return fmt.Errorf("error checking --send-discord flag: %w", err)
+			}
+
 			cfg, err := config.Load(cmd.Flags())
 			if err != nil {
 				return fmt.Errorf("error loading config: %w", err)
 			}
 
-			reporter, err := newReporter(cfg)
+			logger := slog.Default()
+
+			reporter, err := newReporter(cfg, logger)
 			if err != nil {
 				return err
 			}
@@ -49,22 +61,24 @@ func NewCommand() *cobra.Command {
 				return clierr.UsageError("missing report type")
 			}
 
-			err = reporter.Report(cmd.Context(), args[0], os.Stdout)
-			if err != nil {
-				return fmt.Errorf("error generating report: %w", err)
-			}
+			discordClient := newDiscordClient(cfg, logger)
 
-			return nil
+			return report(cmd, reporter, args[0], discordClient, sendDiscord)
 		},
 	}
 
 	cmd.Flags().Bool("list", false, "List available report types")
+	cmd.Flags().Bool(
+		"send-discord",
+		false,
+		"Send report to configured Discord channel without prompting for confirmation first",
+	)
 	flags.Config(cmd)
 
 	return cmd
 }
 
-func newReporter(cfg config.Config) (*reporter.Reporter, error) {
+func newReporter(cfg config.Config, logger *slog.Logger) (*reporter.Reporter, error) {
 	wiki, err := cfg.CurrentWiki()
 	if err != nil {
 		return nil, fmt.Errorf("invalid wiki configuration: %w", err)
@@ -79,8 +93,6 @@ func newReporter(cfg config.Config) (*reporter.Reporter, error) {
 		Jar:     jar,
 		Timeout: wiki.Client.Timeout,
 	}
-
-	logger := slog.Default()
 
 	clock := clock.Func(func() time.Time {
 		mockTime := os.Getenv("MOCK_TIME")
@@ -101,4 +113,68 @@ func newReporter(cfg config.Config) (*reporter.Reporter, error) {
 	reporter := reporter.New(wiki.Reports, provider)
 
 	return reporter, nil
+}
+
+func newDiscordClient(cfg config.Config, logger *slog.Logger) *discord.Client {
+	httpClient := &http.Client{
+		Timeout: discordTimeout,
+	}
+	discordClient := discord.NewClient(httpClient, logger, cfg.Discord, cfg.UserAgent)
+
+	return discordClient
+}
+
+func report(
+	cmd *cobra.Command,
+	reporter *reporter.Reporter,
+	reportType string,
+	discordClient *discord.Client,
+	sendDiscord bool,
+) error {
+	var buf bytes.Buffer
+
+	reportConfig, err := reporter.Report(cmd.Context(), reportType, &buf)
+	if err != nil {
+		return fmt.Errorf("error generating report: %w", err)
+	}
+
+	_, err = cmd.OutOrStdout().Write(buf.Bytes())
+	if err != nil {
+		return fmt.Errorf("error writing report to stdout: %w", err)
+	}
+
+	if !sendDiscord {
+		form := huh.NewForm(
+			huh.NewGroup(
+				huh.NewConfirm().
+					Title("Post to Discord?").
+					Value(&sendDiscord),
+			),
+		).WithAccessible(true)
+
+		err = form.RunWithContext(cmd.Context())
+		if err != nil {
+			return fmt.Errorf("prompt failed: %w", err)
+		}
+	}
+
+	if !sendDiscord {
+		return nil
+	}
+
+	req := discord.CreateMessageRequestBody{
+		Content: buf.String(),
+	}
+
+	err = discordClient.CreateMessage(cmd.Context(), reportConfig.ChannelID, req)
+	if err != nil {
+		return fmt.Errorf("error posting report to Discord: %w", err)
+	}
+
+	_, err = cmd.ErrOrStderr().Write([]byte("Sent Discord message\n")) // TODO: message link
+	if err != nil {
+		return fmt.Errorf("error writing to stderr: %w", err)
+	}
+
+	return nil
 }

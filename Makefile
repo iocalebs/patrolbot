@@ -9,7 +9,7 @@ export GOCOVERDIR := coverage
 .PHONY: short
 .PHONY: test 
 .PHONY: update
-.PHONY: updateshort
+.PHONY: updateall
 
 build:
 	go build -o patrolbot
@@ -55,7 +55,7 @@ test: build
 	go test ./...
 
 update: build
-	go test main_test.go -update
+	go test main_test.go -update -short
 
-updateshort: build
-	go test main_test.go -short -update
+updateall: build
+	go test main_test.go -update

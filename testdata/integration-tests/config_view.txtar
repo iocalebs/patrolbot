@@ -22,10 +22,12 @@ cmp stdout override-wiki-flag.golden
 env PATROLBOT_WIKI=
 
 # Env variables can override nested properties.
+env PATROLBOT_DISCORD_TOKEN=token
 env PATROLBOT_WIKIS_ZWEN_CLIENT_PASSWORD=password
 exec patrolbot config view
 cmp stdout override-env-nested.golden
 env PATROLBOT_WIKIS_ZWEN_CLIENT_PASSWORD=
+env PATROLBOT_DISCORD_TOKEN=
 
 # config.yaml in current directory has precedence over home config.
 # Config files are not merged - only the highest precedence file is considered.
@@ -60,6 +62,9 @@ cmp stdout override-config-flag.golden
     -w --wiki    Target wiki
 
 -- home/.patrolbot/config.yaml --
+discord:
+  api: https://discord.com/api/v10
+  token: ""
 userAgent: PatrolBot/1.0 (+https://github.com/iocalebs/patrolbot)
 wiki: zwen
 wikis:
@@ -81,6 +86,7 @@ wikis:
       types:
         weekly:
           template: weekly.tmpl
+          channelID: "911393794262458421"
           data:
             patrolExpiring:
               windows:
@@ -106,6 +112,7 @@ wikis:
       types:
         weekly:
           template: weekly.tmpl
+          channelID: "911393794262458421"
           data:
             patrolExpiring:
               windows:
@@ -121,6 +128,10 @@ wiki: dunepedia
 
 -- basic-home-config.golden --
 {
+  "discord": {
+    "api": "https://discord.com/api/v10",
+    "token": ""
+  },
   "userAgent": "PatrolBot/1.0 (+https://github.com/iocalebs/patrolbot)",
   "wiki": "zwen",
   "wikis": {
@@ -145,6 +156,7 @@ wiki: dunepedia
         "types": {
           "weekly": {
             "template": "weekly.tmpl",
+            "channelID": "911393794262458421",
             "data": {
               "patrolExpiring": {
                 "windows": [
@@ -185,6 +197,7 @@ wiki: dunepedia
         "types": {
           "weekly": {
             "template": "weekly.tmpl",
+            "channelID": "911393794262458421",
             "data": {
               "patrolExpiring": {
                 "windows": [
@@ -208,6 +221,10 @@ wiki: dunepedia
 }
 -- override-wiki-env.golden --
 {
+  "discord": {
+    "api": "https://discord.com/api/v10",
+    "token": ""
+  },
   "userAgent": "PatrolBot/1.0 (+https://github.com/iocalebs/patrolbot)",
   "wiki": "zwfr",
   "wikis": {
@@ -232,6 +249,7 @@ wiki: dunepedia
         "types": {
           "weekly": {
             "template": "weekly.tmpl",
+            "channelID": "911393794262458421",
             "data": {
               "patrolExpiring": {
                 "windows": [
@@ -272,6 +290,7 @@ wiki: dunepedia
         "types": {
           "weekly": {
             "template": "weekly.tmpl",
+            "channelID": "911393794262458421",
             "data": {
               "patrolExpiring": {
                 "windows": [
@@ -295,6 +314,10 @@ wiki: dunepedia
 }
 -- override-wiki-flag.golden --
 {
+  "discord": {
+    "api": "https://discord.com/api/v10",
+    "token": ""
+  },
   "userAgent": "PatrolBot/1.0 (+https://github.com/iocalebs/patrolbot)",
   "wiki": "wikipedia",
   "wikis": {
@@ -319,6 +342,7 @@ wiki: dunepedia
         "types": {
           "weekly": {
             "template": "weekly.tmpl",
+            "channelID": "911393794262458421",
             "data": {
               "patrolExpiring": {
                 "windows": [
@@ -359,6 +383,7 @@ wiki: dunepedia
         "types": {
           "weekly": {
             "template": "weekly.tmpl",
+            "channelID": "911393794262458421",
             "data": {
               "patrolExpiring": {
                 "windows": [
@@ -382,6 +407,10 @@ wiki: dunepedia
 }
 -- override-env-nested.golden --
 {
+  "discord": {
+    "api": "https://discord.com/api/v10",
+    "token": "token"
+  },
   "userAgent": "PatrolBot/1.0 (+https://github.com/iocalebs/patrolbot)",
   "wiki": "zwen",
   "wikis": {
@@ -406,6 +435,7 @@ wiki: dunepedia
         "types": {
           "weekly": {
             "template": "weekly.tmpl",
+            "channelID": "911393794262458421",
             "data": {
               "patrolExpiring": {
                 "windows": [
@@ -446,6 +476,7 @@ wiki: dunepedia
         "types": {
           "weekly": {
             "template": "weekly.tmpl",
+            "channelID": "911393794262458421",
             "data": {
               "patrolExpiring": {
                 "windows": [
@@ -469,12 +500,20 @@ wiki: dunepedia
 }
 -- override-curdir.golden --
 {
+  "discord": {
+    "api": "",
+    "token": ""
+  },
   "userAgent": "",
   "wiki": "wikipedia",
   "wikis": null
 }
 -- override-config-flag.golden --
 {
+  "discord": {
+    "api": "",
+    "token": ""
+  },
   "userAgent": "",
   "wiki": "dunepedia",
   "wikis": null

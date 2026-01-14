@@ -1,30 +1,32 @@
 # For more information on how PatrolBot sources config, refer to "patrolbot config --help"
+discord:
+  api: https://discord.com/api/v10
+  token: "{{ .Discord.Token }}"
 userAgent: "PatrolBot/1.0 (+https://github.com/iocalebs/patrolbot)"
-wiki: {{ .Wiki }}
+wiki: "{{ .WikiName }}"
 wikis:
-{{- range $key, $value := .Wikis }}
-  {{ $key }}:
+  {{ .WikiName }}:
     site:
-      url: "{{ $value.Site.URL }}"
-      scriptPath: "{{ $value.Site.ScriptPath }}"
-      articlePath: "{{ $value.Site.ArticlePath }}"
+      url: "{{ .Wiki.Site.URL }}"
+      scriptPath: "{{ .Wiki.Site.ScriptPath }}"
+      articlePath: "{{ .Wiki.Site.ArticlePath }}"
       rcLinkLimit: 1000
       rcMaxAgeDays: 90
     auth:
-      username: "{{ $value.Auth.Username }}"
-      password: "{{ $value.Auth.Password }}"
+      username: "{{ .Wiki.Auth.Username }}"
+      password: "{{ .Wiki.Auth.Password }}"
     client:
-      from: "{{ $value.Client.From }}"
+      from: "{{ .Wiki.Client.From }}"
       timeout: "10s"
     reports:
       templateDir: ./templates
       types:
         weekly:
           template: weekly.tmpl
+          channelID: "{{ .ChannelID }}"
           data:
             patrolExpiring:
               windows:
                 - days: 7
                 - days: 14
                 - days: 30
-{{ end }}

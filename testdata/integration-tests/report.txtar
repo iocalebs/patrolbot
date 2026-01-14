@@ -1,21 +1,42 @@
 env PATROLBOT_WIKIS_ZWEN_SITE_URL=$MOCK_SERVER_URL
+env PATROLBOT_DISCORD_API=$MOCK_SERVER_URL
 mock action=query.*meta=tokens 200 tokens.mock.json
 mock action=login 200 login.mock.json
 
 # Scenario: RecentChanges query fails with MediaWiki API error
 mock action=query.*list=recentchanges 200 recent-changes-err.mock.json
+ttyin -stdin decline-prompt
 exec patrolbot report weekly
 cmp stdout stdout-mediawiki-error.golden
 
-# Scenario: Recent changes query succeeds
+# Scenario: Recent changes query succeeds, user accepts Discord confirmation prompt, Discord post succeeds
 env MOCK_TIME=2026-01-31T00:00:00Z
 mock action=query.*list=recentchanges 200 recent-changes.mock.json
+mock channels/1234/messages 200 discord-create-message.mock.json
+ttyin -stdin accept-prompt
 exec patrolbot report weekly
 scrub stdout stdout-scrubbed
 cmp stdout-scrubbed stdout-success.golden
+cmp stderr stderr-success.golden
 env MOCK_TIME=
 
+# Scenario: --send-discord flag used to skip confirmation prompt, but Discord post fails
+env MOCK_TIME=2026-01-31T00:00:00Z
+mock action=query.*list=recentchanges 200 recent-changes.mock.json
+mock channels/1234/messages 503
+! exec patrolbot report weekly --send-discord
+cmp stderr stderr-discord-error.golden
+env MOCK_TIME=
+
+-- decline-prompt --
+
+
+-- accept-prompt --
+y
+
 -- config.yaml --
+discord:
+  api: ""
 userAgent: PatrolBot/1.0 (+https://github.com/iocalebs/patrolbot)
 wiki: zwen
 wikis:
@@ -37,6 +58,7 @@ wikis:
       types:
         weekly:
           template: weekly.tmpl
+          channelID: "1234"
           data:
             patrolExpiring:
               windows:
@@ -120,6 +142,42 @@ Link to patrol backlog: <{{ .Config.Site.URL }}{{ .Config.Site.ArticlePath }}/Sp
     ]
   }
 }
+-- discord-create-message.mock.json --
+{
+  "type": 0,
+  "content": "test",
+  "mentions": [],
+  "mention_roles": [],
+  "attachments": [],
+  "embeds": [],
+  "timestamp": "2026-01-14T18:19:35.078000+00:00",
+  "edited_timestamp": null,
+  "flags": 0,
+  "components": [],
+  "id": "5678",
+  "channel_id": "1234",
+  "author": {
+    "id": "1452202767694168094",
+    "username": "PatrolBot",
+    "avatar": null,
+    "discriminator": "3853",
+    "public_flags": 0,
+    "flags": 0,
+    "bot": true,
+    "banner": null,
+    "accent_color": null,
+    "global_name": null,
+    "avatar_decoration_data": null,
+    "collectibles": null,
+    "display_name_styles": null,
+    "banner_color": null,
+    "clan": null,
+    "primary_guild": null
+  },
+  "pinned": false,
+  "mention_everyone": false,
+  "tts": false
+}
 
 -- stdout-mediawiki-error.golden --
 ## Weekly patrol report
@@ -128,6 +186,7 @@ Error:
 Error executing API:RecentChanges query: 
 - Incorrect parameter - mutually exclusive values may not be supplied.
 ```
+Post to Discord? [y/N] 
 -- stdout-success.golden --
 ## Weekly patrol report
 Unpatrolled edits are expiring soon:
@@ -138,4 +197,13 @@ Unpatrolled edits are expiring soon:
 - 3 in the next week
 - 4 in the next 2 weeks
 Link to patrol backlog: <$MOCK_SERVER_URL/wiki/Special:RecentChanges?reviewStatus=unpatrolled&limit=1000&days=30&urlversion=2>
+
+Post to Discord? [y/N]
+-- stderr-success.golden --
+Sent Discord message
+-- stderr-discord-error.golden --
+          
+   ERROR  
+          
+  Error posting report to Discord: 503 Service Unavailable.                                                           
 

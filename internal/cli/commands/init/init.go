@@ -12,7 +12,6 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/iocalebs/patrolbot/internal/config"
 	"github.com/spf13/cobra"
 )
 
@@ -61,12 +60,12 @@ func NewCommand() *cobra.Command {
 				return err
 			}
 
-			cfg, err := promptConfig(cmd.Context())
+			formData, err := promptConfig(cmd.Context())
 			if err != nil {
 				return err
 			}
 
-			err = writeConfig(cfg, path)
+			err = writeConfig(formData, path)
 			if err != nil {
 				return err
 			}
@@ -115,7 +114,7 @@ func copyTemplates(dir string) error {
 	return nil
 }
 
-func writeConfig(cfg config.Config, path string) error {
+func writeConfig(formData formData, path string) error {
 	tmpl, err := template.ParseFS(configTemplateFS, "config.yaml.tmpl")
 	if err != nil {
 		return fmt.Errorf("error parsing config template: %w", err)
@@ -123,7 +122,7 @@ func writeConfig(cfg config.Config, path string) error {
 
 	var buf bytes.Buffer
 
-	err = tmpl.Execute(&buf, cfg)
+	err = tmpl.Execute(&buf, formData)
 	if err != nil {
 		return fmt.Errorf("error creating config.yaml from template: %w", err)
 	}

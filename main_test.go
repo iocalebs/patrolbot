@@ -78,10 +78,15 @@ func mock(mocks *[]mockResponse) func(*testscript.TestScript, bool, []string) {
 			ts.Fatalf("Error parsing status code: %v", err)
 		}
 
+		var body []byte
+		if len(args) > 2 {
+			body = []byte(ts.ReadFile(args[2]))
+		}
+
 		*mocks = append([]mockResponse{{
 			requestURIPattern: re,
 			statusCode:        statusCode,
-			responseBody:      []byte(ts.ReadFile(args[2])),
+			responseBody:      body,
 		}}, *mocks...)
 	}
 }

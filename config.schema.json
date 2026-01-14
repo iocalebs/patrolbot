@@ -5,6 +5,10 @@
   "$defs": {
     "Config": {
       "properties": {
+        "discord": {
+          "$ref": "#/$defs/Discord",
+          "description": "Discord bot configuration"
+        },
         "userAgent": {
           "type": "string",
           "description": "User-Agent HTTP header for MediaWiki API requests\nhttps://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/User-Agent"
@@ -24,11 +28,31 @@
       "additionalProperties": false,
       "type": "object",
       "required": [
+        "discord",
         "userAgent",
         "wiki",
         "wikis"
       ],
       "description": "Config represents the configuration for PatrolBot."
+    },
+    "Discord": {
+      "properties": {
+        "api": {
+          "type": "string",
+          "description": "API version URL, e.g. https://discord.com/api/v10\nSee: https://discord.com/developers/docs/reference#api-versioning"
+        },
+        "token": {
+          "type": "string",
+          "description": "Bot token"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "required": [
+        "api",
+        "token"
+      ],
+      "description": "Discord represents the Discord bot configuration."
     },
     "Duration": {
       "properties": {
@@ -83,6 +107,10 @@
           "type": "string",
           "description": "File name of the template to use for the report"
         },
+        "channelID": {
+          "type": "string",
+          "description": "Discord channel to post the report to"
+        },
         "data": {
           "$ref": "#/$defs/ReportData",
           "description": "Data to use in the report"
@@ -92,6 +120,7 @@
       "type": "object",
       "required": [
         "template",
+        "channelID",
         "data"
       ],
       "description": "ReportType represents the configuration for a specific report type."

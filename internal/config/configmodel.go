@@ -4,6 +4,9 @@ import "time"
 
 // Config represents the configuration for PatrolBot.
 type Config struct {
+	// Discord bot configuration
+	Discord Discord `json:"discord"`
+
 	// User-Agent HTTP header for MediaWiki API requests
 	// https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/User-Agent
 	UserAgent string `json:"userAgent"`
@@ -13,6 +16,16 @@ type Config struct {
 
 	// Wiki configurations
 	Wikis map[string]Wiki `json:"wikis"`
+}
+
+// Discord represents the Discord bot configuration.
+type Discord struct {
+	// API version URL, e.g. https://discord.com/api/v10
+	// See: https://discord.com/developers/docs/reference#api-versioning
+	API string `json:"api"`
+
+	// Bot token
+	Token string `json:"token"`
 }
 
 // Wiki represents the configuration for a particular MediaWiki instance.
@@ -75,6 +88,9 @@ type Reports struct {
 type ReportType struct {
 	// File name of the template to use for the report
 	Template string `json:"template"`
+
+	// Discord channel to post the report to
+	ChannelID string `json:"channelID"`
 
 	// Data to use in the report
 	Data ReportData `json:"data"`

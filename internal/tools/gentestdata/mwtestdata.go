@@ -21,7 +21,10 @@ func mwTestData(cfg config.Config, overwrite bool) error {
 		return fmt.Errorf("wiki '%s' not found in config", testWiki)
 	}
 
-	mwclient, capturer, err := setup(wikiCfg, overwrite)
+	mwclient, capturer, err := setupMediaWiki(wikiCfg, overwrite)
+	if err != nil {
+		return err
+	}
 
 	generators := [](func(context.Context, *mediawiki.Client, *capturingTransport) error){
 		tokensWarnings,
@@ -37,10 +40,6 @@ func mwTestData(cfg config.Config, overwrite bool) error {
 	}
 
 	for _, generator := range generators {
-		if err != nil {
-			return err
-		}
-
 		err = generator(context.TODO(), mwclient, capturer)
 		if err != nil {
 			return err
@@ -50,7 +49,7 @@ func mwTestData(cfg config.Config, overwrite bool) error {
 	return nil
 }
 
-func setup(cfg config.Wiki, overwrite bool) (*mediawiki.Client, *capturingTransport, error) {
+func setupMediaWiki(cfg config.Wiki, overwrite bool) (*mediawiki.Client, *capturingTransport, error) {
 	jar, err := cookiejar.New(nil)
 	if err != nil {
 		return nil, nil, err

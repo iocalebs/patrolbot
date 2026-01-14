@@ -11,8 +11,9 @@ cmp stdout stdout.golden
          
   FLAGS  
          
-    -c --config  Path to config file (default locations: ./config.yaml, $HOME/.patrolbot/config.yaml)
-    -h --help    Help for report
-    --list       List available report types
-    -w --wiki    Target wiki
+    -c --config     Path to config file (default locations: ./config.yaml, $HOME/.patrolbot/config.yaml)
+    -h --help       Help for report
+    --list          List available report types
+    --send-discord  Send report to configured Discord channel without prompting for confirmation first
+    -w --wiki       Target wiki
 

@@ -74,6 +74,14 @@ Show
 Type "phantomcalebs@example.test"
 Enter
 
+# Bot token
+Type "token"
+Enter
+
+# Channel ID
+Type "12345"
+Enter
+
 -- weekly.golden.tmpl --
 ## Weekly patrol report
 Unpatrolled edits are expiring soon:
@@ -92,8 +100,11 @@ Unpatrolled edits are expiring soon:
 Link to patrol backlog: <{{ .Config.Site.URL }}{{ .Config.Site.ArticlePath }}/Special:RecentChanges?reviewStatus=unpatrolled&limit={{ .Config.Site.RCLinkLimit }}&days={{ .Config.Site.RCMaxAgeDays }}&urlversion=2>
 -- new-config.golden.yaml --
 # For more information on how PatrolBot sources config, refer to "patrolbot config --help"
+discord:
+  api: https://discord.com/api/v10
+  token: "token"
 userAgent: "PatrolBot/1.0 (+https://github.com/iocalebs/patrolbot)"
-wiki: zw
+wiki: "zw"
 wikis:
   zw:
     site:
@@ -113,16 +124,16 @@ wikis:
       types:
         weekly:
           template: weekly.tmpl
+          channelID: "12345"
           data:
             patrolExpiring:
               windows:
                 - days: 7
                 - days: 14
                 - days: 30
-
 -- output.golden --
 
-> patrolbot init
+p> patrolbot init
 ┃ Configuration already exists at $WORK/home/.patrolbot
 ┃
 ┃ Overwrite existing config?
@@ -157,7 +168,7 @@ wikis:
 
 
 ────────────────────────────────────────────────────────────────────────────────
-> patrolbot init
+p> patrolbot init
 ┃ Wiki URL
 ┃ > https://en.wikipedia.org
 
@@ -192,7 +203,7 @@ enter next
 
 
 ────────────────────────────────────────────────────────────────────────────────
-> patrolbot init
+p> patrolbot init
 ┃ Wiki URL
 ┃ > https://en.wikipedia.org
 
@@ -227,7 +238,7 @@ enter next
 
 
 ────────────────────────────────────────────────────────────────────────────────
-> patrolbot init
+p> patrolbot init
   Wiki URL
   > https://zeldawiki.wiki
 
@@ -262,7 +273,7 @@ shift+tab back • enter next
 
 
 ────────────────────────────────────────────────────────────────────────────────
-> patrolbot init
+p> patrolbot init
   Wiki URL
   > https://zeldawiki.wiki
 
@@ -297,7 +308,7 @@ shift+tab back • enter next
 
 
 ────────────────────────────────────────────────────────────────────────────────
-> patrolbot init
+p> patrolbot init
   Wiki URL
   > https://zeldawiki.wiki
 
@@ -332,7 +343,7 @@ shift+tab back • enter next
 
 
 ────────────────────────────────────────────────────────────────────────────────
-> patrolbot init
+p> patrolbot init
   Wiki URL
   > https://zeldawiki.wiki
 
@@ -367,7 +378,7 @@ shift+tab back • enter next
 
 
 ────────────────────────────────────────────────────────────────────────────────
-> patrolbot init
+p> patrolbot init
   Create a bot password for PatrolBot
 
     1. Go to https://zeldawiki.wiki/wiki/Special:BotPasswords
@@ -402,7 +413,7 @@ shift+tab back • enter next
 
 
 ────────────────────────────────────────────────────────────────────────────────
-> patrolbot init
+p> patrolbot init
   Create a bot password for PatrolBot
 
     1. Go to https://zeldawiki.wiki/wiki/Special:BotPasswords
@@ -437,7 +448,7 @@ shift+tab back • enter next
 
 
 ────────────────────────────────────────────────────────────────────────────────
-> patrolbot init
+p> patrolbot init
 ┃ Contact email address
 ┃ Please provide an email address to be sent in MediaWiki API requests. This allows the wiki's system administrator to contact you if there's an issue with the bot's API usage
 ┃ >
@@ -453,7 +464,7 @@ shift+tab back • enter next
 
 
 
-shift+tab back • enter submit
+shift+tab back • enter next
 
 
 
@@ -472,7 +483,7 @@ shift+tab back • enter submit
 
 
 ────────────────────────────────────────────────────────────────────────────────
-> patrolbot init
+p> patrolbot init
 ┃ Contact email address
 ┃ Please provide an email address to be sent in MediaWiki API requests. This allows the wiki's system administrator to contact you if there's an issue with the bot's API usage
 ┃ > phantomcalebs@example.test
@@ -488,6 +499,111 @@ shift+tab back • enter submit
 
 
 
+shift+tab back • enter next
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+p> patrolbot init
+  Create a Discord app for PatrolBot
+
+  Create a Discord app in the developer portal:
+  https://discord.com/developers/applications?new_application=true
+
+  On the Bot page under Token, click "Reset Token" to generate a new bot token.
+
+
+┃ Bot token
+┃ >
+
+
+
+
+
+shift+tab back • enter next
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+p> patrolbot init
+  Create a Discord app for PatrolBot
+
+  Create a Discord app in the developer portal:
+  https://discord.com/developers/applications?new_application=true
+
+  On the Bot page under Token, click "Reset Token" to generate a new bot token.
+
+
+┃ Bot token
+┃ > token
+
+
+
+
+
+shift+tab back • enter next
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+p> patrolbot init
+┃ Discord channel ID
+┃ Enter the ID of the Discord channel where PatrolBot should post reports.
+┃ To obtain a channel's ID, right click it in the channel list and click "Copy Channel ID".
+┃ >
+
+
+
+
+
+
+
+
+
+
+
 shift+tab back • enter submit
 
 
@@ -507,7 +623,42 @@ shift+tab back • enter submit
 
 
 ────────────────────────────────────────────────────────────────────────────────
-> patrolbot init
+p> patrolbot init
+┃ Discord channel ID
+┃ Enter the ID of the Discord channel where PatrolBot should post reports.
+┃ To obtain a channel's ID, right click it in the channel list and click "Copy Channel ID".
+┃ > 12345
+
+
+
+
+
+
+
+
+
+
+
+shift+tab back • enter submit
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+p> patrolbot init
 Wrote configuration file: $WORK/home/.patrolbot/config.yaml
 >
 

@@ -42,29 +42,29 @@ func New(cfg config.Reports, provider *provider.Provider) *Reporter {
 }
 
 // Report writes a report to the given [io.Writer].
-func (r *Reporter) Report(ctx context.Context, reportType string, w io.Writer) error {
+func (r *Reporter) Report(ctx context.Context, reportType string, w io.Writer) (config.ReportType, error) {
 	reportCfg, ok := r.cfg.Types[reportType]
 	if !ok {
-		return fmt.Errorf("%w: %s", ErrReportTypeNotFound, reportType)
+		return config.ReportType{}, fmt.Errorf("%w: %s", ErrReportTypeNotFound, reportType)
 	}
 
 	if reportCfg.Template == "" {
-		return fmt.Errorf("%w: no template configured for report type %s", ErrInvalidConfig, reportType)
+		return config.ReportType{}, fmt.Errorf("%w: no template configured for report type %s", ErrInvalidConfig, reportType)
 	}
 
 	tmpl, err := template.ParseFiles(filepath.Join(r.cfg.TemplateDir, reportCfg.Template))
 	if err != nil {
-		return fmt.Errorf("error parsing report template: %w", err)
+		return config.ReportType{}, fmt.Errorf("error parsing report template: %w", err)
 	}
 
 	data := r.provider.Data(ctx, reportCfg.Data)
 
 	err = tmpl.Execute(w, data)
 	if err != nil {
-		return fmt.Errorf("error generating report from template: %w", err)
+		return config.ReportType{}, fmt.Errorf("error generating report from template: %w", err)
 	}
 
-	return nil
+	return reportCfg, nil
 }
 
 // ListReports writes the available report types to the given [io.Writer].

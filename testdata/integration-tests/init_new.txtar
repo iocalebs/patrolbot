@@ -48,6 +48,14 @@ Enter
 Type "phantomcalebs@example.test"
 Enter
 
+# Bot token
+Type "token"
+Enter
+
+# Channel ID
+Type "12345"
+Enter
+
 -- config-dir.golden --
 config.yaml
 templates
@@ -55,8 +63,11 @@ templates
 weekly.tmpl
 -- new-config.golden.yaml --
 # For more information on how PatrolBot sources config, refer to "patrolbot config --help"
+discord:
+  api: https://discord.com/api/v10
+  token: "token"
 userAgent: "PatrolBot/1.0 (+https://github.com/iocalebs/patrolbot)"
-wiki: zw
+wiki: "zw"
 wikis:
   zw:
     site:
@@ -76,13 +87,13 @@ wikis:
       types:
         weekly:
           template: weekly.tmpl
+          channelID: "12345"
           data:
             patrolExpiring:
               windows:
                 - days: 7
                 - days: 14
                 - days: 30
-
 -- output.golden --
 
 > patrolbot init
@@ -521,7 +532,7 @@ shift+tab back • enter next
 
 
 
-shift+tab back • enter submit
+shift+tab back • enter next
 
 
 
@@ -545,6 +556,146 @@ shift+tab back • enter submit
 ┃ Please provide an email address to be sent in MediaWiki API requests. This allows the wiki's system administrator to contact you if there's an issue with the bot's API usage
 ┃ > phantomcalebs@example.test
 
+
+
+
+
+
+
+
+
+
+
+
+shift+tab back • enter next
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> patrolbot init
+  Create a Discord app for PatrolBot
+
+  Create a Discord app in the developer portal:
+  https://discord.com/developers/applications?new_application=true
+
+  On the Bot page under Token, click "Reset Token" to generate a new bot token.
+
+
+┃ Bot token
+┃ >
+
+
+
+
+
+shift+tab back • enter next
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> patrolbot init
+  Create a Discord app for PatrolBot
+
+  Create a Discord app in the developer portal:
+  https://discord.com/developers/applications?new_application=true
+
+  On the Bot page under Token, click "Reset Token" to generate a new bot token.
+
+
+┃ Bot token
+┃ > token
+
+
+
+
+
+shift+tab back • enter next
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> patrolbot init
+┃ Discord channel ID
+┃ Enter the ID of the Discord channel where PatrolBot should post reports.
+┃ To obtain a channel's ID, right click it in the channel list and click "Copy Channel ID".
+┃ >
+
+
+
+
+
+
+
+
+
+
+
+shift+tab back • enter submit
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> patrolbot init
+┃ Discord channel ID
+┃ Enter the ID of the Discord channel where PatrolBot should post reports.
+┃ To obtain a channel's ID, right click it in the channel list and click "Copy Channel ID".
+┃ > 12345
 
 
 

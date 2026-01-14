@@ -7,6 +7,7 @@ cmp stderr stderr-no-report-type.golden
 ! exec patrolbot report foo --wiki zwen
 cmp stderr stderr-invalid-report-type.golden
 
+stdin decline-prompt
 exec patrolbot report error --wiki zwen
 cmp stdout stdout-bad-wiki-url.golden
 
@@ -40,6 +41,9 @@ wikis:
 -- templates/error.tmpl --
 {{ .Error }}
 
+-- decline-prompt --
+n
+
 -- stderr-invalid-config.golden --
           
    ERROR  
@@ -69,3 +73,4 @@ wikis:
 -- stdout-bad-wiki-url.golden --
 Error logging into MediaWiki: failed to create API URL: parse "http://localhost:foo": invalid port ":foo" after host
 
+Post to Discord? [y/N] 

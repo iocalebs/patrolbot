@@ -5,6 +5,7 @@ package main
 import (
 	"log"
 	"os"
+	"path/filepath"
 
 	"github.com/iocalebs/patrolbot/internal/config"
 	"github.com/spf13/pflag"
@@ -25,8 +26,21 @@ func main() {
 		log.Fatalf("Error loading config: %v", err)
 	}
 
-	err = mwTestData(cfg, *overwrite)
+	wd, err := os.Getwd()
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalf("Error getting current working dir: %v", err)
+	}
+
+	switch filepath.Base(wd) {
+	case "mediawiki":
+		err = mwTestData(cfg, *overwrite)
+		if err != nil {
+			log.Fatal(err)
+		}
+	case "discord":
+		err = discordTestData(cfg, *overwrite)
+		if err != nil {
+			log.Fatal(err)
+		}
 	}
 }

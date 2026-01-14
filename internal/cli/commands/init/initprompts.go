@@ -14,6 +14,13 @@ import (
 // Capitalized user-facing error message.
 var errInvalidInput = errors.New("Invalid input") //nolint:staticcheck
 
+type formData struct {
+	WikiName  string
+	Wiki      config.Wiki
+	Discord   config.Discord
+	ChannelID string
+}
+
 func notEmpty(fieldName string) func(string) error {
 	return func(fieldValue string) error {
 		if fieldValue == "" {
@@ -48,22 +55,21 @@ func promptOverwrite(ctx context.Context, path string) (bool, error) {
 	return true, nil
 }
 
-func promptConfig(ctx context.Context) (config.Config, error) { //nolint:funlen
+func promptConfig(ctx context.Context) (formData, error) { //nolint:funlen
 	var (
-		wiki config.Wiki
-		name string
+		data formData
 		url  url.URL
 	)
 
-	wiki.Site.ScriptPath = "/w"
-	wiki.Site.ArticlePath = "/wiki"
+	data.Wiki.Site.ScriptPath = "/w"
+	data.Wiki.Site.ArticlePath = "/wiki"
 
 	form := huh.NewForm(
 		huh.NewGroup(
 			huh.NewInput().
 				Title("Wiki URL").
 				Placeholder("https://en.wikipedia.org").
-				Value(&wiki.Site.URL).
+				Value(&data.Wiki.Site.URL).
 				Validate(func(input string) error {
 					if input == "" {
 						return fmt.Errorf("%w: URL cannot be empty", errInvalidInput)
@@ -83,13 +89,13 @@ func promptConfig(ctx context.Context) (config.Config, error) { //nolint:funlen
 			huh.NewInput().
 				Title("Wiki name").
 				Description("A short, one-word ID for use in commands.").
-				Value(&name).
+				Value(&data.WikiName).
 				Validate(notEmpty("Wiki name")),
 
 			huh.NewInput().
 				Title("Script path").
 				Description("You can confirm the wiki's script path by adding {{SCRIPTPATH}} to a sandbox page.").
-				Value(&wiki.Site.ScriptPath),
+				Value(&data.Wiki.Site.ScriptPath),
 
 			huh.NewInput().
 				Title("Article path").
@@ -97,29 +103,29 @@ func promptConfig(ctx context.Context) (config.Config, error) { //nolint:funlen
 					"You can confirm the wiki's article path by adding {{ARTICLEPATH}} to a sandbox page. "+
 						"Omit the /$1 at the end.",
 				).
-				Value(&wiki.Site.ArticlePath),
+				Value(&data.Wiki.Site.ArticlePath),
 		),
 
 		huh.NewGroup(
 			huh.NewNote().
 				Title("Create a bot password for PatrolBot").
 				DescriptionFunc(func() string {
-					botPasswordsURL := url.JoinPath(wiki.Site.ArticlePath, "Special:BotPasswords")
+					botPasswordsURL := url.JoinPath(data.Wiki.Site.ArticlePath, "Special:BotPasswords")
 
 					return `  1. Go to ` + botPasswordsURL.String() + `
   2. Create a new bot password with bot name "PatrolBot"
   3. Grant "Patrol changes to pages", then click "Create"
   4. Enter bot username and password below.`
-				}, []*string{&wiki.Site.URL, &wiki.Site.ArticlePath}),
+				}, []*string{&data.Wiki.Site.URL, &data.Wiki.Site.ArticlePath}),
 
 			huh.NewInput().
 				Title("Username").
 				Placeholder("WikiUsername@PatrolBot").
-				Value(&wiki.Auth.Username),
+				Value(&data.Wiki.Auth.Username),
 
 			huh.NewInput().
 				Title("Password").
-				Value(&wiki.Auth.Password),
+				Value(&data.Wiki.Auth.Password),
 		),
 
 		huh.NewGroup(
@@ -130,21 +136,35 @@ func promptConfig(ctx context.Context) (config.Config, error) { //nolint:funlen
 						"This allows the wiki's system administrator to contact you if there's an issue with the "+
 						"bot's API usage",
 				).
-				Value(&wiki.Client.From),
+				Value(&data.Wiki.Client.From),
+		),
+
+		huh.NewGroup(
+			huh.NewNote().
+				Title("Create a Discord app for PatrolBot").
+				Description(
+					"Create a Discord app in the developer portal:\n"+
+						"https://discord.com/developers/applications?new\\_application=true\n\n"+
+						"On the Bot page under Token, click \"Reset Token\" to generate a new bot token."),
+			huh.NewInput().
+				Title("Bot token").
+				Value(&data.Discord.Token),
+		),
+
+		huh.NewGroup(
+			huh.NewInput().
+				Title("Discord channel ID").
+				Description(
+					"Enter the ID of the Discord channel where PatrolBot should post reports.\n"+
+						"To obtain a channel's ID, right click it in the channel list and click \"Copy Channel ID\".").
+				Value(&data.ChannelID),
 		),
 	)
 
 	err := form.RunWithContext(ctx)
 	if err != nil {
-		return config.Config{}, fmt.Errorf("prompt failed: %w", err)
+		return formData{}, fmt.Errorf("prompt failed: %w", err)
 	}
 
-	cfg := config.Config{
-		Wiki: name,
-		Wikis: map[string]config.Wiki{
-			name: wiki,
-		},
-	}
-
-	return cfg, nil
+	return data, nil
 }

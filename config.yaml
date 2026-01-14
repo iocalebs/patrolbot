@@ -1,5 +1,8 @@
 # yaml-language-server: $schema=config.schema.json
-userAgent: "PatrolBot/1.0 (+https://github.com/iocalebs/patrolbot)"
+discord:
+  api: https://discord.com/api/v10
+  token: ""
+userAgent: PatrolBot/1.0 (+https://github.com/iocalebs/patrolbot)
 wiki: "" # Env variable PATROLBOT_WIKI or flag --wiki
 wikis:
   zwen:
@@ -19,6 +22,7 @@ wikis:
       templateDir: ./templates
       types:
         weekly:
+          channelID: "911393794262458421"
           template: weekly.tmpl
           data:
             patrolExpiring:
