@@ -22,6 +22,7 @@ linters:
         - ts *testscript.TestScript
         - u *url.URL
         - r *http.Request
+        - re *regexp.Regexp
         - w http.ResponseWriter
         - w io.Writer
 

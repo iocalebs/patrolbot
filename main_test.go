@@ -1,12 +1,12 @@
 package main_test
 
-// TODO: Integration test report with errors
-// TODO: Integration test that verifies config created by init is valid.
-
 import (
 	"flag"
+	"net/http"
+	"net/http/httptest"
 	"os"
 	"regexp"
+	"strconv"
 	"strings"
 	"testing"
 
@@ -15,13 +15,22 @@ import (
 
 var update = flag.Bool("update", false, "update golden files") //nolint:gochecknoglobals
 
+type mockResponse struct {
+	requestURIPattern *regexp.Regexp
+	statusCode        int
+	responseBody      []byte
+}
+
 func TestCommands(t *testing.T) {
 	t.Parallel()
+
+	mocks := []mockResponse{}
 
 	params := testscript.Params{
 		Dir:           "testdata/integration-tests",
 		UpdateScripts: *update,
 		Cmds: map[string]func(ts *testscript.TestScript, neg bool, args []string){
+			"mock":  mock(&mocks),
 			"scrub": scrub,
 		},
 		Setup: func(env *testscript.Env) error {
@@ -36,6 +45,20 @@ func TestCommands(t *testing.T) {
 			testPath := hostPath + string(os.PathListSeparator) + cwd
 			env.Setenv("PATH", testPath)
 
+			srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				for _, mock := range mocks {
+					if mock.requestURIPattern.MatchString(r.URL.RequestURI()) {
+						w.WriteHeader(mock.statusCode)
+						w.Write(mock.responseBody)
+
+						return
+					}
+				}
+
+				w.WriteHeader(http.StatusNotImplemented)
+			}))
+			env.Setenv("MOCK_SERVER_URL", srv.URL)
+
 			return nil
 		},
 	}
@@ -43,10 +66,31 @@ func TestCommands(t *testing.T) {
 	testscript.Run(t, params)
 }
 
+func mock(mocks *[]mockResponse) func(*testscript.TestScript, bool, []string) {
+	return func(ts *testscript.TestScript, _ bool, args []string) {
+		re, err := regexp.Compile(args[0])
+		if err != nil {
+			ts.Fatalf("Error compiling regex pattern: %v", err)
+		}
+
+		statusCode, err := strconv.Atoi(args[1])
+		if err != nil {
+			ts.Fatalf("Error parsing status code: %v", err)
+		}
+
+		*mocks = append([]mockResponse{{
+			requestURIPattern: re,
+			statusCode:        statusCode,
+			responseBody:      []byte(ts.ReadFile(args[2])),
+		}}, *mocks...)
+	}
+}
+
 func scrub(ts *testscript.TestScript, _ bool, args []string) {
 	scrubbed := ts.ReadFile(args[0])
 	scrubbed = scrubWorkDir(scrubbed, ts.Getenv("WORK"))
 	scrubbed = scrubVHS(scrubbed)
+	scrubbed = scrubMockServerURL(ts, scrubbed)
 
 	var outPath string
 	if len(args) > 1 {
@@ -81,6 +125,16 @@ func scrubWorkDir(file string, workDir string) string {
 	scrubbed = strings.Join(lines, "\n")
 
 	return scrubbed
+}
+
+// Scrub mock server URL from output given that it uses a random port.
+func scrubMockServerURL(ts *testscript.TestScript, text string) string {
+	url := ts.Getenv("MOCK_SERVER_URL")
+	if url != "" {
+		text = strings.ReplaceAll(text, url, "$MOCK_SERVER_URL")
+	}
+
+	return text
 }
 
 // Scrub empty frames from the start of a charmbracelet/vhs recording.

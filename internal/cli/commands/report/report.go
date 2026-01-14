@@ -79,9 +79,25 @@ func newReporter(cfg config.Config) (*reporter.Reporter, error) {
 		Jar:     jar,
 		Timeout: wiki.Client.Timeout,
 	}
+
 	logger := slog.Default()
+
+	clock := clock.Func(func() time.Time {
+		mockTime := os.Getenv("MOCK_TIME")
+		if mockTime != "" {
+			now, err := time.Parse(time.RFC3339, mockTime)
+			if err == nil {
+				return now
+			}
+
+			logger.Error("Error parsing $MOCK_TIME %q: %v", mockTime, now)
+		}
+
+		return time.Now()
+	})
+
 	mwclient := mediawiki.NewClient(wiki, &httpClient, logger, cfg.UserAgent)
-	provider := provider.New(logger, clock.Func(time.Now), mwclient, wiki)
+	provider := provider.New(logger, clock, mwclient, wiki)
 	reporter := reporter.New(wiki.Reports, provider)
 
 	return reporter, nil

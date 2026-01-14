@@ -1,26 +1,14 @@
 ! exec patrolbot report weekly --wiki invalidconfig
 cmp stderr stderr-invalid-config.golden
 
+! exec patrolbot report --wiki zwen
+cmp stderr stderr-no-report-type.golden
+
 ! exec patrolbot report foo --wiki zwen
 cmp stderr stderr-invalid-report-type.golden
 
--- stderr-invalid-config.golden --
-          
-   ERROR  
-          
-  Invalid wiki configuration: invalid wiki configuration for "invalidconfig":                                         
-  - .site.url not set                                                                                                 
-  - .auth.username not set                                                                                            
-  - .auth.password not set                                                                                            
-  - .reports.templateDir not set                                                                                      
-
--- stderr-invalid-report-type.golden --
-          
-   ERROR  
-          
-  Error generating report: invalid report type: foo.                                                                  
-
-  Use --list to see available report types.
+exec patrolbot report error --wiki zwen
+cmp stdout stdout-bad-wiki-url.golden
 
 -- config.yaml --
 wikis:
@@ -33,9 +21,51 @@ wikis:
           template: ""
   zwen:
     site:
-      url: https://zeldawiki.wiki
+      url: http://localhost:foo
     auth:
       username: "user"
       password: "pass"
     reports:
-      templateDir: "foo"
+      templateDir: ./templates
+      types:
+        error:
+          template: error.tmpl
+          data:
+            patrolExpiring:
+              windows:
+                - days: 7
+                - days: 14
+                - days: 30
+
+-- templates/error.tmpl --
+{{ .Error }}
+
+-- stderr-invalid-config.golden --
+          
+   ERROR  
+          
+  Invalid wiki configuration: invalid wiki configuration for "invalidconfig":                                         
+  - .site.url not set                                                                                                 
+  - .auth.username not set                                                                                            
+  - .auth.password not set                                                                                            
+  - .reports.templateDir not set                                                                                      
+
+-- stderr-no-report-type.golden --
+          
+   ERROR  
+          
+  Missing report type.                                                                                                
+
+  Try --help for usage.
+
+-- stderr-invalid-report-type.golden --
+          
+   ERROR  
+          
+  Error generating report: invalid report type: foo.                                                                  
+
+  Use --list to see available report types.
+
+-- stdout-bad-wiki-url.golden --
+Error logging into MediaWiki: failed to create API URL: parse "http://localhost:foo": invalid port ":foo" after host
+

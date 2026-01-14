@@ -1,0 +1,141 @@
+env PATROLBOT_WIKIS_ZWEN_SITE_URL=$MOCK_SERVER_URL
+mock action=query.*meta=tokens 200 tokens.mock.json
+mock action=login 200 login.mock.json
+
+# Scenario: RecentChanges query fails with MediaWiki API error
+mock action=query.*list=recentchanges 200 recent-changes-err.mock.json
+exec patrolbot report weekly
+cmp stdout stdout-mediawiki-error.golden
+
+# Scenario: Recent changes query succeeds
+env MOCK_TIME=2026-01-31T00:00:00Z
+mock action=query.*list=recentchanges 200 recent-changes.mock.json
+exec patrolbot report weekly
+scrub stdout stdout-scrubbed
+cmp stdout-scrubbed stdout-success.golden
+env MOCK_TIME=
+
+-- config.yaml --
+userAgent: PatrolBot/1.0 (+https://github.com/iocalebs/patrolbot)
+wiki: zwen
+wikis:
+  zwen:
+    site:
+      url: ""
+      scriptPath: /w
+      articlePath: /wiki
+      rcLinkLimit: 1000
+      rcMaxAgeDays: 30
+    auth:
+      username: username
+      password: password
+    client:
+      from: phantomcalebs@gmail.com
+      timeout: 10s
+    reports:
+      templateDir: ./templates
+      types:
+        weekly:
+          template: weekly.tmpl
+          data:
+            patrolExpiring:
+              windows:
+                - hours: 1
+                - hours: 24
+                - days: 1
+                - days: 7
+                - weeks: 1
+                - weeks: 2
+-- templates/weekly.tmpl --
+## Weekly patrol report
+{{- if .Error }}
+Error:
+```
+{{ .Error }}
+```
+{{- else }}
+Unpatrolled edits are expiring soon:
+{{- range .PatrolExpiring.Windows }}
+- {{ .Count }} in the next 
+    {{- if false }}
+    {{- else if gt .Duration.Weeks 1 }} {{ .Duration.Weeks }} weeks
+    {{- else if eq .Duration.Weeks 1 }} week
+    {{- else if gt .Duration.Days 1 }} {{ .Duration.Days }} days
+    {{- else if eq .Duration.Days 1 }} day
+    {{- else if gt .Duration.Hours 1 }} {{ .Duration.Hours }} hours
+    {{- else if eq .Duration.Hours 1 }} hour
+    {{- else }} {{ printf "%+v" .Duration }}
+    {{- end }}
+{{- end }}
+Link to patrol backlog: <{{ .Config.Site.URL }}{{ .Config.Site.ArticlePath }}/Special:RecentChanges?reviewStatus=unpatrolled&limit={{ .Config.Site.RCLinkLimit }}&days={{ .Config.Site.RCMaxAgeDays }}&urlversion=2>
+{{ end }}
+-- tokens.mock.json --
+{
+  "batchcomplete": true,
+  "query": {
+    "tokens": {
+      "logintoken": "8af20f35764bee599652a5d5d9e804d469444fb1+\\"
+    }
+  }
+}
+-- login.mock.json --
+{
+  "login": {
+    "result": "Success",
+    "lguserid": 45359339,
+    "lgusername": "PhantomCaleb"
+  }
+}
+-- recent-changes-err.mock.json --
+{
+  "errors": [
+    {
+      "code": "show",
+      "text": "Incorrect parameter - mutually exclusive values may not be supplied.",
+      "module": "query+recentchanges"
+    }
+  ],
+  "docref": "See https://zeldawiki.wiki/w/api.php for API usage. Subscribe to the mediawiki-api-announce mailing list at \u0026lt;https://lists.wikimedia.org/postorius/lists/mediawiki-api-announce.lists.wikimedia.org/\u0026gt; for notice of API deprecations and breaking changes."
+}
+-- recent-changes.mock.json --
+{
+  "batchcomplete": true,
+  "query": {
+    "recentchanges": [
+      {
+        "timestamp": "2026-01-01T01:00:00Z"
+      },
+      {
+        "timestamp": "2026-01-02T00:00:00Z"
+      },
+      {
+        "timestamp": "2026-01-08T00:00:00Z"
+      },
+      {
+        "timestamp": "2026-01-15T00:00:00Z"
+      },
+      {
+        "timestamp": "2026-01-15T01:00:00Z"
+      }
+    ]
+  }
+}
+
+-- stdout-mediawiki-error.golden --
+## Weekly patrol report
+Error:
+```
+Error executing API:RecentChanges query: 
+- Incorrect parameter - mutually exclusive values may not be supplied.
+```
+-- stdout-success.golden --
+## Weekly patrol report
+Unpatrolled edits are expiring soon:
+- 1 in the next hour
+- 2 in the next 24 hours
+- 2 in the next day
+- 3 in the next 7 days
+- 3 in the next week
+- 4 in the next 2 weeks
+Link to patrol backlog: <$MOCK_SERVER_URL/wiki/Special:RecentChanges?reviewStatus=unpatrolled&limit=1000&days=30&urlversion=2>
+
