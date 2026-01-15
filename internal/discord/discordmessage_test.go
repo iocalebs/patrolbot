@@ -18,21 +18,27 @@ func TestClient_CreateMessage(t *testing.T) {
 	t.Parallel()
 
 	tests := []struct {
-		name         string // test case name
-		statusCode   int    // HTTP status code to return in mock API response
-		responseBody []byte // mock API response body
-		wantErr      error  // expected error value, or nil if no error expected
+		name         string          // test case name
+		statusCode   int             // HTTP status code to return in mock API response
+		responseBody []byte          // mock API response body
+		wantMessage  discord.Message // expected Message return value, or zero value if error expected
+		wantErr      error           // expected error value, or nil if no error expected
 	}{
 		{
 			name:         "200",
 			statusCode:   200,
 			responseBody: readFile(t, "testdata/createmessage.json"),
-			wantErr:      nil,
+			wantMessage: discord.Message{
+				ID:        "1461062205767155837",
+				ChannelID: "911393794262458421",
+			},
+			wantErr: nil,
 		},
 		{
 			name:         "400 with body",
 			statusCode:   400,
 			responseBody: readFile(t, "testdata/createmessage_invalid.json"),
+			wantMessage:  discord.Message{},
 			wantErr: &discord.HTTPStatusError{
 				StatusCode: 400,
 				Body:       readFile(t, "testdata/createmessage_invalid.json"),
@@ -42,6 +48,7 @@ func TestClient_CreateMessage(t *testing.T) {
 			name:         "500 no body",
 			statusCode:   500,
 			responseBody: []byte(""),
+			wantMessage:  discord.Message{},
 			wantErr: &discord.HTTPStatusError{
 				StatusCode: 500,
 				Body:       []byte(""),
@@ -65,12 +72,17 @@ func TestClient_CreateMessage(t *testing.T) {
 			cfg := config.Discord{API: srv.URL}
 			client := discord.NewClient(http.DefaultClient, slog.Default(), cfg, "")
 
-			err := client.CreateMessage(t.Context(), "channelID", discord.CreateMessageRequestBody{})
+			message, err := client.CreateMessage(t.Context(), "channelID", discord.CreateMessageRequestBody{})
+
+			diff := cmp.Diff(test.wantMessage, message)
+			if diff != "" {
+				t.Fatalf("Result mismatch (-want +got):\n%s", diff)
+			}
 
 			if test.wantErr != nil {
 				wantType := reflect.TypeOf(test.wantErr)
 				if wantType != reflect.TypeOf(err) {
-					t.Fatalf("got error of type %T, want %T", err, test.wantErr)
+					t.Fatalf("Got error of type %T, want %T", err, test.wantErr)
 				}
 
 				diff := cmp.Diff(test.wantErr, err)
@@ -78,7 +90,7 @@ func TestClient_CreateMessage(t *testing.T) {
 					t.Fatalf("Error mismatch (-want +got):\n%s", diff)
 				}
 			} else if err != nil {
-				t.Fatalf("unexpected error: %v", err)
+				t.Fatalf("Unexpected error: %v", err)
 			}
 		})
 	}

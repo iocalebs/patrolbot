@@ -12,7 +12,7 @@ cmp stdout stdout-mediawiki-error.golden
 # Scenario: Recent changes query succeeds, user accepts Discord confirmation prompt, Discord post succeeds
 env MOCK_TIME=2026-01-31T00:00:00Z
 mock action=query.*list=recentchanges 200 recent-changes.mock.json
-mock channels/1234/messages 200 discord-create-message.mock.json
+mock channels/channel456/messages 200 discord-create-message.mock.json
 ttyin -stdin accept-prompt
 exec patrolbot report weekly
 scrub stdout stdout-scrubbed
@@ -23,7 +23,7 @@ env MOCK_TIME=
 # Scenario: --send-discord flag used to skip confirmation prompt, but Discord post fails
 env MOCK_TIME=2026-01-31T00:00:00Z
 mock action=query.*list=recentchanges 200 recent-changes.mock.json
-mock channels/1234/messages 503
+mock channels/channel456/messages 503
 ! exec patrolbot report weekly --send-discord
 cmp stderr stderr-discord-error.golden
 env MOCK_TIME=
@@ -55,10 +55,11 @@ wikis:
       timeout: 10s
     reports:
       templateDir: ./templates
+      discordServerID: server123
       types:
         weekly:
           template: weekly.tmpl
-          channelID: "1234"
+          discordChannelID: channel456
           data:
             patrolExpiring:
               windows:
@@ -154,7 +155,7 @@ Link to patrol backlog: <{{ .Config.Site.URL }}{{ .Config.Site.ArticlePath }}/Sp
   "edited_timestamp": null,
   "flags": 0,
   "components": [],
-  "id": "5678",
+  "id": "789",
   "channel_id": "1234",
   "author": {
     "id": "1452202767694168094",
@@ -200,7 +201,7 @@ Link to patrol backlog: <$MOCK_SERVER_URL/wiki/Special:RecentChanges?reviewStatu
 
 Post to Discord? [y/N]
 -- stderr-success.golden --
-Sent Discord message
+Sent Discord message: https://discord.com/channels/server123/1234/789
 -- stderr-discord-error.golden --
           
    ERROR  

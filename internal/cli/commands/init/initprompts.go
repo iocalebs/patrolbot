@@ -15,10 +15,11 @@ import (
 var errInvalidInput = errors.New("Invalid input") //nolint:staticcheck
 
 type formData struct {
-	WikiName  string
-	Wiki      config.Wiki
-	Discord   config.Discord
-	ChannelID string
+	WikiName         string
+	Wiki             config.Wiki
+	Discord          config.Discord
+	DiscordChannelID string
+	DiscordServerID  string
 }
 
 func notEmpty(fieldName string) func(string) error {
@@ -143,9 +144,13 @@ func promptConfig(ctx context.Context) (formData, error) { //nolint:funlen
 			huh.NewNote().
 				Title("Create a Discord app for PatrolBot").
 				Description(
-					"Create a Discord app in the developer portal:\n"+
-						"https://discord.com/developers/applications?new\\_application=true\n\n"+
-						"On the Bot page under Token, click \"Reset Token\" to generate a new bot token."),
+					//nolint:lll
+					`  1. Create a Discord app in the developer portal:
+     https://discord.com/developers/applications?new\_application=true
+
+  2. On the Installation page under Install Link, open the Discord Provided Link in a browser and add the bot to the desired server.
+
+  3. On the Bot page under Token, click "Reset Token" to generate a new bot token.`),
 			huh.NewInput().
 				Title("Bot token").
 				Value(&data.Discord.Token),
@@ -153,11 +158,17 @@ func promptConfig(ctx context.Context) (formData, error) { //nolint:funlen
 
 		huh.NewGroup(
 			huh.NewInput().
+				Title("Discord server ID").
+				Description(
+					"Enter the ID of the Discord server where PatrolBot should post reports.\n"+
+						"To obtain a server's ID, right click the server icon and click \"Copy Server ID\".").
+				Value(&data.DiscordServerID),
+			huh.NewInput().
 				Title("Discord channel ID").
 				Description(
 					"Enter the ID of the Discord channel where PatrolBot should post reports.\n"+
 						"To obtain a channel's ID, right click it in the channel list and click \"Copy Channel ID\".").
-				Value(&data.ChannelID),
+				Value(&data.DiscordChannelID),
 		),
 	)
 

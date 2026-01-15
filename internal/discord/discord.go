@@ -43,35 +43,28 @@ func (c *Client) newRequest(ctx context.Context, method string, url string, body
 	return req, nil
 }
 
-func (c *Client) do(ctx context.Context, req *http.Request) error {
+func (c *Client) do(ctx context.Context, req *http.Request) (*http.Response, error) {
 	resp, err := c.httpClient.Do(req)
 	if err != nil {
-		return fmt.Errorf("failed to send HTTP request to Discord API: %w", err)
+		return nil, fmt.Errorf("failed to send HTTP request to Discord API: %w", err)
 	}
-
-	defer func() {
-		err = resp.Body.Close()
-		if err != nil {
-			c.logger.WarnContext(ctx, "Failed to close Discord API response body", "error", err)
-		}
-	}()
 
 	if resp.StatusCode >= 300 { //nolint:mnd
 		body, err := io.ReadAll(resp.Body)
 		if err != nil {
 			c.logger.WarnContext(ctx, "Failed to read response body", "error", err)
 
-			return &HTTPStatusError{
+			return nil, &HTTPStatusError{
 				StatusCode: resp.StatusCode,
 				Body:       []byte(""),
 			}
 		}
 
-		return &HTTPStatusError{
+		return nil, &HTTPStatusError{
 			StatusCode: resp.StatusCode,
 			Body:       body,
 		}
 	}
 
-	return nil
+	return resp, nil
 }

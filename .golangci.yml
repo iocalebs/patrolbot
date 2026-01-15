@@ -18,6 +18,11 @@ linters:
       case:
         rules:
           json: goCamel
+        overrides:
+          - pkg: internal/discord
+            rules:
+              json: snake
+
     varnamelen:
       ignore-decls:
         - i int

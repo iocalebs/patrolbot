@@ -46,9 +46,14 @@ func NewCommand() *cobra.Command {
 				return fmt.Errorf("error loading config: %w", err)
 			}
 
+			wiki, err := cfg.CurrentWiki()
+			if err != nil {
+				return fmt.Errorf("invalid wiki configuration: %w", err)
+			}
+
 			logger := slog.Default()
 
-			reporter, err := newReporter(cfg, logger)
+			reporter, err := newReporter(cfg, wiki, logger)
 			if err != nil {
 				return err
 			}
@@ -63,7 +68,7 @@ func NewCommand() *cobra.Command {
 
 			discordClient := newDiscordClient(cfg, logger)
 
-			return report(cmd, reporter, args[0], discordClient, sendDiscord)
+			return report(cmd, reporter, args[0], discordClient, sendDiscord, wiki.Reports.DiscordServerID)
 		},
 	}
 
@@ -78,12 +83,7 @@ func NewCommand() *cobra.Command {
 	return cmd
 }
 
-func newReporter(cfg config.Config, logger *slog.Logger) (*reporter.Reporter, error) {
-	wiki, err := cfg.CurrentWiki()
-	if err != nil {
-		return nil, fmt.Errorf("invalid wiki configuration: %w", err)
-	}
-
+func newReporter(cfg config.Config, wiki config.Wiki, logger *slog.Logger) (*reporter.Reporter, error) {
 	jar, err := cookiejar.New(nil)
 	if err != nil {
 		return nil, fmt.Errorf("error creating MediaWiki HTTP client: %w", err)
@@ -130,6 +130,7 @@ func report(
 	reportType string,
 	discordClient *discord.Client,
 	sendDiscord bool,
+	discordServerID string,
 ) error {
 	var buf bytes.Buffer
 
@@ -166,12 +167,14 @@ func report(
 		Content: buf.String(),
 	}
 
-	err = discordClient.CreateMessage(cmd.Context(), reportConfig.ChannelID, req)
+	msg, err := discordClient.CreateMessage(cmd.Context(), reportConfig.DiscordChannelID, req)
 	if err != nil {
 		return fmt.Errorf("error posting report to Discord: %w", err)
 	}
 
-	_, err = cmd.ErrOrStderr().Write([]byte("Sent Discord message\n")) // TODO: message link
+	msgLink := fmt.Sprintf("https://discord.com/channels/%s/%s/%s", discordServerID, msg.ChannelID, msg.ID)
+
+	_, err = cmd.ErrOrStderr().Write([]byte("Sent Discord message: " + msgLink + "\n"))
 	if err != nil {
 		return fmt.Errorf("error writing to stderr: %w", err)
 	}

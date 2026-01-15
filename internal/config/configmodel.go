@@ -80,6 +80,9 @@ type Reports struct {
 	// Path to directory containing report templates
 	TemplateDir string `json:"templateDir" jsonschema:"minLength=1"`
 
+	// Discord server (guild) ID to post reports in
+	DiscordServerID string `json:"discordServerID"`
+
 	// Defines the types of reports that can be generated using the `report` command
 	Types map[string]ReportType `json:"types"`
 }
@@ -90,7 +93,7 @@ type ReportType struct {
 	Template string `json:"template"`
 
 	// Discord channel to post the report to
-	ChannelID string `json:"channelID"`
+	DiscordChannelID string `json:"discordChannelID"`
 
 	// Data to use in the report
 	Data ReportData `json:"data"`

@@ -52,8 +52,10 @@ Enter
 Type "token"
 Enter
 
-# Channel ID
-Type "12345"
+# Discord server and channel ID
+Type "server1234"
+Enter
+Type "channel1234"
 Enter
 
 -- config-dir.golden --
@@ -84,10 +86,11 @@ wikis:
       timeout: "10s"
     reports:
       templateDir: ./templates
+      discordServerID: "server1234"
       types:
         weekly:
           template: weekly.tmpl
-          channelID: "12345"
+          discordChannelID: "channel1234"
           data:
             patrolExpiring:
               windows:
@@ -589,16 +592,16 @@ shift+tab back • enter next
 > patrolbot init
   Create a Discord app for PatrolBot
 
-  Create a Discord app in the developer portal:
-  https://discord.com/developers/applications?new_application=true
+    1. Create a Discord app in the developer portal:
+       https://discord.com/developers/applications?new_application=true
 
-  On the Bot page under Token, click "Reset Token" to generate a new bot token.
+    2. On the Installation page under Install Link, open the Discord Provided Link in a browser and add the bot to the desired server.
+
+    3. On the Bot page under Token, click "Reset Token" to generate a new bot token.
 
 
 ┃ Bot token
 ┃ >
-
-
 
 
 
@@ -624,14 +627,49 @@ shift+tab back • enter next
 > patrolbot init
   Create a Discord app for PatrolBot
 
-  Create a Discord app in the developer portal:
-  https://discord.com/developers/applications?new_application=true
+    1. Create a Discord app in the developer portal:
+       https://discord.com/developers/applications?new_application=true
 
-  On the Bot page under Token, click "Reset Token" to generate a new bot token.
+    2. On the Installation page under Install Link, open the Discord Provided Link in a browser and add the bot to the desired server.
+
+    3. On the Bot page under Token, click "Reset Token" to generate a new bot token.
 
 
 ┃ Bot token
 ┃ > token
+
+
+
+shift+tab back • enter next
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> patrolbot init
+┃ Discord server ID
+┃ Enter the ID of the Discord server where PatrolBot should post reports.
+┃ To obtain a server's ID, right click the server icon and click "Copy Server ID".
+┃ >
+
+  Discord channel ID
+  Enter the ID of the Discord channel where PatrolBot should post reports.
+  To obtain a channel's ID, right click it in the channel list and click "Copy Channel ID".
+  >
+
 
 
 
@@ -657,15 +695,50 @@ shift+tab back • enter next
 
 ────────────────────────────────────────────────────────────────────────────────
 > patrolbot init
+┃ Discord server ID
+┃ Enter the ID of the Discord server where PatrolBot should post reports.
+┃ To obtain a server's ID, right click the server icon and click "Copy Server ID".
+┃ > server1234
+
+  Discord channel ID
+  Enter the ID of the Discord channel where PatrolBot should post reports.
+  To obtain a channel's ID, right click it in the channel list and click "Copy Channel ID".
+  >
+
+
+
+
+
+
+shift+tab back • enter next
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> patrolbot init
+  Discord server ID
+  Enter the ID of the Discord server where PatrolBot should post reports.
+  To obtain a server's ID, right click the server icon and click "Copy Server ID".
+  > server1234
+
 ┃ Discord channel ID
 ┃ Enter the ID of the Discord channel where PatrolBot should post reports.
 ┃ To obtain a channel's ID, right click it in the channel list and click "Copy Channel ID".
 ┃ >
-
-
-
-
-
 
 
 
@@ -692,15 +765,15 @@ shift+tab back • enter submit
 
 ────────────────────────────────────────────────────────────────────────────────
 > patrolbot init
+  Discord server ID
+  Enter the ID of the Discord server where PatrolBot should post reports.
+  To obtain a server's ID, right click the server icon and click "Copy Server ID".
+  > server1234
+
 ┃ Discord channel ID
 ┃ Enter the ID of the Discord channel where PatrolBot should post reports.
 ┃ To obtain a channel's ID, right click it in the channel list and click "Copy Channel ID".
-┃ > 12345
-
-
-
-
-
+┃ > channel1234
 
 
 

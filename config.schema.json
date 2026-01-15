@@ -107,7 +107,7 @@
           "type": "string",
           "description": "File name of the template to use for the report"
         },
-        "channelID": {
+        "discordChannelID": {
           "type": "string",
           "description": "Discord channel to post the report to"
         },
@@ -120,7 +120,7 @@
       "type": "object",
       "required": [
         "template",
-        "channelID",
+        "discordChannelID",
         "data"
       ],
       "description": "ReportType represents the configuration for a specific report type."
@@ -131,6 +131,10 @@
           "type": "string",
           "minLength": 1,
           "description": "Path to directory containing report templates"
+        },
+        "discordServerID": {
+          "type": "string",
+          "description": "Discord server (guild) ID to post reports in"
         },
         "types": {
           "additionalProperties": {
@@ -144,6 +148,7 @@
       "type": "object",
       "required": [
         "templateDir",
+        "discordServerID",
         "types"
       ],
       "description": "Reports represents the configuration for generating reports."

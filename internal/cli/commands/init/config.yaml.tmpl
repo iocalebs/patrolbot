@@ -20,10 +20,11 @@ wikis:
       timeout: "10s"
     reports:
       templateDir: ./templates
+      discordServerID: "{{ .DiscordServerID }}"
       types:
         weekly:
           template: weekly.tmpl
-          channelID: "{{ .ChannelID }}"
+          discordChannelID: "{{ .DiscordChannelID }}"
           data:
             patrolExpiring:
               windows:

@@ -78,8 +78,10 @@ Enter
 Type "token"
 Enter
 
-# Channel ID
-Type "12345"
+# Discord server and channel ID
+Type "server1234"
+Enter
+Type "channel1234"
 Enter
 
 -- weekly.golden.tmpl --
@@ -121,10 +123,11 @@ wikis:
       timeout: "10s"
     reports:
       templateDir: ./templates
+      discordServerID: "server1234"
       types:
         weekly:
           template: weekly.tmpl
-          channelID: "12345"
+          discordChannelID: "channel1234"
           data:
             patrolExpiring:
               windows:
@@ -133,7 +136,7 @@ wikis:
                 - days: 30
 -- output.golden --
 
-p> patrolbot init
+> patrolbot init
 ┃ Configuration already exists at $WORK/home/.patrolbot
 ┃
 ┃ Overwrite existing config?
@@ -168,7 +171,7 @@ p> patrolbot init
 
 
 ────────────────────────────────────────────────────────────────────────────────
-p> patrolbot init
+> patrolbot init
 ┃ Wiki URL
 ┃ > https://en.wikipedia.org
 
@@ -203,7 +206,7 @@ enter next
 
 
 ────────────────────────────────────────────────────────────────────────────────
-p> patrolbot init
+> patrolbot init
 ┃ Wiki URL
 ┃ > https://en.wikipedia.org
 
@@ -238,7 +241,7 @@ p> patrolbot init
 
 
 ────────────────────────────────────────────────────────────────────────────────
-p> patrolbot init
+> patrolbot init
   Wiki URL
   > https://zeldawiki.wiki
 
@@ -273,7 +276,7 @@ shift+tab back • enter next
 
 
 ────────────────────────────────────────────────────────────────────────────────
-p> patrolbot init
+> patrolbot init
   Wiki URL
   > https://zeldawiki.wiki
 
@@ -308,7 +311,7 @@ p> patrolbot init
 
 
 ────────────────────────────────────────────────────────────────────────────────
-p> patrolbot init
+> patrolbot init
   Wiki URL
   > https://zeldawiki.wiki
 
@@ -343,7 +346,7 @@ shift+tab back • enter next
 
 
 ────────────────────────────────────────────────────────────────────────────────
-p> patrolbot init
+> patrolbot init
   Wiki URL
   > https://zeldawiki.wiki
 
@@ -378,7 +381,7 @@ shift+tab back • enter next
 
 
 ────────────────────────────────────────────────────────────────────────────────
-p> patrolbot init
+> patrolbot init
   Create a bot password for PatrolBot
 
     1. Go to https://zeldawiki.wiki/wiki/Special:BotPasswords
@@ -413,7 +416,7 @@ shift+tab back • enter next
 
 
 ────────────────────────────────────────────────────────────────────────────────
-p> patrolbot init
+> patrolbot init
   Create a bot password for PatrolBot
 
     1. Go to https://zeldawiki.wiki/wiki/Special:BotPasswords
@@ -448,7 +451,7 @@ shift+tab back • enter next
 
 
 ────────────────────────────────────────────────────────────────────────────────
-p> patrolbot init
+> patrolbot init
 ┃ Contact email address
 ┃ Please provide an email address to be sent in MediaWiki API requests. This allows the wiki's system administrator to contact you if there's an issue with the bot's API usage
 ┃ >
@@ -483,7 +486,7 @@ shift+tab back • enter next
 
 
 ────────────────────────────────────────────────────────────────────────────────
-p> patrolbot init
+> patrolbot init
 ┃ Contact email address
 ┃ Please provide an email address to be sent in MediaWiki API requests. This allows the wiki's system administrator to contact you if there's an issue with the bot's API usage
 ┃ > phantomcalebs@example.test
@@ -518,19 +521,19 @@ shift+tab back • enter next
 
 
 ────────────────────────────────────────────────────────────────────────────────
-p> patrolbot init
+> patrolbot init
   Create a Discord app for PatrolBot
 
-  Create a Discord app in the developer portal:
-  https://discord.com/developers/applications?new_application=true
+    1. Create a Discord app in the developer portal:
+       https://discord.com/developers/applications?new_application=true
 
-  On the Bot page under Token, click "Reset Token" to generate a new bot token.
+    2. On the Installation page under Install Link, open the Discord Provided Link in a browser and add the bot to the desired server.
+
+    3. On the Bot page under Token, click "Reset Token" to generate a new bot token.
 
 
 ┃ Bot token
 ┃ >
-
-
 
 
 
@@ -553,13 +556,15 @@ shift+tab back • enter next
 
 
 ────────────────────────────────────────────────────────────────────────────────
-p> patrolbot init
+> patrolbot init
   Create a Discord app for PatrolBot
 
-  Create a Discord app in the developer portal:
-  https://discord.com/developers/applications?new_application=true
+    1. Create a Discord app in the developer portal:
+       https://discord.com/developers/applications?new_application=true
 
-  On the Bot page under Token, click "Reset Token" to generate a new bot token.
+    2. On the Installation page under Install Link, open the Discord Provided Link in a browser and add the bot to the desired server.
+
+    3. On the Bot page under Token, click "Reset Token" to generate a new bot token.
 
 
 ┃ Bot token
@@ -567,6 +572,39 @@ p> patrolbot init
 
 
 
+shift+tab back • enter next
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> patrolbot init
+┃ Discord server ID
+┃ Enter the ID of the Discord server where PatrolBot should post reports.
+┃ To obtain a server's ID, right click the server icon and click "Copy Server ID".
+┃ >
+
+  Discord channel ID
+  Enter the ID of the Discord channel where PatrolBot should post reports.
+  To obtain a channel's ID, right click it in the channel list and click "Copy Channel ID".
+  >
+
+
+
+
 
 
 shift+tab back • enter next
@@ -588,7 +626,47 @@ shift+tab back • enter next
 
 
 ────────────────────────────────────────────────────────────────────────────────
-p> patrolbot init
+> patrolbot init
+┃ Discord server ID
+┃ Enter the ID of the Discord server where PatrolBot should post reports.
+┃ To obtain a server's ID, right click the server icon and click "Copy Server ID".
+┃ > server1234
+
+  Discord channel ID
+  Enter the ID of the Discord channel where PatrolBot should post reports.
+  To obtain a channel's ID, right click it in the channel list and click "Copy Channel ID".
+  >
+
+
+
+
+
+
+shift+tab back • enter next
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> patrolbot init
+  Discord server ID
+  Enter the ID of the Discord server where PatrolBot should post reports.
+  To obtain a server's ID, right click the server icon and click "Copy Server ID".
+  > server1234
+
 ┃ Discord channel ID
 ┃ Enter the ID of the Discord channel where PatrolBot should post reports.
 ┃ To obtain a channel's ID, right click it in the channel list and click "Copy Channel ID".
@@ -599,11 +677,6 @@ p> patrolbot init
 
 
 
-
-
-
-
-
 shift+tab back • enter submit
 
 
@@ -623,16 +696,16 @@ shift+tab back • enter submit
 
 
 ────────────────────────────────────────────────────────────────────────────────
-p> patrolbot init
+> patrolbot init
+  Discord server ID
+  Enter the ID of the Discord server where PatrolBot should post reports.
+  To obtain a server's ID, right click the server icon and click "Copy Server ID".
+  > server1234
+
 ┃ Discord channel ID
 ┃ Enter the ID of the Discord channel where PatrolBot should post reports.
 ┃ To obtain a channel's ID, right click it in the channel list and click "Copy Channel ID".
-┃ > 12345
-
-
-
-
-
+┃ > channel1234
 
 
 
@@ -658,7 +731,7 @@ shift+tab back • enter submit
 
 
 ────────────────────────────────────────────────────────────────────────────────
-p> patrolbot init
+> patrolbot init
 Wrote configuration file: $WORK/home/.patrolbot/config.yaml
 >
 

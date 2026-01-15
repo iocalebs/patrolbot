@@ -48,7 +48,7 @@ func setupDiscord(cfg config.Config, overwrite bool) (*discord.Client, *capturin
 }
 
 func createMessage(ctx context.Context, client *discord.Client, transport *capturingTransport) error {
-	err := client.CreateMessage(ctx, testChannel, discord.CreateMessageRequestBody{
+	_, err := client.CreateMessage(ctx, testChannel, discord.CreateMessageRequestBody{
 		Content: "test",
 	})
 	if err != nil {
@@ -59,7 +59,7 @@ func createMessage(ctx context.Context, client *discord.Client, transport *captu
 }
 
 func createMessageInvalid(ctx context.Context, client *discord.Client, transport *capturingTransport) error {
-	err := client.CreateMessage(ctx, testChannel, discord.CreateMessageRequestBody{})
+	_, err := client.CreateMessage(ctx, testChannel, discord.CreateMessageRequestBody{})
 
 	var httpStatusError *discord.HTTPStatusError
 	if errors.As(err, &httpStatusError) {

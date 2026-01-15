@@ -83,10 +83,11 @@ wikis:
       timeout: 10s
     reports:
       templateDir: ./reports
+      discordServerID: "911393793666863116"
       types:
         weekly:
           template: weekly.tmpl
-          channelID: "911393794262458421"
+          discordChannelID: "911393794262458421"
           data:
             patrolExpiring:
               windows:
@@ -109,10 +110,11 @@ wikis:
       timeout: "0"
     reports:
       templateDir: ./reports
+      discordServerID: "911393793666863116"
       types:
         weekly:
           template: weekly.tmpl
-          channelID: "911393794262458421"
+          discordChannelID: "911393794262458421"
           data:
             patrolExpiring:
               windows:
@@ -153,10 +155,11 @@ wiki: dunepedia
       },
       "reports": {
         "templateDir": "./reports",
+        "discordServerID": "911393793666863116",
         "types": {
           "weekly": {
             "template": "weekly.tmpl",
-            "channelID": "911393794262458421",
+            "discordChannelID": "911393794262458421",
             "data": {
               "patrolExpiring": {
                 "windows": [
@@ -194,10 +197,11 @@ wiki: dunepedia
       },
       "reports": {
         "templateDir": "./reports",
+        "discordServerID": "911393793666863116",
         "types": {
           "weekly": {
             "template": "weekly.tmpl",
-            "channelID": "911393794262458421",
+            "discordChannelID": "911393794262458421",
             "data": {
               "patrolExpiring": {
                 "windows": [
@@ -246,10 +250,11 @@ wiki: dunepedia
       },
       "reports": {
         "templateDir": "./reports",
+        "discordServerID": "911393793666863116",
         "types": {
           "weekly": {
             "template": "weekly.tmpl",
-            "channelID": "911393794262458421",
+            "discordChannelID": "911393794262458421",
             "data": {
               "patrolExpiring": {
                 "windows": [
@@ -287,10 +292,11 @@ wiki: dunepedia
       },
       "reports": {
         "templateDir": "./reports",
+        "discordServerID": "911393793666863116",
         "types": {
           "weekly": {
             "template": "weekly.tmpl",
-            "channelID": "911393794262458421",
+            "discordChannelID": "911393794262458421",
             "data": {
               "patrolExpiring": {
                 "windows": [
@@ -339,10 +345,11 @@ wiki: dunepedia
       },
       "reports": {
         "templateDir": "./reports",
+        "discordServerID": "911393793666863116",
         "types": {
           "weekly": {
             "template": "weekly.tmpl",
-            "channelID": "911393794262458421",
+            "discordChannelID": "911393794262458421",
             "data": {
               "patrolExpiring": {
                 "windows": [
@@ -380,10 +387,11 @@ wiki: dunepedia
       },
       "reports": {
         "templateDir": "./reports",
+        "discordServerID": "911393793666863116",
         "types": {
           "weekly": {
             "template": "weekly.tmpl",
-            "channelID": "911393794262458421",
+            "discordChannelID": "911393794262458421",
             "data": {
               "patrolExpiring": {
                 "windows": [
@@ -432,10 +440,11 @@ wiki: dunepedia
       },
       "reports": {
         "templateDir": "./reports",
+        "discordServerID": "911393793666863116",
         "types": {
           "weekly": {
             "template": "weekly.tmpl",
-            "channelID": "911393794262458421",
+            "discordChannelID": "911393794262458421",
             "data": {
               "patrolExpiring": {
                 "windows": [
@@ -473,10 +482,11 @@ wiki: dunepedia
       },
       "reports": {
         "templateDir": "./reports",
+        "discordServerID": "911393793666863116",
         "types": {
           "weekly": {
             "template": "weekly.tmpl",
-            "channelID": "911393794262458421",
+            "discordChannelID": "911393794262458421",
             "data": {
               "patrolExpiring": {
                 "windows": [

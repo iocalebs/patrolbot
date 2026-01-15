@@ -20,9 +20,10 @@ wikis:
       timeout: 10s
     reports:
       templateDir: ./templates
+      discordServerID: "911393793666863116"
       types:
         weekly:
-          channelID: "911393794262458421"
+          discordChannelID: "911393794262458421"
           template: weekly.tmpl
           data:
             patrolExpiring:
