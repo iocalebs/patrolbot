@@ -10,8 +10,8 @@ wikis:
       url: "{{ .Wiki.Site.URL }}"
       scriptPath: "{{ .Wiki.Site.ScriptPath }}"
       articlePath: "{{ .Wiki.Site.ArticlePath }}"
-      rcLinkLimit: 1000
-      rcMaxAgeDays: 90
+      rcLinkLimit: 500
+      rcMaxAgeDays: 30
     auth:
       username: "{{ .Wiki.Auth.Username }}"
       password: "{{ .Wiki.Auth.Password }}"

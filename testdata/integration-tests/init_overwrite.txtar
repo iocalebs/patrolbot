@@ -114,8 +114,8 @@ wikis:
       url: "https://zeldawiki.wiki"
       scriptPath: "/w"
       articlePath: "/wiki"
-      rcLinkLimit: 1000
-      rcMaxAgeDays: 90
+      rcLinkLimit: 500
+      rcMaxAgeDays: 30
     auth:
       username: "PhantomCaleb@Patrolbot"
       password: "password"
