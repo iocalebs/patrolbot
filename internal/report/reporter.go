@@ -8,9 +8,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"maps"
 	"path/filepath"
-	"slices"
 	"text/template"
 
 	"github.com/iocalebs/patrolbot/internal/config"
@@ -65,19 +63,4 @@ func (r *Reporter) Report(ctx context.Context, reportType string, w io.Writer) (
 	}
 
 	return reportCfg, nil
-}
-
-// ListReports writes the available report types to the given [io.Writer].
-func (r *Reporter) ListReports(w io.Writer) error {
-	keys := slices.Collect(maps.Keys(r.cfg.Types))
-	slices.Sort(keys)
-
-	for _, key := range keys {
-		_, err := w.Write([]byte(key + "\n"))
-		if err != nil {
-			return fmt.Errorf("error listing reports: %w", err)
-		}
-	}
-
-	return nil
 }

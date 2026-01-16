@@ -2,23 +2,12 @@
 package report
 
 import (
-	"bytes"
 	"fmt"
 	"log/slog"
-	"net/http"
-	"net/http/cookiejar"
-	"os"
 	"time"
 
-	"github.com/charmbracelet/huh"
-	"github.com/iocalebs/patrolbot/internal/cli/clierr"
 	"github.com/iocalebs/patrolbot/internal/cli/flags"
-	"github.com/iocalebs/patrolbot/internal/clock"
 	"github.com/iocalebs/patrolbot/internal/config"
-	"github.com/iocalebs/patrolbot/internal/discord"
-	"github.com/iocalebs/patrolbot/internal/mediawiki"
-	reporter "github.com/iocalebs/patrolbot/internal/report"
-	"github.com/iocalebs/patrolbot/internal/report/provider"
 	"github.com/spf13/cobra"
 )
 
@@ -46,29 +35,17 @@ func NewCommand() *cobra.Command {
 				return fmt.Errorf("error loading config: %w", err)
 			}
 
-			wiki, err := cfg.CurrentWiki()
-			if err != nil {
-				return fmt.Errorf("invalid wiki configuration: %w", err)
+			handler := &handler{
+				config: cfg,
+				logger: slog.Default(),
+				stdout: cmd.OutOrStdout(),
+				stderr: cmd.ErrOrStderr(),
 			}
 
-			logger := slog.Default()
-
-			reporter, err := newReporter(cfg, wiki, logger)
-			if err != nil {
-				return err
-			}
-
-			if list {
-				return reporter.ListReports(os.Stdout)
-			}
-
-			if len(args) == 0 {
-				return clierr.UsageError("missing report type")
-			}
-
-			discordClient := newDiscordClient(cfg, logger)
-
-			return report(cmd, reporter, args[0], discordClient, sendDiscord, wiki.Reports.DiscordServerID)
+			return handler.run(cmd.Context(), args, opts{
+				list:        list,
+				sendDiscord: sendDiscord,
+			})
 		},
 	}
 
@@ -81,103 +58,4 @@ func NewCommand() *cobra.Command {
 	flags.Config(cmd)
 
 	return cmd
-}
-
-func newReporter(cfg config.Config, wiki config.Wiki, logger *slog.Logger) (*reporter.Reporter, error) {
-	jar, err := cookiejar.New(nil)
-	if err != nil {
-		return nil, fmt.Errorf("error creating MediaWiki HTTP client: %w", err)
-	}
-
-	httpClient := http.Client{
-		Jar:     jar,
-		Timeout: wiki.Client.Timeout,
-	}
-
-	clock := clock.Func(func() time.Time {
-		mockTime := os.Getenv("MOCK_TIME")
-		if mockTime != "" {
-			now, err := time.Parse(time.RFC3339, mockTime)
-			if err == nil {
-				return now
-			}
-
-			logger.Error("Error parsing $MOCK_TIME %q: %v", mockTime, now)
-		}
-
-		return time.Now()
-	})
-
-	mwclient := mediawiki.NewClient(wiki, &httpClient, logger, cfg.UserAgent)
-	provider := provider.New(logger, clock, mwclient, wiki)
-	reporter := reporter.New(wiki.Reports, provider)
-
-	return reporter, nil
-}
-
-func newDiscordClient(cfg config.Config, logger *slog.Logger) *discord.Client {
-	httpClient := &http.Client{
-		Timeout: discordTimeout,
-	}
-	discordClient := discord.NewClient(httpClient, logger, cfg.Discord, cfg.UserAgent)
-
-	return discordClient
-}
-
-func report(
-	cmd *cobra.Command,
-	reporter *reporter.Reporter,
-	reportType string,
-	discordClient *discord.Client,
-	sendDiscord bool,
-	discordServerID string,
-) error {
-	var buf bytes.Buffer
-
-	reportConfig, err := reporter.Report(cmd.Context(), reportType, &buf)
-	if err != nil {
-		return fmt.Errorf("error generating report: %w", err)
-	}
-
-	_, err = cmd.OutOrStdout().Write(buf.Bytes())
-	if err != nil {
-		return fmt.Errorf("error writing report to stdout: %w", err)
-	}
-
-	if !sendDiscord {
-		form := huh.NewForm(
-			huh.NewGroup(
-				huh.NewConfirm().
-					Title("Post to Discord?").
-					Value(&sendDiscord),
-			),
-		).WithAccessible(true)
-
-		err = form.RunWithContext(cmd.Context())
-		if err != nil {
-			return fmt.Errorf("prompt failed: %w", err)
-		}
-	}
-
-	if !sendDiscord {
-		return nil
-	}
-
-	req := discord.CreateMessageRequestBody{
-		Content: buf.String(),
-	}
-
-	msg, err := discordClient.CreateMessage(cmd.Context(), reportConfig.DiscordChannelID, req)
-	if err != nil {
-		return fmt.Errorf("error posting report to Discord: %w", err)
-	}
-
-	msgLink := fmt.Sprintf("https://discord.com/channels/%s/%s/%s", discordServerID, msg.ChannelID, msg.ID)
-
-	_, err = cmd.ErrOrStderr().Write([]byte("Sent Discord message: " + msgLink + "\n"))
-	if err != nil {
-		return fmt.Errorf("error writing to stderr: %w", err)
-	}
-
-	return nil
 }
