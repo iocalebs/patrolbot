@@ -1,4 +1,4 @@
-// Package init implements the `patrolbot init` command
+// Package init implements the "patrolbot init" command
 package init
 
 import (

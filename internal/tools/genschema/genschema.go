@@ -1,4 +1,4 @@
-// Genschema generates a JSON schema for [github.com/iocalebs/patrolbot/internal/config.Config].
+// Genschema generates a JSON schema for PatrolBot config.
 // This schema provides in-editor autocompletion and validation for the config.yaml
 // that is unmarshalled into that struct.
 package main

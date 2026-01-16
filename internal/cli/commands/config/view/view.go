@@ -1,4 +1,4 @@
-// Package view implements the `patrolbot config view` command
+// Package view implements the "patrolbot config view" command
 package view
 
 import (
