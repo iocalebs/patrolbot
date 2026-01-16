@@ -30,6 +30,10 @@ patrolbot report weekly
 
 ## Configuration
 
-You can configure your own reports, or modify the pre-built ones, by editing the configuration file and/or templates in `$HOME/.patrolbot`.
+You can customize reports by editing the `config.yaml` file and/or templates in `$HOME/.patrolbot` created by `patrolbot init`.
 
-<!-- TODO: config documentation -->
+- See [`Config`](https://pkg.go.dev/github.com/iocalebs/patrolbot/internal/config#Config) type documentation details on supported configuration properties
+- See [`ReportData`](https://pkg.go.dev/github.com/iocalebs/patrolbot/internal/report/data#ReportData) type documentation for details on the data available in report templates.
+- See [`text/template`](https://pkg.go.dev/text/template) for general information on the Go template syntax used for PatrolBot reports.
+
+A [JSON Schema](https://raw.githubusercontent.com/iocalebs/patrolbot/refs/heads/trunk/config.schema.json) is available for validation and editor autocompletion of `config.yaml`.
