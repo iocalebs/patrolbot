@@ -1,0 +1,46 @@
+name: build
+
+on:
+  push:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-go@v6
+        with:
+          go-version: "1.25"
+      - uses: ./.github/actions/setup-vhs
+      - run: make test
+
+  cover:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-go@v6
+        with:
+          go-version: "1.25"
+      - uses: ./.github/actions/setup-vhs
+      - run: make cover
+      - uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: coverage/profile-merged.txt
+      - uses: codecov/codecov-action@v5
+        with:
+          disable_search: true
+          files: coverage/profile-merged.txt
+          token: ${{ secrets.CODECOV_TOKEN }}
+
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-go@v6
+        with:
+          go-version: "1.25"
+      - uses: golangci/golangci-lint-action@v9
