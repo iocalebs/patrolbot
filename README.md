@@ -1,5 +1,7 @@
 # PatrolBot
 
+[![codecov](https://codecov.io/gh/iocalebs/patrolbot/graph/badge.svg?token=2T23W9WZUL)](https://codecov.io/gh/iocalebs/patrolbot)
+
 PatrolBot is a Discord bot that generates reports regarding a MediaWiki site's [patrol logs](https://en.wikipedia.org/wiki/Wikipedia:Recent_changes_patrol).
 
 It was initially built for [Zelda Wiki](http://zeldawiki.wiki) but is designed to be usable by any wiki in any language.
