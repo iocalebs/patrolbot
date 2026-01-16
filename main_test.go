@@ -93,9 +93,10 @@ func mock(mocks *[]mockResponse) func(*testscript.TestScript, bool, []string) {
 
 func scrub(ts *testscript.TestScript, _ bool, args []string) {
 	scrubbed := ts.ReadFile(args[0])
-	scrubbed = scrubWorkDir(scrubbed, ts.Getenv("WORK"))
+	scrubbed = scrubWorkDir(ts, scrubbed)
 	scrubbed = scrubVHS(scrubbed)
 	scrubbed = scrubMockServerURL(ts, scrubbed)
+	scrubbed = trimTrailingWhitespace(scrubbed)
 
 	var outPath string
 	if len(args) > 1 {
@@ -110,26 +111,21 @@ func scrub(ts *testscript.TestScript, _ bool, args []string) {
 	}
 }
 
-// Replaces $WORK value (a random test dir) with placeholder so that tests that output subdirs can use the
-// `cmp` testscript command. `cmpenv` is not ideal as it cannot update golden files and can expand
-// text that is not actually an env variable (e.g. /$1 as used in `patrolbot init` help).
-func scrubWorkDir(file string, workDir string) string {
-	// Need to account for newlines wrapping the path, due to how fang wraps error messages.
-	workDir = regexp.QuoteMeta(workDir)
-	rePattern := strings.Join(strings.Split(workDir, ""), `(?:\s+|\n\s*)?`)
-	re := regexp.MustCompile(rePattern)
-
-	scrubbed := re.ReplaceAllString(file, "$$WORK")
-
-	// Fixes test failures caused by whitespace differences
-	lines := strings.Split(scrubbed, "\n")
+func trimTrailingWhitespace(text string) string {
+	lines := strings.Split(text, "\n")
 	for i := range lines {
 		lines[i] = strings.TrimRight(lines[i], " \t\r")
 	}
+	return strings.Join(lines, "\n")
+}
 
-	scrubbed = strings.Join(lines, "\n")
-
-	return scrubbed
+// Replaces $WORK value (a random test dir) with placeholder so that tests that output subdirs can use the
+// `cmp` testscript command. `cmpenv` is not ideal as it cannot update golden files and can expand
+// text that is not actually an env variable (e.g. /$1 as used in `patrolbot init` help).
+func scrubWorkDir(ts *testscript.TestScript, text string) string {
+	workDir := ts.Getenv("WORK")
+	text = strings.ReplaceAll(text, workDir, "$WORK")
+	return text
 }
 
 // Scrub mock server URL from output given that it uses a random port.

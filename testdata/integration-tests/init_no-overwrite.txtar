@@ -21,7 +21,7 @@ Pre-existing template
 
 -- cassette.tape --
 Output output.ascii
-Set Width 3000 # prevents text wrapping, which prevents the scrub command from doing its text replacements
+Set Width 3000 # Prevents line wrapping so scrub command can work properly
 
 # Run command, decline overwrite by selecting default "no" option
 Hide
