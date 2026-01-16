@@ -6,9 +6,9 @@ import (
 	"os"
 
 	"github.com/charmbracelet/fang"
-	configCmd "github.com/iocalebs/patrolbot/internal/cli/commands/config"
+	"github.com/iocalebs/patrolbot/internal/cli/commands/config"
 	initCmd "github.com/iocalebs/patrolbot/internal/cli/commands/init"
-	reportCmd "github.com/iocalebs/patrolbot/internal/cli/commands/report"
+	"github.com/iocalebs/patrolbot/internal/cli/commands/report"
 	"github.com/spf13/cobra"
 )
 
@@ -21,9 +21,9 @@ func Execute() {
 	}
 
 	rootCmd.AddCommand(
-		configCmd.NewCommand(),
+		config.NewCommand(),
 		initCmd.NewCommand(),
-		reportCmd.NewCommand(),
+		report.NewCommand(),
 	)
 	rootCmd.SetHelpCommand(&cobra.Command{
 		Hidden: true,
