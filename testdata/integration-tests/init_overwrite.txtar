@@ -30,6 +30,7 @@ Set Height 1000 # prevents navigation text and error messages from being truncat
 
 # Run command, accept overwrite with "y" shortcut
 Hide
+Sleep 100ms
 Type "patrolbot init"
 Enter
 Sleep 100ms

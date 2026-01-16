@@ -25,6 +25,7 @@ Set Width 3000 # prevents text wrapping, which prevents the scrub command from d
 
 # Run command, decline overwrite by selecting default "no" option
 Hide
+Sleep 100ms
 Type "patrolbot init"
 Enter
 Sleep 200ms
