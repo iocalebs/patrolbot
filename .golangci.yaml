@@ -51,6 +51,3 @@ linters:
         linters:
           - err113
           - wrapcheck
-
-issues:
-  fix: true
