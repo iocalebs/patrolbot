@@ -30,6 +30,16 @@ var (
 	ErrWikiInvalid = errors.New("invalid wiki configuration")
 )
 
+// AddFlag adds a --config flag for passing a custom config file.
+func AddFlag(flags *pflag.FlagSet) {
+	flags.StringP(
+		"config",
+		"c",
+		"",
+		"Path to config file (default locations: ./config.yaml, $HOME/.patrolbot/config.yaml)",
+	)
+}
+
 // Load sources config from files, environment variables, and command-line flags and returns the merged result.
 // See patrolbot config --help for more on config sources.
 func Load(flags *pflag.FlagSet) (Config, error) {

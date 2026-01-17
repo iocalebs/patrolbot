@@ -1,3 +1,6 @@
+! exec patrolbot report weekly
+cmp stderr stderr-wiki-not-set.golden
+
 ! exec patrolbot report weekly --wiki invalidconfig
 cmp stderr stderr-invalid-config.golden
 
@@ -43,6 +46,12 @@ wikis:
 
 -- decline-prompt --
 n
+
+-- stderr-wiki-not-set.golden --
+          
+   ERROR  
+          
+  Invalid wiki configuration: wiki not set.                                                                           
 
 -- stderr-invalid-config.golden --
           

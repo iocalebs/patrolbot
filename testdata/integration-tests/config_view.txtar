@@ -9,23 +9,11 @@ cmp stdout help.golden
 exec patrolbot config view
 cmp stdout basic-home-config.golden
 
-# Env variables can override config.yaml.
-env PATROLBOT_WIKI=zwfr
-exec patrolbot config view
-cmp stdout override-wiki-env.golden
-env PATROLBOT_WIKI=
-
-# Flags can override config.yaml and env variables.
-env PATROLBOT_WIKI=zwfr
-exec patrolbot --wiki wikipedia config view
-cmp stdout override-wiki-flag.golden
-env PATROLBOT_WIKI=
-
-# Env variables can override nested properties.
+# Env variables can override config.yaml properties.
 env PATROLBOT_DISCORD_TOKEN=token
 env PATROLBOT_WIKIS_ZWEN_CLIENT_PASSWORD=password
 exec patrolbot config view
-cmp stdout override-env-nested.golden
+cmp stdout override-env.golden
 env PATROLBOT_WIKIS_ZWEN_CLIENT_PASSWORD=
 env PATROLBOT_DISCORD_TOKEN=
 
@@ -59,7 +47,6 @@ cmp stdout override-config-flag.golden
          
     -c --config  Path to config file (default locations: ./config.yaml, $HOME/.patrolbot/config.yaml)
     -h --help    Help for view
-    -w --wiki    Target wiki
 
 -- home/.patrolbot/config.yaml --
 discord:
@@ -318,102 +305,7 @@ wiki: dunepedia
     }
   }
 }
--- override-wiki-flag.golden --
-{
-  "discord": {
-    "api": "https://discord.com/api/v10",
-    "token": ""
-  },
-  "userAgent": "PatrolBot/1.0 (+https://github.com/iocalebs/patrolbot)",
-  "wiki": "wikipedia",
-  "wikis": {
-    "zwen": {
-      "site": {
-        "url": "https://zeldawiki.wiki",
-        "scriptPath": "/w",
-        "articlePath": "/wiki",
-        "rcMaxAgeDays": 90,
-        "rcLinkLimit": 1000
-      },
-      "auth": {
-        "username": "PhantomCaleb@Patrolbot",
-        "password": ""
-      },
-      "client": {
-        "timeout": 10000000000,
-        "from": "phantomcaleb@zeldawiki.wiki"
-      },
-      "reports": {
-        "templateDir": "./reports",
-        "discordServerID": "911393793666863116",
-        "types": {
-          "weekly": {
-            "template": "weekly.tmpl",
-            "discordChannelID": "911393794262458421",
-            "data": {
-              "patrolExpiring": {
-                "windows": [
-                  {
-                    "days": 7
-                  },
-                  {
-                    "days": 14
-                  },
-                  {
-                    "days": 30
-                  }
-                ]
-              }
-            }
-          }
-        }
-      }
-    },
-    "zwfr": {
-      "site": {
-        "url": "https://fr.zeldawiki.wiki",
-        "scriptPath": "/w",
-        "articlePath": "/wiki",
-        "rcMaxAgeDays": 90,
-        "rcLinkLimit": 1000
-      },
-      "auth": {
-        "username": "FantômeCaleb@Patrolbot",
-        "password": ""
-      },
-      "client": {
-        "timeout": 0,
-        "from": "phantomcaleb@zeldawiki.wiki"
-      },
-      "reports": {
-        "templateDir": "./reports",
-        "discordServerID": "911393793666863116",
-        "types": {
-          "weekly": {
-            "template": "weekly.tmpl",
-            "discordChannelID": "911393794262458421",
-            "data": {
-              "patrolExpiring": {
-                "windows": [
-                  {
-                    "days": 7
-                  },
-                  {
-                    "days": 14
-                  },
-                  {
-                    "days": 30
-                  }
-                ]
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-}
--- override-env-nested.golden --
+-- override-env.golden --
 {
   "discord": {
     "api": "https://discord.com/api/v10",

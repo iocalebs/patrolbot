@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/iocalebs/patrolbot/internal/cli/flags"
 	"github.com/iocalebs/patrolbot/internal/config"
 	"github.com/spf13/cobra"
 )
@@ -36,7 +35,7 @@ func NewCommand() *cobra.Command {
 		},
 	}
 
-	flags.Config(cmd)
+	config.AddFlag(cmd.Flags())
 
 	return cmd
 }

@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"log/slog"
 
-	"github.com/iocalebs/patrolbot/internal/cli/flags"
 	"github.com/iocalebs/patrolbot/internal/config"
 	"github.com/spf13/cobra"
 )
@@ -46,13 +45,19 @@ func NewCommand() *cobra.Command {
 		},
 	}
 
+	config.AddFlag(cmd.Flags())
 	cmd.Flags().Bool("list", false, "List available report types")
 	cmd.Flags().Bool(
 		"send-discord",
 		false,
 		"Send report to configured Discord channel without prompting for confirmation first",
 	)
-	flags.Config(cmd)
+	cmd.Flags().StringP(
+		"wiki",
+		"w",
+		"",
+		"Target wiki",
+	)
 
 	return cmd
 }
