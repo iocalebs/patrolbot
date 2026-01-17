@@ -4,14 +4,11 @@ package report
 import (
 	"fmt"
 	"log/slog"
-	"time"
 
 	"github.com/iocalebs/patrolbot/internal/cli/flags"
 	"github.com/iocalebs/patrolbot/internal/config"
 	"github.com/spf13/cobra"
 )
-
-const discordTimeout = 10 * time.Second
 
 // NewCommand returns the `report` Cobra command.
 func NewCommand() *cobra.Command {

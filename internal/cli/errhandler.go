@@ -10,7 +10,7 @@ import (
 	"github.com/charmbracelet/fang"
 	"github.com/charmbracelet/x/term"
 	"github.com/iocalebs/patrolbot/internal/cli/clierr"
-	reporter "github.com/iocalebs/patrolbot/internal/report"
+	"github.com/iocalebs/patrolbot/internal/report/reporter"
 )
 
 // A modification of [github.com/charmbracelet/fang.DefaultErrorHandler] that displays usage help

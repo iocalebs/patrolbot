@@ -19,8 +19,8 @@ import (
 	"github.com/iocalebs/patrolbot/internal/config"
 	"github.com/iocalebs/patrolbot/internal/discord"
 	"github.com/iocalebs/patrolbot/internal/mediawiki"
-	reporter "github.com/iocalebs/patrolbot/internal/report"
 	"github.com/iocalebs/patrolbot/internal/report/provider"
+	"github.com/iocalebs/patrolbot/internal/report/reporter"
 )
 
 type handler struct {
@@ -34,6 +34,8 @@ type opts struct {
 	list        bool
 	sendDiscord bool
 }
+
+const discordTimeout = 10 * time.Second
 
 func (h *handler) run(ctx context.Context, args []string, opts opts) error {
 	wiki, err := h.config.CurrentWiki()
