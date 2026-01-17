@@ -1,0 +1,30 @@
+name: Reports - Weekly
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 12 * * 6" # Every Saturday at 12:00 UTC
+
+permissions:
+  contents: read
+
+jobs:
+  reports:
+    runs-on: ubuntu-latest
+    env:
+      PATROLBOT_DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-go@v6
+        with:
+          go-version: "1.25"
+      - run: make build
+
+      - run: ./patrolbot report weekly --wiki testwiki
+        env:
+          PATROLBOT_WIKIS_TESTWIKI_AUTH_PASSWORD: ${{ secrets.BOTPASSWORD_ZWEN }}
+
+      - run: ./patrolbot report weekly --wiki zwen
+        if: always()
+        env:
+          PATROLBOT_WIKIS_ZWEN_AUTH_PASSWORD: ${{ secrets.BOTPASSWORD_ZWEN }}
