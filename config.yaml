@@ -31,3 +31,29 @@ wikis:
                 - days: 7
                 - days: 14
                 - days: 30
+  testwiki:
+    site:
+      url: https://zeldawiki.wiki
+      scriptPath: /w
+      articlePath: /wiki
+      rcLinkLimit: 1000
+      rcMaxAgeDays: 90
+    auth:
+      username: PhantomCaleb@PatrolBot
+      password: ""
+    client:
+      from: phantomcalebs@gmail.com
+      timeout: 10s
+    reports:
+      templateDir: ./templates
+      discordServerID: "911393793666863116"
+      types:
+        weekly:
+          discordChannelID: "911393794262458421"
+          template: weekly.tmpl
+          data:
+            patrolExpiring:
+              windows:
+                - days: 7
+                - days: 14
+                - days: 30

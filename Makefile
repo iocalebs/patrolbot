@@ -4,6 +4,7 @@ export GOCOVERDIR := coverage
 .PHONY: clean
 .PHONY: cover
 .PHONY: docs 
+.PHONY: e2e
 .PHONY: generate 
 .PHONY: lint 
 .PHONY: short
@@ -41,6 +42,9 @@ cover:
 
 docs:
 	pkgsite -open .
+
+e2e: build
+	./patrolbot report --send-discord --wiki testwiki weekly
 
 generate:
 	go generate ./...
