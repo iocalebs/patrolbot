@@ -3,7 +3,7 @@ name: Reports - Weekly
 on:
   workflow_dispatch:
   schedule:
-    - cron: "0 12 * * 6" # Every Saturday at 12:00 UTC
+    - cron: "0 9 * * 6" # Every Saturday at 9am UTC (4am EST)
 
 permissions:
   contents: read
@@ -24,7 +24,7 @@ jobs:
         env:
           PATROLBOT_WIKIS_TESTWIKI_AUTH_PASSWORD: ${{ secrets.BOTPASSWORD_ZWEN }}
 
-      - run: ./patrolbot report weekly --wiki zwen
-        if: always()
+      - if: always()
+        run: ./patrolbot report weekly --wiki zwen
         env:
           PATROLBOT_WIKIS_ZWEN_AUTH_PASSWORD: ${{ secrets.BOTPASSWORD_ZWEN }}
