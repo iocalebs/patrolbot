@@ -116,6 +116,7 @@ func trimTrailingWhitespace(text string) string {
 	for i := range lines {
 		lines[i] = strings.TrimRight(lines[i], " \t\r")
 	}
+
 	return strings.Join(lines, "\n")
 }
 
@@ -125,6 +126,7 @@ func trimTrailingWhitespace(text string) string {
 func scrubWorkDir(ts *testscript.TestScript, text string) string {
 	workDir := ts.Getenv("WORK")
 	text = strings.ReplaceAll(text, workDir, "$WORK")
+
 	return text
 }
 
