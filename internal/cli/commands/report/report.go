@@ -1,4 +1,4 @@
-// Package report implements the "patrolbot report" Cobra command
+// Package report implements the "patrolbot report" command
 package report
 
 import (

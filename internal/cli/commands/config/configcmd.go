@@ -1,4 +1,4 @@
-// Package config implements the patrolbot config command
+// Package config implements the "patrolbot config" command
 package config
 
 import (
