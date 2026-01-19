@@ -9,6 +9,7 @@ import (
 	"github.com/iocalebs/patrolbot/internal/cli/commands/config"
 	initCmd "github.com/iocalebs/patrolbot/internal/cli/commands/init"
 	"github.com/iocalebs/patrolbot/internal/cli/commands/report"
+	"github.com/iocalebs/patrolbot/internal/cli/commands/serve"
 	"github.com/spf13/cobra"
 )
 
@@ -24,6 +25,7 @@ func Execute() {
 		config.NewCommand(),
 		initCmd.NewCommand(),
 		report.NewCommand(),
+		serve.NewCommand(),
 	)
 	rootCmd.SetHelpCommand(&cobra.Command{
 		Hidden: true,

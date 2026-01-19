@@ -52,6 +52,13 @@ cmp stdout override-config-flag.golden
 discord:
   api: https://discord.com/api/v10
   token: ""
+server:
+  port: 8080
+  timeouts:
+    readTimeout: 15s
+    readHeaderTimeout: 5s
+    writeTimeout: 15s
+    idleTimeout: 60s
 userAgent: PatrolBot/1.0 (+https://github.com/iocalebs/patrolbot)
 wiki: zwen
 wikis:
@@ -120,6 +127,15 @@ wiki: dunepedia
   "discord": {
     "api": "https://discord.com/api/v10",
     "token": ""
+  },
+  "server": {
+    "port": 8080,
+    "timeouts": {
+      "readTimeout": 15000000000,
+      "readHeaderTimeout": 5000000000,
+      "writeTimeout": 15000000000,
+      "idleTimeout": 60000000000
+    }
   },
   "userAgent": "PatrolBot/1.0 (+https://github.com/iocalebs/patrolbot)",
   "wiki": "zwen",
@@ -216,6 +232,15 @@ wiki: dunepedia
     "api": "https://discord.com/api/v10",
     "token": ""
   },
+  "server": {
+    "port": 8080,
+    "timeouts": {
+      "readTimeout": 15000000000,
+      "readHeaderTimeout": 5000000000,
+      "writeTimeout": 15000000000,
+      "idleTimeout": 60000000000
+    }
+  },
   "userAgent": "PatrolBot/1.0 (+https://github.com/iocalebs/patrolbot)",
   "wiki": "zwfr",
   "wikis": {
@@ -310,6 +335,15 @@ wiki: dunepedia
   "discord": {
     "api": "https://discord.com/api/v10",
     "token": "token"
+  },
+  "server": {
+    "port": 8080,
+    "timeouts": {
+      "readTimeout": 15000000000,
+      "readHeaderTimeout": 5000000000,
+      "writeTimeout": 15000000000,
+      "idleTimeout": 60000000000
+    }
   },
   "userAgent": "PatrolBot/1.0 (+https://github.com/iocalebs/patrolbot)",
   "wiki": "zwen",

@@ -2,6 +2,13 @@
 discord:
   api: https://discord.com/api/v10
   token: ""
+server:
+  port: 8080
+  timeouts:
+    readTimeout: 15s
+    readHeaderTimeout: 5s
+    writeTimeout: 15s
+    idleTimeout: 60s
 userAgent: PatrolBot/1.0 (+https://github.com/iocalebs/patrolbot)
 wiki: "" # Env variable PATROLBOT_WIKI or flag --wiki
 wikis:

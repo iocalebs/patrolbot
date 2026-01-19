@@ -1,0 +1,43 @@
+! exec patrolbot serve -c config-no-server.yaml
+cmp stderr stderr-no-server-config.golden
+
+! exec patrolbot serve -c config-invalid-server.yaml
+cmp stderr stderr-invalid-server-config.golden
+
+! exec patrolbot serve -c config-zero-header-timeout.yaml
+cmp stderr stderr-slowloris.golden
+
+-- config-no-server.yaml --
+wiki: zwen
+
+-- config-invalid-server.yaml --
+server:
+  writeTimeout: 10s
+
+-- config-zero-header-timeout.yaml --
+server:
+  port: 8080
+  readHeaderTimeout: 0
+
+-- stderr-no-server-config.golden --
+          
+   ERROR  
+          
+  Invalid configuration:                                                                                              
+  - .server not set                                                                                                   
+
+-- stderr-invalid-server-config.golden --
+          
+   ERROR  
+          
+  Invalid configuration:                                                                                              
+  - .server.port not set                                                                                              
+  - .server.timeouts.readHeaderTimeout must be greater than zero to guard against slowloris attacks                   
+
+-- stderr-slowloris.golden --
+          
+   ERROR  
+          
+  Invalid configuration:                                                                                              
+  - .server.timeouts.readHeaderTimeout must be greater than zero to guard against slowloris attacks                   
+

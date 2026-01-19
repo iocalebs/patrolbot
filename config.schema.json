@@ -9,9 +9,13 @@
           "$ref": "#/$defs/Discord",
           "description": "Discord bot configuration"
         },
+        "server": {
+          "$ref": "#/$defs/Server",
+          "description": "HTTP server configuration"
+        },
         "userAgent": {
           "type": "string",
-          "description": "User-Agent HTTP header for MediaWiki API requests\nhttps://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/User-Agent"
+          "description": "User-Agent HTTP header for MediaWiki and Discord API requests\nhttps://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/User-Agent"
         },
         "wiki": {
           "type": "string",
@@ -152,6 +156,50 @@
         "types"
       ],
       "description": "Reports represents the configuration for generating reports."
+    },
+    "Server": {
+      "properties": {
+        "port": {
+          "type": "integer",
+          "description": "Port to listen on"
+        },
+        "timeouts": {
+          "$ref": "#/$defs/Timeouts",
+          "description": "HTTP server timeouts as durations, e.g. \"2s\" or \"500ms\"\nSee: https://pkg.go.dev/net/http#Server"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "required": [
+        "port",
+        "timeouts"
+      ],
+      "description": "Server represents the configuration for the PatrolBot HTTP server."
+    },
+    "Timeouts": {
+      "properties": {
+        "readTimeout": {
+          "type": "string"
+        },
+        "readHeaderTimeout": {
+          "type": "string"
+        },
+        "writeTimeout": {
+          "type": "string"
+        },
+        "idleTimeout": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "required": [
+        "readTimeout",
+        "readHeaderTimeout",
+        "writeTimeout",
+        "idleTimeout"
+      ],
+      "description": "Timeouts represents the configuration for the PatrolBot HTTP server timeouts."
     },
     "Wiki": {
       "properties": {

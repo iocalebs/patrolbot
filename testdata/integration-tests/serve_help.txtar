@@ -1,0 +1,19 @@
+exec patrolbot serve --help
+cmp stdout help.golden
+
+exec patrolbot serve -h
+cmp stdout help.golden
+
+-- help.golden --
+
+  Start an HTTP server to receive and respond to Discord Interactions via webhooks.                                     
+         
+  USAGE  
+         
+    patrolbot serve [--flags]  
+         
+  FLAGS  
+         
+    -c --config  Path to config file (default locations: ./config.yaml, $HOME/.patrolbot/config.yaml)
+    -h --help    Help for serve
+

@@ -7,7 +7,10 @@ type Config struct {
 	// Discord bot configuration
 	Discord Discord `json:"discord"`
 
-	// User-Agent HTTP header for MediaWiki API requests
+	// HTTP server configuration
+	Server *Server `json:"server,omitempty"`
+
+	// User-Agent HTTP header for MediaWiki and Discord API requests
 	// https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/User-Agent
 	UserAgent string `json:"userAgent"`
 
@@ -26,6 +29,24 @@ type Discord struct {
 
 	// Bot token
 	Token string `json:"token"`
+}
+
+// Server represents the configuration for the PatrolBot HTTP server.
+type Server struct {
+	// Port to listen on
+	Port int `json:"port"`
+
+	// HTTP server timeouts as durations, e.g. "2s" or "500ms"
+	// See: https://pkg.go.dev/net/http#Server
+	Timeouts Timeouts `json:"timeouts"`
+}
+
+// Timeouts represents the configuration for the PatrolBot HTTP server timeouts.
+type Timeouts struct {
+	ReadTimeout       time.Duration `json:"readTimeout"       jsonschema:"type=string"`
+	ReadHeaderTimeout time.Duration `json:"readHeaderTimeout" jsonschema:"type=string"`
+	WriteTimeout      time.Duration `json:"writeTimeout"      jsonschema:"type=string"`
+	IdleTimeout       time.Duration `json:"idleTimeout"       jsonschema:"type=string"`
 }
 
 // Wiki represents the configuration for a particular MediaWiki instance.
