@@ -2,6 +2,8 @@
 discord:
   api: https://discord.com/api/v10
   token: ""
+log:
+  level: INFO
 server:
   port: 8080
   timeouts:

@@ -16,11 +16,11 @@ type logHandler struct {
 }
 
 // NewLogger creates a new [slog.Logger] configured for logging on Google Cloud Platform.
-func NewLogger(w io.Writer) *slog.Logger {
+func NewLogger(w io.Writer, level slog.Level) *slog.Logger {
 	handler := &logHandler{
 		JSONHandler: slog.NewJSONHandler(w, &slog.HandlerOptions{
 			AddSource: true,
-			Level:     nil, // TODO: make configurable
+			Level:     level,
 			ReplaceAttr: func(_ []string, attr slog.Attr) slog.Attr {
 				switch attr.Key {
 				case slog.MessageKey:

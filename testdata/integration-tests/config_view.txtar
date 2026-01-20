@@ -128,6 +128,9 @@ wiki: dunepedia
     "api": "https://discord.com/api/v10",
     "token": ""
   },
+  "log": {
+    "level": "INFO"
+  },
   "server": {
     "port": 8080,
     "timeouts": {
@@ -336,6 +339,9 @@ wiki: dunepedia
     "api": "https://discord.com/api/v10",
     "token": "token"
   },
+  "log": {
+    "level": "INFO"
+  },
   "server": {
     "port": 8080,
     "timeouts": {
@@ -440,6 +446,9 @@ wiki: dunepedia
     "api": "",
     "token": ""
   },
+  "log": {
+    "level": "INFO"
+  },
   "userAgent": "",
   "wiki": "wikipedia",
   "wikis": null
@@ -449,6 +458,9 @@ wiki: dunepedia
   "discord": {
     "api": "",
     "token": ""
+  },
+  "log": {
+    "level": "INFO"
   },
   "userAgent": "",
   "wiki": "dunepedia",

@@ -1,11 +1,17 @@
 package config
 
-import "time"
+import (
+	"log/slog"
+	"time"
+)
 
 // Config represents the configuration for PatrolBot.
 type Config struct {
 	// Discord bot configuration
 	Discord Discord `json:"discord"`
+
+	// Logging configuration
+	Log Log `json:"log"`
 
 	// HTTP server configuration
 	Server *Server `json:"server,omitempty"`
@@ -29,6 +35,12 @@ type Discord struct {
 
 	// Bot token
 	Token string `json:"token"`
+}
+
+// Log represents PatrolBot logging configuration.
+type Log struct {
+	// Level is the minimum severity level that will be logged.
+	Level slog.Level `json:"level" jsonschema:"type=string,enum=DEBUG,enum=INFO,enum=WARN,enum=ERROR,default=INFO"`
 }
 
 // Server represents the configuration for the PatrolBot HTTP server.

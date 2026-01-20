@@ -24,7 +24,7 @@ func NewCommand() *cobra.Command {
 				return fmt.Errorf("error loading config: %w", err)
 			}
 
-			srv, err := newServer(cfg.Server)
+			srv, err := newServer(cfg)
 			if err != nil {
 				return err
 			}
@@ -38,15 +38,15 @@ func NewCommand() *cobra.Command {
 	return cmd
 }
 
-func newServer(cfg *config.Server) (*server.Server, error) {
-	err := validateServerConfig(cfg)
+func newServer(cfg config.Config) (*server.Server, error) {
+	err := validateServerConfig(cfg.Server)
 	if err != nil {
 		return nil, err
 	}
 
-	logger := gcp.NewLogger(os.Stderr)
+	logger := gcp.NewLogger(os.Stderr, cfg.Log.Level)
 
-	return server.NewServer(*cfg, logger, gcp.TraceMiddleware), nil
+	return server.NewServer(*cfg.Server, logger, gcp.TraceMiddleware), nil
 }
 
 func validateServerConfig(cfg *config.Server) error {

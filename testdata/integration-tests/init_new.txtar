@@ -69,6 +69,8 @@ weekly.tmpl
 discord:
   api: https://discord.com/api/v10
   token: "token"
+log:
+  level: INFO
 userAgent: "PatrolBot/1.0 (+https://github.com/iocalebs/patrolbot)"
 wiki: "zw"
 wikis:

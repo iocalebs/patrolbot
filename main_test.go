@@ -4,8 +4,10 @@ import (
 	"bytes"
 	"flag"
 	"os"
+	"regexp"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/iocalebs/patrolbot/internal/httpstub"
 	"github.com/rogpeppe/go-internal/testscript"
@@ -21,6 +23,7 @@ func TestCommands(t *testing.T) {
 		UpdateScripts: *update,
 		Cmds: map[string]func(ts *testscript.TestScript, neg bool, args []string){
 			"scrub": scrub,
+			"sleep": sleep,
 			"stub":  httpstub.Cmd("stub"),
 		},
 		Setup: func(env *testscript.Env) error {
@@ -50,12 +53,25 @@ func TestCommands(t *testing.T) {
 	testscript.Run(t, params)
 }
 
+func sleep(ts *testscript.TestScript, _ bool, args []string) {
+	if len(args) != 1 {
+		ts.Fatalf("usage: sleep duration")
+	}
+
+	d, err := time.ParseDuration(args[0])
+	if err != nil {
+		ts.Fatalf("invalid duration: %v", err)
+	}
+
+	time.Sleep(d)
+}
+
 func scrub(ts *testscript.TestScript, _ bool, args []string) {
 	file := args[0]
 	scrubbed := ts.ReadFile(file)
-	scrubbed = scrubWorkDir(ts, scrubbed)
+	scrubbed = scrubEnv(ts, scrubbed)
+	scrubbed = scrubTimestamps(scrubbed)
 	scrubbed = scrubVHS(scrubbed)
-	scrubbed = scrubMockServerAddr(ts, scrubbed)
 	scrubbed = trimTrailingWhitespace(scrubbed)
 
 	var err error
@@ -92,33 +108,28 @@ func scrub(ts *testscript.TestScript, _ bool, args []string) {
 	}
 }
 
-func trimTrailingWhitespace(text string) string {
-	lines := strings.Split(text, "\n")
-	for i := range lines {
-		lines[i] = strings.TrimRight(lines[i], " \t\r")
+// Replace environment variables with random element ($WORK, $STUB_ADDR) with placeholders
+// Scrub mock server URL from output given that it uses a random port.
+func scrubEnv(ts *testscript.TestScript, text string) string {
+	env := []string{"STUB_ADDR", "WORK"}
+
+	for _, envVar := range env {
+		val := ts.Getenv(envVar)
+		if val != "" {
+			text = strings.ReplaceAll(text, val, "$"+envVar)
+		}
 	}
-
-	return strings.Join(lines, "\n")
-}
-
-// Replaces $WORK value (a random test dir) with placeholder so that tests that output subdirs can use the
-// `cmp` testscript command. `cmpenv` is not ideal as it cannot update golden files and can expand
-// text that is not actually an env variable (e.g. /$1 as used in `patrolbot init` help).
-func scrubWorkDir(ts *testscript.TestScript, text string) string {
-	workDir := ts.Getenv("WORK")
-	text = strings.ReplaceAll(text, workDir, "$WORK")
 
 	return text
 }
 
-// Scrub mock server address from output given that it uses a random port.
-func scrubMockServerAddr(ts *testscript.TestScript, text string) string {
-	addr := ts.Getenv("STUB_ADDR")
-	if addr != "" {
-		text = strings.ReplaceAll(text, addr, "$STUB_ADDR")
-	}
+// Set all timestamps to epoch time.
+func scrubTimestamps(text string) string {
+	// Pattern for RFC3339: 2026-01-20T09:28:27.051219-05:00
+	re := regexp.MustCompile(`\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?(Z|[+-]\d{2}:\d{2})`)
+	epoch := time.Unix(0, 0).UTC().Format(time.RFC3339Nano)
 
-	return text
+	return re.ReplaceAllString(text, epoch)
 }
 
 // Scrub empty frames from the start of a charmbracelet/vhs recording.
@@ -145,4 +156,13 @@ func scrubVHS(recording string) string {
 
 	// Join the kept blocks back together
 	return strings.Join(frames[firstFrame:], separator)
+}
+
+func trimTrailingWhitespace(text string) string {
+	lines := strings.Split(text, "\n")
+	for i := range lines {
+		lines[i] = strings.TrimRight(lines[i], " \t\r")
+	}
+
+	return strings.Join(lines, "\n")
 }

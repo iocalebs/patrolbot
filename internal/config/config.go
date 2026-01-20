@@ -82,6 +82,10 @@ func Load(flags *pflag.FlagSet) (Config, error) {
 
 	err = viper.Unmarshal(&cfg, func(dc *mapstructure.DecoderConfig) {
 		dc.TagName = "json"
+		dc.DecodeHook = mapstructure.ComposeDecodeHookFunc(
+			mapstructure.StringToTimeDurationHookFunc(),
+			mapstructure.TextUnmarshallerHookFunc(),
+		)
 	})
 	if err != nil {
 		return Config{}, fmt.Errorf("failed to read config: %w", err)

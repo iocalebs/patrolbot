@@ -9,6 +9,10 @@
           "$ref": "#/$defs/Discord",
           "description": "Discord bot configuration"
         },
+        "log": {
+          "$ref": "#/$defs/Log",
+          "description": "Logging configuration"
+        },
         "server": {
           "$ref": "#/$defs/Server",
           "description": "HTTP server configuration"
@@ -33,6 +37,7 @@
       "type": "object",
       "required": [
         "discord",
+        "log",
         "userAgent",
         "wiki",
         "wikis"
@@ -76,6 +81,27 @@
       "additionalProperties": false,
       "type": "object",
       "description": "Duration represents a span of time expressed in hours, days, or weeks."
+    },
+    "Log": {
+      "properties": {
+        "level": {
+          "type": "string",
+          "enum": [
+            "DEBUG",
+            "INFO",
+            "WARN",
+            "ERROR"
+          ],
+          "description": "Level is the minimum severity level that will be logged.",
+          "default": "INFO"
+        }
+      },
+      "additionalProperties": false,
+      "type": "object",
+      "required": [
+        "level"
+      ],
+      "description": "Log represents PatrolBot logging configuration."
     },
     "PatrolExpiring": {
       "properties": {
