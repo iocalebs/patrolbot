@@ -37,19 +37,32 @@ linters:
 
   exclusions:
     rules:
+  
+      # Allow "magic numbers" for parsing command-line args
       - source: if len\(args\) [><] \d+ \{
         linters:
           - mnd
+
+      # Allow long URLs in comment lines
+      - source: ^[\s]*// https://[^\s]+
+        linters:
+          - lll
+
+      # Allow DAMP vs DRY in tests
       - path: _test\.go
         linters:
           - dupl
           - funlen
           - goconst
+
+      # Avoid unnecessary error checking in httptest handlers  
       - path: _test\.go
         source: w\.Write
         linters:
           - errcheck
           - gosec
+      
+      # Avoid overzealous error wrapping for internal tools
       - path: tools/.*\.go
         linters:
           - err113

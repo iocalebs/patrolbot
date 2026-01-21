@@ -8,6 +8,7 @@ import (
 	"github.com/charmbracelet/fang"
 	"github.com/iocalebs/patrolbot/internal/cli/commands/config"
 	initCmd "github.com/iocalebs/patrolbot/internal/cli/commands/init"
+	"github.com/iocalebs/patrolbot/internal/cli/commands/register"
 	"github.com/iocalebs/patrolbot/internal/cli/commands/report"
 	"github.com/iocalebs/patrolbot/internal/cli/commands/serve"
 	"github.com/spf13/cobra"
@@ -24,6 +25,7 @@ func Execute() {
 	rootCmd.AddCommand(
 		config.NewCommand(),
 		initCmd.NewCommand(),
+		register.NewCommand(),
 		report.NewCommand(),
 		serve.NewCommand(),
 	)

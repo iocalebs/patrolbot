@@ -19,6 +19,7 @@ cmp stdout help.golden
             
     config [command]         Manage PatrolBot configuration
     init                     Initialize PatrolBot configuration
+    register [--flags]       Register Discord bot commands
     report <type> [--flags]  Generate a report
     serve [--flags]          Start a Discord webhook server
          

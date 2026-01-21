@@ -1,0 +1,14 @@
+{
+  "message": "Invalid Form Body",
+  "code": 50035,
+  "errors": {
+    "name": {
+      "_errors": [
+        {
+          "code": "BASE_TYPE_BAD_LENGTH",
+          "message": "Must be between 1 and 32 in length."
+        }
+      ]
+    }
+  }
+}
