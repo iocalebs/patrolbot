@@ -143,26 +143,38 @@ func promptConfig(ctx context.Context) (formData, error) { //nolint:funlen
 		huh.NewGroup(
 			huh.NewNote().
 				Title("Create a Discord app for PatrolBot").
-				Description(
-					//nolint:lll
-					`  1. Create a Discord app in the developer portal:
-     https://discord.com/developers/applications?new\_application=true
+				Description("https://discord.com/developers/applications?new\\_application=true"),
 
-  2. On the Installation page under Install Link, open the Discord Provided Link in a browser and add the bot to the desired server.
+			huh.NewInput().
+				Title("Application ID").
+				Description("On the General Information page, copy the value for Application ID.").
+				Value(&data.Discord.AppID),
 
-  3. On the Bot page under Token, click "Reset Token" to generate a new bot token.`),
+			huh.NewInput().
+				Title("Public key").
+				Description("On the General Information page, copy the value for Public Key.").
+				Value(&data.Discord.PublicKey),
+
 			huh.NewInput().
 				Title("Bot token").
+				Description("On the Bot page under Token, click \"Reset Token\" to generate a new bot token.").
 				Value(&data.Discord.Token),
+
+			huh.NewNote().
+				Title("Add bot to Discord server").
+				Description(
+					"On the Installation page under Install Link, open the Discord Provided Link in a browser "+
+						"and add the bot to the desired server."),
 		),
 
 		huh.NewGroup(
 			huh.NewInput().
 				Title("Discord server ID").
 				Description(
-					"Enter the ID of the Discord server where PatrolBot should post reports.\n"+
+					"Enter the ID of the Discord server you added the bot to.\n"+
 						"To obtain a server's ID, right click the server icon and click \"Copy Server ID\".").
 				Value(&data.DiscordServerID),
+
 			huh.NewInput().
 				Title("Discord channel ID").
 				Description(

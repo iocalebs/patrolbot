@@ -1,6 +1,8 @@
 # yaml-language-server: $schema=config.schema.json
 discord:
   api: https://discord.com/api/v10
+  appID: "1452202767694168094"
+  publicKey: 62ba213b620e0fdd7ee296059267ef48b5ebec3e852915fb14f9f390609ffe72
   token: ""
 log:
   level: INFO

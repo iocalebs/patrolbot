@@ -1,6 +1,8 @@
 # For more information on how PatrolBot sources config, refer to "patrolbot config --help"
 discord:
   api: https://discord.com/api/v10
+  appID: "{{ .Discord.AppID }}"
+  publicKey: "{{ .Discord.PublicKey }}"
   token: "{{ .Discord.Token }}"
 log:
   level: INFO

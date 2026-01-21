@@ -33,6 +33,12 @@ type Discord struct {
 	// See: https://discord.com/developers/docs/reference#api-versioning
 	API string `json:"api"`
 
+	// Application ID
+	AppID string `json:"appID"`
+
+	// Public key
+	PublicKey string `json:"publicKey"`
+
 	// Bot token
 	Token string `json:"token"`
 }

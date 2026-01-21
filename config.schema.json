@@ -50,6 +50,14 @@
           "type": "string",
           "description": "API version URL, e.g. https://discord.com/api/v10\nSee: https://discord.com/developers/docs/reference#api-versioning"
         },
+        "appID": {
+          "type": "string",
+          "description": "Application ID"
+        },
+        "publicKey": {
+          "type": "string",
+          "description": "Public key"
+        },
         "token": {
           "type": "string",
           "description": "Bot token"
@@ -59,6 +67,8 @@
       "type": "object",
       "required": [
         "api",
+        "appID",
+        "publicKey",
         "token"
       ],
       "description": "Discord represents the Discord bot configuration."
