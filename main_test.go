@@ -1,11 +1,17 @@
 package main_test
 
 import (
+	"bytes"
+	"encoding/json"
 	"flag"
+	"fmt"
+	"io"
 	"net/http"
 	"net/http/httptest"
+	"net/http/httputil"
 	"os"
 	"regexp"
+	"slices"
 	"strconv"
 	"strings"
 	"testing"
@@ -15,16 +21,18 @@ import (
 
 var update = flag.Bool("update", false, "update golden files") //nolint:gochecknoglobals
 
-type mockResponse struct {
+type mockHandler struct {
+	httpMethod        string
 	requestURIPattern *regexp.Regexp
 	statusCode        int
+	dumpRequest       func(*http.Request)
 	responseBody      []byte
 }
 
 func TestCommands(t *testing.T) {
 	t.Parallel()
 
-	mocks := []mockResponse{}
+	mocks := []mockHandler{}
 
 	params := testscript.Params{
 		Dir:           "testdata/integration-tests",
@@ -46,18 +54,25 @@ func TestCommands(t *testing.T) {
 			env.Setenv("PATH", testPath)
 
 			srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+				uri := r.URL.RequestURI()
 				for _, mock := range mocks {
-					if mock.requestURIPattern.MatchString(r.URL.RequestURI()) {
+					if mock.requestURIPattern.MatchString(uri) {
+						mock.dumpRequest(r)
 						w.WriteHeader(mock.statusCode)
-						w.Write(mock.responseBody)
+
+						if mock.responseBody != nil {
+							w.Write(mock.responseBody)
+						}
 
 						return
 					}
 				}
 
-				w.WriteHeader(http.StatusNotImplemented)
+				env.T().Fatal(fmt.Sprintf("Not implemented: %s %s", r.Method, uri))
 			}))
-			env.Setenv("MOCK_SERVER_URL", srv.URL)
+
+			addr := strings.Replace(srv.URL, "http://", "", 1)
+			env.Setenv("MOCKSERVER_ADDR", addr)
 
 			return nil
 		},
@@ -66,27 +81,84 @@ func TestCommands(t *testing.T) {
 	testscript.Run(t, params)
 }
 
-func mock(mocks *[]mockResponse) func(*testscript.TestScript, bool, []string) {
+func mock(mocks *[]mockHandler) func(*testscript.TestScript, bool, []string) {
 	return func(ts *testscript.TestScript, _ bool, args []string) {
-		re, err := regexp.Compile(args[0])
+		if len(args) < 3 {
+			ts.Fatalf("usage: mock httpMethod requestURIPattern mockResponseStatus [mockResponseBodyPath] [requestOutPath]")
+		}
+
+		method := args[0]
+
+		requestURIPattern, err := regexp.Compile(args[1])
 		if err != nil {
 			ts.Fatalf("Error compiling regex pattern: %v", err)
 		}
 
-		statusCode, err := strconv.Atoi(args[1])
+		statusCode, err := strconv.Atoi(args[2])
 		if err != nil {
 			ts.Fatalf("Error parsing status code: %v", err)
 		}
 
 		var body []byte
-		if len(args) > 2 {
-			body = []byte(ts.ReadFile(args[2]))
+		if len(args) > 3 {
+			body = []byte(ts.ReadFile(args[3]))
 		}
 
-		*mocks = append([]mockResponse{{
-			requestURIPattern: re,
+		*mocks = append([]mockHandler{{
+			httpMethod:        method,
+			requestURIPattern: requestURIPattern,
 			statusCode:        statusCode,
-			responseBody:      body,
+			dumpRequest: func(r *http.Request) {
+				if len(args) < 5 {
+					return
+				}
+
+				path := ts.MkAbs(args[4])
+
+				dump, err := httputil.DumpRequest(r, false)
+				if err != nil {
+					ts.Fatalf("Failed to dump HTTP request: %v", err)
+				}
+
+				var body []byte
+				if r.Header.Get("Content-Type") == "application/json" {
+					var data map[string]any
+
+					err = json.NewDecoder(r.Body).Decode(&data)
+					if err != nil {
+						ts.Fatalf("Failed to unmarshal JSON request body: %v", err)
+					}
+
+					body, err = json.MarshalIndent(data, "", "  ")
+					if err != nil {
+						ts.Fatalf("Failed to re-marshal JSON request body: %v", err)
+					}
+				} else if r.Body != nil {
+					body, err = io.ReadAll(r.Body)
+					if err != nil {
+						ts.Fatalf("Failed to read request body: %v", err)
+					}
+				}
+
+				if body != nil {
+					r.Body = io.NopCloser(bytes.NewBuffer(body)) // Restore request body so it can be read again
+					dump = slices.Concat(dump, body)
+				}
+
+				dump = []byte(scrubMockServerAddr(ts, string(dump)))
+
+				// httputil.DumpRequest uses \r\n per RFC9112 spec but txtar parses these as newlines
+				dump = []byte(strings.ReplaceAll(string(dump), "\r\n", "\n"))
+
+				// txtar file is parsed with trailling newline - we add one here to avoid cmp failures
+				dump = append(dump, '\n')
+
+				err = os.WriteFile(path, dump, 0600)
+				if err != nil {
+					ts.Fatalf("Failed to write request to file: %v", err)
+				}
+			},
+			responseBody: body,
 		}}, *mocks...)
 	}
 }
@@ -95,7 +167,7 @@ func scrub(ts *testscript.TestScript, _ bool, args []string) {
 	scrubbed := ts.ReadFile(args[0])
 	scrubbed = scrubWorkDir(ts, scrubbed)
 	scrubbed = scrubVHS(scrubbed)
-	scrubbed = scrubMockServerURL(ts, scrubbed)
+	scrubbed = scrubMockServerAddr(ts, scrubbed)
 	scrubbed = trimTrailingWhitespace(scrubbed)
 
 	var outPath string
@@ -130,11 +202,11 @@ func scrubWorkDir(ts *testscript.TestScript, text string) string {
 	return text
 }
 
-// Scrub mock server URL from output given that it uses a random port.
-func scrubMockServerURL(ts *testscript.TestScript, text string) string {
-	url := ts.Getenv("MOCK_SERVER_URL")
+// Scrub mock server address from output given that it uses a random port.
+func scrubMockServerAddr(ts *testscript.TestScript, text string) string {
+	url := ts.Getenv("MOCKSERVER_ADDR")
 	if url != "" {
-		text = strings.ReplaceAll(text, url, "$MOCK_SERVER_URL")
+		text = strings.ReplaceAll(text, url, "$MOCKSERVER_ADDR")
 	}
 
 	return text
