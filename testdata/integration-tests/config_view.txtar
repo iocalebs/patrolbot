@@ -81,8 +81,8 @@ wikis:
       templateDir: ./reports
       discordServerID: "911393793666863116"
       types:
-        weekly:
-          template: weekly.tmpl
+        expiring:
+          template: expiring.tmpl
           discordChannelID: "911393794262458421"
           data:
             patrolExpiring:
@@ -108,8 +108,8 @@ wikis:
       templateDir: ./reports
       discordServerID: "911393793666863116"
       types:
-        weekly:
-          template: weekly.tmpl
+        expiring:
+          template: expiring.tmpl
           discordChannelID: "911393794262458421"
           data:
             patrolExpiring:
@@ -167,8 +167,8 @@ wiki: dunepedia
         "templateDir": "./reports",
         "discordServerID": "911393793666863116",
         "types": {
-          "weekly": {
-            "template": "weekly.tmpl",
+          "expiring": {
+            "template": "expiring.tmpl",
             "discordChannelID": "911393794262458421",
             "data": {
               "patrolExpiring": {
@@ -209,112 +209,8 @@ wiki: dunepedia
         "templateDir": "./reports",
         "discordServerID": "911393793666863116",
         "types": {
-          "weekly": {
-            "template": "weekly.tmpl",
-            "discordChannelID": "911393794262458421",
-            "data": {
-              "patrolExpiring": {
-                "windows": [
-                  {
-                    "days": 7
-                  },
-                  {
-                    "days": 14
-                  },
-                  {
-                    "days": 30
-                  }
-                ]
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-}
--- override-wiki-env.golden --
-{
-  "discord": {
-    "api": "https://discord.com/api/v10",
-    "token": ""
-  },
-  "server": {
-    "port": 8080,
-    "timeouts": {
-      "readTimeout": 15000000000,
-      "readHeaderTimeout": 5000000000,
-      "writeTimeout": 15000000000,
-      "idleTimeout": 60000000000
-    }
-  },
-  "userAgent": "PatrolBot/1.0 (+https://github.com/iocalebs/patrolbot)",
-  "wiki": "zwfr",
-  "wikis": {
-    "zwen": {
-      "site": {
-        "url": "https://zeldawiki.wiki",
-        "scriptPath": "/w",
-        "articlePath": "/wiki",
-        "rcMaxAgeDays": 90,
-        "rcLinkLimit": 1000
-      },
-      "auth": {
-        "username": "PhantomCaleb@Patrolbot",
-        "password": ""
-      },
-      "client": {
-        "timeout": 10000000000,
-        "from": "phantomcaleb@zeldawiki.wiki"
-      },
-      "reports": {
-        "templateDir": "./reports",
-        "discordServerID": "911393793666863116",
-        "types": {
-          "weekly": {
-            "template": "weekly.tmpl",
-            "discordChannelID": "911393794262458421",
-            "data": {
-              "patrolExpiring": {
-                "windows": [
-                  {
-                    "days": 7
-                  },
-                  {
-                    "days": 14
-                  },
-                  {
-                    "days": 30
-                  }
-                ]
-              }
-            }
-          }
-        }
-      }
-    },
-    "zwfr": {
-      "site": {
-        "url": "https://fr.zeldawiki.wiki",
-        "scriptPath": "/w",
-        "articlePath": "/wiki",
-        "rcMaxAgeDays": 90,
-        "rcLinkLimit": 1000
-      },
-      "auth": {
-        "username": "FantômeCaleb@Patrolbot",
-        "password": ""
-      },
-      "client": {
-        "timeout": 0,
-        "from": "phantomcaleb@zeldawiki.wiki"
-      },
-      "reports": {
-        "templateDir": "./reports",
-        "discordServerID": "911393793666863116",
-        "types": {
-          "weekly": {
-            "template": "weekly.tmpl",
+          "expiring": {
+            "template": "expiring.tmpl",
             "discordChannelID": "911393794262458421",
             "data": {
               "patrolExpiring": {
@@ -380,8 +276,8 @@ wiki: dunepedia
         "templateDir": "./reports",
         "discordServerID": "911393793666863116",
         "types": {
-          "weekly": {
-            "template": "weekly.tmpl",
+          "expiring": {
+            "template": "expiring.tmpl",
             "discordChannelID": "911393794262458421",
             "data": {
               "patrolExpiring": {
@@ -422,8 +318,8 @@ wiki: dunepedia
         "templateDir": "./reports",
         "discordServerID": "911393793666863116",
         "types": {
-          "weekly": {
-            "template": "weekly.tmpl",
+          "expiring": {
+            "template": "expiring.tmpl",
             "discordChannelID": "911393794262458421",
             "data": {
               "patrolExpiring": {

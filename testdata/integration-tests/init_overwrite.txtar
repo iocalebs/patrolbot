@@ -4,20 +4,20 @@ env HOME=$WORK/home
 mkdir -p $HOME/.patrolbot
 cp config.yaml $HOME/.patrolbot/config.yaml
 mkdir -p $HOME/.patrolbot/templates
-cp weekly.tmpl $HOME/.patrolbot/templates/weekly.tmpl
+cp expiring.tmpl $HOME/.patrolbot/templates/expiring.tmpl
 cp custom.tmpl $HOME/.patrolbot/templates/custom.tmpl
 
 exec vhs cassette.tape
 scrub output.ascii
 cmp $HOME/.patrolbot/config.yaml new-config.golden.yaml
 cmp output.ascii output.golden
-cmp $HOME/.patrolbot/templates/weekly.tmpl weekly.golden.tmpl
+cmp $HOME/.patrolbot/templates/expiring.tmpl expiring.golden.tmpl
 cmp $HOME/.patrolbot/templates/custom.tmpl custom.tmpl
 
 -- config.yaml --
 wiki: zwen
 
--- weekly.tmpl --
+-- expiring.tmpl --
 Pre-existing template
 
 -- custom.tmpl --
@@ -89,9 +89,8 @@ Enter
 Type "channel1234"
 Enter
 
--- weekly.golden.tmpl --
-## Weekly patrol report
-Unpatrolled edits are expiring soon:
+-- expiring.golden.tmpl --
+Unpatrolled edits expiring soon:
 {{- range .PatrolExpiring.Windows }}
 - {{ .Count }} in the next 
     {{- if false }}
@@ -134,8 +133,8 @@ wikis:
       templateDir: ./templates
       discordServerID: "server1234"
       types:
-        weekly:
-          template: weekly.tmpl
+        expiring:
+          template: expiring.tmpl
           discordChannelID: "channel1234"
           data:
             patrolExpiring:

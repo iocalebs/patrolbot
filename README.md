@@ -27,7 +27,7 @@ patrolbot init
 4. Generate a report
 
 ```sh
-patrolbot report weekly
+patrolbot report expiring
 ```
 
 ## Configuration

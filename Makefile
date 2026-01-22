@@ -46,7 +46,7 @@ docs:
 	pkgsite -open .
 
 e2e: build
-	./patrolbot report weekly --wiki testwiki --yes
+	./patrolbot report expiring --wiki testwiki --yes
 
 generate:
 	go generate ./...

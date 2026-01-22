@@ -33,7 +33,7 @@ wikis:
       templateDir: ./templates
       discordServerID: "911393793666863116"
       types:
-        expiring: &zwen-expiring
+        expiring:
           discordChannelID: "911393794262458421"
           template: expiring.tmpl
           data:
@@ -42,9 +42,6 @@ wikis:
                 - days: 7
                 - days: 14
                 - days: 30
-        weekly:
-          <<: *zwen-expiring
-          template: weekly.tmpl
   
   testwiki:
     <<: *zwen
@@ -52,9 +49,9 @@ wikis:
       templateDir: ./templates
       discordServerID: "911393793666863116"
       types:
-        weekly:
+        expiring:
           discordChannelID: "911393794262458421"
-          template: weekly.tmpl
+          template: expiring.tmpl
           data:
             patrolExpiring:
               windows:

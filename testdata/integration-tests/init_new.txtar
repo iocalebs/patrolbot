@@ -67,7 +67,7 @@ Enter
 config.yaml
 templates
 -- templates-subdir.golden --
-weekly.tmpl
+expiring.tmpl
 -- new-config.golden.yaml --
 # For more information on how PatrolBot sources config, refer to "patrolbot config --help"
 discord:
@@ -97,8 +97,8 @@ wikis:
       templateDir: ./templates
       discordServerID: "server1234"
       types:
-        weekly:
-          template: weekly.tmpl
+        expiring:
+          template: expiring.tmpl
           discordChannelID: "channel1234"
           data:
             patrolExpiring:

@@ -20,11 +20,11 @@ jobs:
           go-version: "1.25"
       - run: make build
 
-      - run: ./patrolbot report weekly --wiki testwiki --yes
+      - run: ./patrolbot report expiring --wiki testwiki --yes
         env:
           PATROLBOT_WIKIS_TESTWIKI_AUTH_PASSWORD: ${{ secrets.BOTPASSWORD_ZWEN }}
 
       - if: always()
-        run: ./patrolbot report weekly --wiki zwen --yes
+        run: ./patrolbot report expiring --wiki zwen --yes
         env:
           PATROLBOT_WIKIS_ZWEN_AUTH_PASSWORD: ${{ secrets.BOTPASSWORD_ZWEN }}
