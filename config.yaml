@@ -16,7 +16,7 @@ server:
 userAgent: PatrolBot/1.0 (+https://github.com/iocalebs/patrolbot)
 wiki: "" # Env variable PATROLBOT_WIKI or flag --wiki
 wikis:
-  zwen:
+  zwen: &zwen
     site:
       url: https://zeldawiki.wiki
       scriptPath: /w
@@ -33,28 +33,21 @@ wikis:
       templateDir: ./templates
       discordServerID: "911393793666863116"
       types:
-        weekly:
+        expiring: &zwen-expiring
           discordChannelID: "911393794262458421"
-          template: weekly.tmpl
+          template: expiring.tmpl
           data:
             patrolExpiring:
               windows:
                 - days: 7
                 - days: 14
                 - days: 30
+        weekly:
+          <<: *zwen-expiring
+          template: weekly.tmpl
+  
   testwiki:
-    site:
-      url: https://zeldawiki.wiki
-      scriptPath: /w
-      articlePath: /wiki
-      rcLinkLimit: 1000
-      rcMaxAgeDays: 90
-    auth:
-      username: PhantomCaleb@PatrolBot
-      password: ""
-    client:
-      from: phantomcalebs@gmail.com
-      timeout: 10s
+    <<: *zwen
     reports:
       templateDir: ./templates
       discordServerID: "911393793666863116"

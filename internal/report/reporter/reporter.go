@@ -52,14 +52,14 @@ func (r *Reporter) Report(ctx context.Context, reportType string, w io.Writer) (
 		return config.ReportType{}, err
 	}
 
-	tmpl, err := template.ParseFiles(filepath.Join(r.cfg.TemplateDir, reportCfg.Template))
+	tmpl, err := template.ParseGlob(filepath.Join(r.cfg.TemplateDir, "*.tmpl"))
 	if err != nil {
-		return config.ReportType{}, fmt.Errorf("error parsing report template: %w", err)
+		return config.ReportType{}, fmt.Errorf("error parsing report templates: %w", err)
 	}
 
 	data := r.provider.Data(ctx, reportCfg.Data)
 
-	err = tmpl.Execute(w, data)
+	err = tmpl.ExecuteTemplate(w, reportCfg.Template, data)
 	if err != nil {
 		return config.ReportType{}, fmt.Errorf("error generating report from template: %w", err)
 	}
