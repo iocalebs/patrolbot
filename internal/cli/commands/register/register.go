@@ -3,6 +3,7 @@ package register
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"io"
 	"log/slog"
@@ -18,6 +19,9 @@ import (
 )
 
 const discordTimeout = 10 * time.Second
+
+// ErrRegisterCommands indicates an error response from the Discord API when registering commands.
+var ErrRegisterCommands = errors.New("failed to register one or more Discord commands")
 
 // NewCommand returns the `register` Cobra command.
 func NewCommand() *cobra.Command {
@@ -50,49 +54,73 @@ func registerCommands(ctx context.Context, w io.Writer, cfg config.Config) error
 	}
 	discordClient := discord.NewClient(httpClient, logger, cfg.Discord, cfg.UserAgent)
 
-	for wiki, wikiCfg := range cfg.Wikis {
-		guild := wikiCfg.Reports.DiscordServerID
-		if guild == "" {
-			continue
+	hasErrors := false
+
+	keys := maps.Keys(cfg.Wikis)
+	wikis := slices.Collect(keys)
+	slices.Sort(wikis) // iterate in deterministic order to simplify testing
+
+	for _, wiki := range wikis {
+		wikiCfg := cfg.Wikis[wiki]
+		logger := logger.With("wiki", wiki)
+
+		ok := registerReportCommand(ctx, wikiCfg, discordClient, logger)
+		if !ok {
+			hasErrors = true
 		}
+	}
 
-		reportTypes := slices.Collect(maps.Keys(wikiCfg.Reports.Types))
-		slices.Sort(reportTypes)
-
-		options := make([]discord.CommandOption, len(reportTypes))
-		for i, reportType := range reportTypes {
-			options[i] = discord.CommandOption{
-				Type:        discord.CommandOptionTypeSubcommand,
-				Name:        reportType,
-				Description: wikiCfg.Reports.Types[reportType].Description,
-			}
-		}
-
-		if len(options) == 0 {
-			continue
-		}
-
-		cmd := discord.Command{
-			Name:        "report",
-			Description: "Generate a report using data from the MediaWiki API",
-			Options:     options,
-		}
-
-		err := discordClient.RegisterGuildCommand(ctx, guild, cmd)
-		if err != nil {
-			return fmt.Errorf("error registering /report command for wiki %s server %s: %w", wiki, guild, err)
-		}
-
-		logger.InfoContext(
-			ctx,
-			"registered /report command", "wiki",
-			wiki,
-			"guildID",
-			guild,
-			"options",
-			strings.Join(reportTypes, ","),
-		)
+	if hasErrors {
+		return ErrRegisterCommands
 	}
 
 	return nil
+}
+
+func registerReportCommand(
+	ctx context.Context,
+	wiki config.Wiki,
+	discordClient *discord.Client,
+	logger *slog.Logger,
+) bool {
+	guild := wiki.Reports.DiscordServerID
+	if guild == "" {
+		return true
+	}
+
+	reportTypes := slices.Collect(maps.Keys(wiki.Reports.Types))
+	slices.Sort(reportTypes)
+
+	options := make([]discord.CommandOption, len(reportTypes))
+	for i, reportType := range reportTypes {
+		options[i] = discord.CommandOption{
+			Type:        discord.CommandOptionTypeSubcommand,
+			Name:        reportType,
+			Description: wiki.Reports.Types[reportType].Description,
+		}
+	}
+
+	logger = logger.With("guildID", guild)
+
+	cmd := discord.Command{
+		Name:        "report",
+		Description: "Generate a report using data from the MediaWiki API",
+		Options:     options,
+	}
+
+	err := discordClient.RegisterGuildCommand(ctx, guild, cmd)
+	if err != nil {
+		var httpStatusError *discord.HTTPStatusError
+		if errors.As(err, &httpStatusError) {
+			logger.ErrorContext(ctx, "error registering /report command", "err", err, "body", httpStatusError.Body)
+		} else {
+			logger.ErrorContext(ctx, "error registering /report command", "err", err)
+		}
+
+		return false
+	}
+
+	logger.InfoContext(ctx, "registered /report command", "options", strings.Join(reportTypes, ","))
+
+	return true
 }

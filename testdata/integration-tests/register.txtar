@@ -1,0 +1,114 @@
+# Help
+exec patrolbot register --help
+cmp stdout help.golden
+
+exec patrolbot register -h
+cmp stdout help.golden
+
+# Command succeeds
+env PATROLBOT_DISCORD_API=http://$STUB_ADDR
+stub POST .*zwen/commands 200 stub.json register-command-en.http
+stub POST .*zwfr/commands 200 stub.json register-command-fr.http
+exec patrolbot register
+cmp register-command-en.http register-command-en.http.golden
+cmp register-command-fr.http register-command-fr.http.golden
+scrub stderr stderr-scrubbed
+cmp stderr-scrubbed stderr-success.golden
+
+# Command fails due to Discord API error
+stub POST .*/commands 400 stub.json
+! exec patrolbot register
+scrub stderr stderr-scrubbed
+cmp stderr-scrubbed stderr-fail.golden
+
+-- stub.json --
+{}
+-- config.yaml --
+discord:
+  api: ""
+  appID: "appID123"
+  token: "token123"
+userAgent: PatrolBot/1.0 (+https://github.com/iocalebs/patrolbot)
+wikis:
+  zwen:
+    reports:
+      discordServerID: "123zwen"
+      types:
+        expiring:
+          description: "Count the number of unpatrolled edits expiring in the next few weeks"
+  zwfr:
+    reports:
+      discordServerID: "456zwfr"
+      types:
+        expire:
+          description: "Compte le nombre de modifications expirant dans les prochaines semaines"
+
+-- help.golden --
+
+  Register the /report command in each configured Discord server with its corresponding report types as subcommand      
+  options.                                                                                                              
+         
+  USAGE  
+         
+    patrolbot register [--flags]  
+         
+  FLAGS  
+         
+    -c --config  Path to config file (default locations: ./config.yaml, $HOME/.patrolbot/config.yaml)
+    -h --help    Help for register
+
+-- register-command-en.http.golden --
+POST /applications/appID123/guilds/123zwen/commands HTTP/1.1
+Host: $STUB_ADDR
+Accept-Encoding: gzip
+Authorization: Bot token123
+Content-Length: 244
+Content-Type: application/json
+User-Agent: PatrolBot/1.0 (+https://github.com/iocalebs/patrolbot)
+
+{
+  "description": "Generate a report using data from the MediaWiki API",
+  "name": "report",
+  "options": [
+    {
+      "choices": null,
+      "description": "Count the number of unpatrolled edits expiring in the next few weeks",
+      "name": "expiring",
+      "required": false,
+      "type": 1
+    }
+  ]
+}
+-- register-command-fr.http.golden --
+POST /applications/appID123/guilds/456zwfr/commands HTTP/1.1
+Host: $STUB_ADDR
+Accept-Encoding: gzip
+Authorization: Bot token123
+Content-Length: 245
+Content-Type: application/json
+User-Agent: PatrolBot/1.0 (+https://github.com/iocalebs/patrolbot)
+
+{
+  "description": "Generate a report using data from the MediaWiki API",
+  "name": "report",
+  "options": [
+    {
+      "choices": null,
+      "description": "Compte le nombre de modifications expirant dans les prochaines semaines",
+      "name": "expire",
+      "required": false,
+      "type": 1
+    }
+  ]
+}
+-- stderr-success.golden --
+time=1970-01-01T00:00:00Z level=INFO msg="registered /report command" wiki=zwen guildID=123zwen options=expiring
+time=1970-01-01T00:00:00Z level=INFO msg="registered /report command" wiki=zwfr guildID=456zwfr options=expire
+-- stderr-fail.golden --
+time=1970-01-01T00:00:00Z level=ERROR msg="error registering /report command" wiki=zwen guildID=123zwen err="400 Bad Request" body="{}\n"
+time=1970-01-01T00:00:00Z level=ERROR msg="error registering /report command" wiki=zwfr guildID=456zwfr err="400 Bad Request" body="{}\n"
+
+   ERROR
+
+  Failed to register one or more Discord commands.
+
