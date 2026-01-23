@@ -37,6 +37,9 @@ linters:
 
   exclusions:
     rules:
+      - source: if len\(args\) [><] \d+ \{
+        linters:
+          - mnd
       - path: _test\.go
         linters:
           - dupl
