@@ -15,7 +15,9 @@ type CommandOptionType uint16
 // Application Command option types
 // https://discord.com/developers/docs/interactions/application-commands#application-command-object-application-command-option-structure
 const (
-	CommandOptionTypeString = 3
+	CommandOptionTypeSubcommand = iota + 1
+	CommandOptionTypeSubcommandGroup
+	CommandOptionTypeString
 )
 
 // Command represents an Application Command.

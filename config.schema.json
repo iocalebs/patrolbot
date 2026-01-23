@@ -151,6 +151,10 @@
           "type": "string",
           "description": "Discord channel to post the report to"
         },
+        "description": {
+          "type": "string",
+          "description": "Description of the report type in 100 characters or less"
+        },
         "data": {
           "$ref": "#/$defs/ReportData",
           "description": "Data to use in the report"
@@ -161,6 +165,7 @@
       "required": [
         "template",
         "discordChannelID",
+        "description",
         "data"
       ],
       "description": "ReportType represents the configuration for a specific report type."

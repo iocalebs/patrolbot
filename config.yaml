@@ -34,8 +34,9 @@ wikis:
       discordServerID: "911393793666863116"
       types:
         expiring:
-          discordChannelID: "911393794262458421"
           template: expiring.tmpl
+          discordChannelID: "911393794262458421"
+          description: "Count the number of unpatrolled edits expiring in the next few weeks"
           data:
             patrolExpiring:
               windows:
@@ -50,8 +51,9 @@ wikis:
       discordServerID: "911393793666863116"
       types:
         expiring:
-          discordChannelID: "911393794262458421"
           template: expiring.tmpl
+          discordChannelID: "911393794262458421"
+          description: "Count the number of unpatrolled edits expiring in the next few weeks"
           data:
             patrolExpiring:
               windows:

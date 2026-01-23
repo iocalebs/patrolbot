@@ -25,7 +25,7 @@ func NewCommand() *cobra.Command {
 		Use:   "register",
 		Short: "Register Discord bot commands",
 		Long: "Register the /report command in each configured Discord server with its corresponding report types " +
-			"as choices.",
+			"as subcommand options.",
 		RunE: func(cmd *cobra.Command, _ []string) error {
 			cfg, err := config.Load(cmd.Flags())
 			if err != nil {
@@ -57,31 +57,25 @@ func registerCommands(ctx context.Context, w io.Writer, cfg config.Config) error
 		}
 
 		reportTypes := slices.Collect(maps.Keys(wikiCfg.Reports.Types))
+		slices.Sort(reportTypes)
 
-		choices := make([]discord.CommandOptionChoice, len(reportTypes))
+		options := make([]discord.CommandOption, len(reportTypes))
 		for i, reportType := range reportTypes {
-			choices[i] = discord.CommandOptionChoice{
-				Name:  reportType,
-				Value: reportType,
+			options[i] = discord.CommandOption{
+				Type:        discord.CommandOptionTypeSubcommand,
+				Name:        reportType,
+				Description: wikiCfg.Reports.Types[reportType].Description,
 			}
 		}
 
-		if len(choices) == 0 {
+		if len(options) == 0 {
 			continue
 		}
 
 		cmd := discord.Command{
 			Name:        "report",
 			Description: "Generate a report using data from the MediaWiki API",
-			Options: []discord.CommandOption{
-				{
-					Type:        discord.CommandOptionTypeString,
-					Name:        "type",
-					Description: "Report type",
-					Required:    true,
-					Choices:     choices,
-				},
-			},
+			Options:     options,
 		}
 
 		err := discordClient.RegisterGuildCommand(ctx, guild, cmd)
@@ -95,7 +89,7 @@ func registerCommands(ctx context.Context, w io.Writer, cfg config.Config) error
 			wiki,
 			"guildID",
 			guild,
-			"choices",
+			"options",
 			strings.Join(reportTypes, ","),
 		)
 	}

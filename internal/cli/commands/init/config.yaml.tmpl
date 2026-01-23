@@ -23,12 +23,13 @@ wikis:
       from: "{{ .Wiki.Client.From }}"
       timeout: "10s"
     reports:
-      templateDir: ./templates
+      templateDir: "./templates"
       discordServerID: "{{ .DiscordServerID }}"
       types:
         expiring:
-          template: expiring.tmpl
+          template: "expiring.tmpl"
           discordChannelID: "{{ .DiscordChannelID }}"
+          description: "Counts the number of edits expiring in the next few weeks"
           data:
             patrolExpiring:
               windows:

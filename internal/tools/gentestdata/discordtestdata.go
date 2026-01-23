@@ -91,15 +91,9 @@ func (g *discordGenerator) registerGuildCommand(ctx context.Context) error {
 		Description: "Generate a report",
 		Options: []discord.CommandOption{
 			{
-				Type:        discord.CommandOptionTypeString,
-				Name:        "type",
-				Description: "Report type",
-				Choices: []discord.CommandOptionChoice{
-					{
-						Name:  "expiring",
-						Value: "expiring",
-					},
-				},
+				Type:        discord.CommandOptionTypeSubcommand,
+				Description: "description",
+				Name:        "expiring",
 			},
 		},
 	}

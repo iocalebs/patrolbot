@@ -130,12 +130,13 @@ wikis:
       from: "phantomcalebs@example.test"
       timeout: "10s"
     reports:
-      templateDir: ./templates
+      templateDir: "./templates"
       discordServerID: "server1234"
       types:
         expiring:
-          template: expiring.tmpl
+          template: "expiring.tmpl"
           discordChannelID: "channel1234"
+          description: "Counts the number of edits expiring in the next few weeks"
           data:
             patrolExpiring:
               windows:

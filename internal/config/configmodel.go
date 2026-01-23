@@ -134,6 +134,9 @@ type ReportType struct {
 	// Discord channel to post the report to
 	DiscordChannelID string `json:"discordChannelID"`
 
+	// Description of the report type in 100 characters or less
+	Description string `json:"description"`
+
 	// Data to use in the report
 	Data ReportData `json:"data"`
 }

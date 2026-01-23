@@ -84,6 +84,7 @@ wikis:
         expiring:
           template: expiring.tmpl
           discordChannelID: "911393794262458421"
+          description: "Counts the number of edits expiring in the next few weeks"
           data:
             patrolExpiring:
               windows:
@@ -111,6 +112,7 @@ wikis:
         expiring:
           template: expiring.tmpl
           discordChannelID: "911393794262458421"
+          description: "Counts the number of edits expiring in the next few weeks"
           data:
             patrolExpiring:
               windows:
@@ -170,6 +172,7 @@ wiki: dunepedia
           "expiring": {
             "template": "expiring.tmpl",
             "discordChannelID": "911393794262458421",
+            "description": "Counts the number of edits expiring in the next few weeks",
             "data": {
               "patrolExpiring": {
                 "windows": [
@@ -212,6 +215,7 @@ wiki: dunepedia
           "expiring": {
             "template": "expiring.tmpl",
             "discordChannelID": "911393794262458421",
+            "description": "Counts the number of edits expiring in the next few weeks",
             "data": {
               "patrolExpiring": {
                 "windows": [
@@ -279,6 +283,7 @@ wiki: dunepedia
           "expiring": {
             "template": "expiring.tmpl",
             "discordChannelID": "911393794262458421",
+            "description": "Counts the number of edits expiring in the next few weeks",
             "data": {
               "patrolExpiring": {
                 "windows": [
@@ -321,6 +326,7 @@ wiki: dunepedia
           "expiring": {
             "template": "expiring.tmpl",
             "discordChannelID": "911393794262458421",
+            "description": "Counts the number of edits expiring in the next few weeks",
             "data": {
               "patrolExpiring": {
                 "windows": [
