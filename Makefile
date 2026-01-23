@@ -33,8 +33,9 @@ cover:
 # Workaround: Merge profiles with a "zero" profile that lists all files at 0% coverage, made by running the old coverage 
 # generator on all packages but with a -run regex that matches no tests.
 	go test -coverprofile=$(GOCOVERDIR)/profile-zero.txt -parallel=1 -run "a^" ./...
-# go generate tools are removed from the report.
+# go internal tools and test utils are removed from the report.
 	sed '/^github\.com\/iocalebs\/patrolbot\/internal\/tools/d' $(GOCOVERDIR)/profile-zero.txt > $(GOCOVERDIR)/profile-zero.tmp
+	sed '/^github\.com\/iocalebs\/patrolbot\/internal\/httpstub/d' $(GOCOVERDIR)/profile-zero.txt > $(GOCOVERDIR)/profile-zero.tmp
 	mv $(GOCOVERDIR)/profile-zero.tmp $(GOCOVERDIR)/profile-zero.txt
 	go tool gocovmerge $(GOCOVERDIR)/profile-merged.txt $(GOCOVERDIR)/profile-zero.txt > $(GOCOVERDIR)/tmp.txt
 	mv $(GOCOVERDIR)/tmp.txt $(GOCOVERDIR)/profile-merged.txt
