@@ -1,29 +1,29 @@
 env PATROLBOT_WIKIS_ZWEN_SITE_URL=http://$STUB_ADDR
 env PATROLBOT_DISCORD_API=http://$STUB_ADDR
 env MOCK_TIME=2026-01-31T00:00:00Z
-stub GET /w/api.php.*meta=tokens 200 tokens.mock.json mwtokens-req.http
-stub POST /w/api.php.*action=login 200 login.mock.json mwlogin-req.http
+stub GET /w/api.php.*meta=tokens 200 stub-mwtokens.json req-mwtokens.http
+stub POST /w/api.php.*action=login 200 stub-mwlogin.json req-mwlogin.http
 
 # Scenario: RecentChanges query fails with MediaWiki API error
-stub GET /w/api.php.*list=recentchanges 200 recentchanges-err.mock.json
-stub POST /channels/channel456/messages 200 discord-createmessage.mock.json discord-createmessage-req.http
+stub GET /w/api.php.*list=recentchanges 200 stub-recentchanges-err.json
+stub POST /channels/channel456/messages 200 stub-createmessage.json req-createmessage.http
 ttyin -stdin decline-prompt
 exec patrolbot report weekly
 cmp stdout stdout-mediawiki-error.golden
-cmp mwtokens-req.http mwtokens-req.golden.http
-cmp mwlogin-req.http mwlogin-req.golden.http
+cmp req-mwtokens.http req-mwtokens.golden.http
+cmp req-mwlogin.http req-mwlogin.golden.http
 
 
 # Scenario: Recent changes query succeeds, user accepts Discord confirmation prompt, Discord post succeeds
-stub GET /w/api.php.*list=recentchanges 200 recentchanges.mock.json mwrecentchanges-req.http
-stub POST /channels/channel456/messages 200 discord-createmessage.mock.json discord-createmessage-req.http
+stub GET /w/api.php.*list=recentchanges 200 stub-recentchanges.json req-recentchanges.http
+stub POST /channels/channel456/messages 200 stub-createmessage.json req-createmessage.http
 ttyin -stdin accept-prompt
 exec patrolbot report weekly
 scrub stdout stdout-scrubbed
 cmp stdout-scrubbed stdout-success.golden
 cmp stderr stderr-success.golden
-cmp mwrecentchanges-req.http mwrecentchanges-req.golden.http
-cmp discord-createmessage-req.http discord-createmessage-req.golden.http
+cmp req-recentchanges.http req-recentchanges.golden.http
+cmp req-createmessage.http req-createmessage.golden.http
 
 # Scenario: --send-discord flag used to skip confirmation prompt, but Discord post fails
 stub POST /channels/channel456/messages 503
@@ -94,7 +94,7 @@ Unpatrolled edits are expiring soon:
 {{- end }}
 Link to patrol backlog: <{{ .Config.Site.URL }}{{ .Config.Site.ArticlePath }}/Special:RecentChanges?reviewStatus=unpatrolled&limit={{ .Config.Site.RCLinkLimit }}&days={{ .Config.Site.RCMaxAgeDays }}&urlversion=2>
 {{ end }}
--- tokens.mock.json --
+-- stub-mwtokens.json --
 {
   "batchcomplete": true,
   "query": {
@@ -103,7 +103,7 @@ Link to patrol backlog: <{{ .Config.Site.URL }}{{ .Config.Site.ArticlePath }}/Sp
     }
   }
 }
--- login.mock.json --
+-- stub-mwlogin.json --
 {
   "login": {
     "result": "Success",
@@ -111,7 +111,7 @@ Link to patrol backlog: <{{ .Config.Site.URL }}{{ .Config.Site.ArticlePath }}/Sp
     "lgusername": "PhantomCaleb"
   }
 }
--- recentchanges-err.mock.json --
+-- stub-recentchanges-err.json --
 {
   "errors": [
     {
@@ -122,7 +122,7 @@ Link to patrol backlog: <{{ .Config.Site.URL }}{{ .Config.Site.ArticlePath }}/Sp
   ],
   "docref": "See https://zeldawiki.wiki/w/api.php for API usage. Subscribe to the mediawiki-api-announce mailing list at \u0026lt;https://lists.wikimedia.org/postorius/lists/mediawiki-api-announce.lists.wikimedia.org/\u0026gt; for notice of API deprecations and breaking changes."
 }
--- recentchanges.mock.json --
+-- stub-recentchanges.json --
 {
   "batchcomplete": true,
   "query": {
@@ -145,7 +145,7 @@ Link to patrol backlog: <{{ .Config.Site.URL }}{{ .Config.Site.ArticlePath }}/Sp
     ]
   }
 }
--- discord-createmessage.mock.json --
+-- stub-createmessage.json --
 {
   "type": 0,
   "content": "test",
@@ -181,7 +181,7 @@ Link to patrol backlog: <{{ .Config.Site.URL }}{{ .Config.Site.ArticlePath }}/Sp
   "mention_everyone": false,
   "tts": false
 }
--- mwtokens-req.golden.http --
+-- req-mwtokens.golden.http --
 GET /w/api.php?action=query&errorformat=plaintext&format=json&formatversion=2&meta=tokens&type=login&uselang=user HTTP/1.1
 Host: $STUB_ADDR
 Accept-Encoding: gzip
@@ -189,7 +189,7 @@ From: phantomcalebs@gmail.com
 User-Agent: PatrolBot/1.0 (+https://github.com/iocalebs/patrolbot)
 
 
--- mwlogin-req.golden.http --
+-- req-mwlogin.golden.http --
 POST /w/api.php?action=login&errorformat=plaintext&format=json&formatversion=2&uselang=user HTTP/1.1
 Host: $STUB_ADDR
 Accept-Encoding: gzip
@@ -199,7 +199,7 @@ From: phantomcalebs@gmail.com
 User-Agent: PatrolBot/1.0 (+https://github.com/iocalebs/patrolbot)
 
 lgname=username&lgpassword=password&lgtoken=8af20f35764bee599652a5d5d9e804d469444fb1%2B%5C
--- mwrecentchanges-req.golden.http --
+-- req-recentchanges.golden.http --
 GET /w/api.php?action=query&errorformat=plaintext&format=json&formatversion=2&list=recentchanges&rcdir=newer&rcend=2026-01-15T00%3A00%3A00Z&rclimit=500&rcshow=%21patrolled&rcstart=2026-01-01T00%3A00%3A00Z&uselang=user HTTP/1.1
 Host: $STUB_ADDR
 Accept-Encoding: gzip
@@ -207,7 +207,7 @@ From: phantomcalebs@gmail.com
 User-Agent: PatrolBot/1.0 (+https://github.com/iocalebs/patrolbot)
 
 
--- discord-createmessage-req.golden.http --
+-- req-createmessage.golden.http --
 POST /channels/channel456/messages HTTP/1.1
 Host: $STUB_ADDR
 Accept-Encoding: gzip
