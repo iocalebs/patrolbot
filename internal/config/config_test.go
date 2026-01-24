@@ -33,7 +33,9 @@ func TestCurrentWiki(t *testing.T) {
 		{
 			name: "Valid wiki config",
 			cfg: config.Config{
-				Wiki: "zwen",
+				// Case-insensitive lookup must be supported because Viper lowercases all keys
+				// https://github.com/spf13/viper?tab=readme-ov-file#does-viper-support-case-sensitive-keys
+				Wiki: "zwEN",
 				Wikis: map[string]config.Wiki{
 					"zwen": {
 						Site: config.WikiSite{

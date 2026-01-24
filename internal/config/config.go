@@ -96,7 +96,7 @@ func (c Config) CurrentWiki() (Wiki, error) {
 		return Wiki{}, ErrWikiNotSet
 	}
 
-	wiki, ok := c.Wikis[c.Wiki]
+	wiki, ok := c.Wikis[strings.ToLower(c.Wiki)]
 	if !ok {
 		return Wiki{}, fmt.Errorf("%w: %s", ErrWikiNotFound, c.Wiki)
 	}
