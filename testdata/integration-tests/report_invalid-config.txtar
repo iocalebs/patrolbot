@@ -1,0 +1,85 @@
+
+! exec patrolbot report weekly
+cmp stderr stderr-wiki-not-set.golden
+
+! exec patrolbot report weekly --wiki foo
+cmp stderr stderr-wiki-not-found.golden
+
+! exec patrolbot report expiring --wiki invalid1
+cmp stderr stderr-invalid-wiki-config.golden
+
+! exec patrolbot report --wiki invalid2
+cmp stderr stderr-report-type-not-set.golden
+
+! exec patrolbot report foo --wiki invalid2
+cmp stderr stderr-report-type-not-found.golden
+
+! exec patrolbot report expiring --wiki invalid2
+cmp stderr stderr-report-template-not-set.golden
+
+-- config.yaml --
+wikis:
+  invalid1:
+    site:
+      url: ""
+    auth:
+      username: ""
+      password: ""
+    reports:
+      templateDir: ""
+  invalid2:
+    site:
+      url: http://localhost:foo
+    auth:
+      username: "user"
+      password: "pass"
+    reports:
+      templateDir: ./templates
+      types:
+        expiring:
+          template: ""
+
+-- stderr-wiki-not-set.golden --
+          
+   ERROR  
+          
+  Invalid wiki configuration: wiki not set.                                                                           
+
+-- stderr-wiki-not-found.golden --
+          
+   ERROR  
+          
+  Invalid wiki configuration: wiki not found: foo.                                                                    
+
+-- stderr-invalid-wiki-config.golden --
+          
+   ERROR  
+          
+  Invalid wiki configuration: invalid configuration:                                                                  
+  - .wikis["invalid1"].site.url not set                                                                               
+  - .wikis["invalid1"].auth.username not set                                                                          
+  - .wikis["invalid1"].auth.password not set                                                                          
+  - .wikis["invalid1"].reports.templateDir not set                                                                    
+
+-- stderr-report-type-not-set.golden --
+          
+   ERROR  
+          
+  Missing report type.                                                                                                
+
+  Try --help for usage.
+
+-- stderr-report-type-not-found.golden --
+          
+   ERROR  
+          
+  Error generating report: invalid report type: foo.                                                                  
+
+  Use --list to see available report types.
+
+-- stderr-report-template-not-set.golden --
+          
+   ERROR  
+          
+  Error generating report: invalid configuration: no template configured for report type "expiring".                  
+

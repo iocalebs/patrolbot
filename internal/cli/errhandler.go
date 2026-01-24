@@ -9,7 +9,7 @@ import (
 	"charm.land/lipgloss/v2"
 	"github.com/charmbracelet/fang"
 	"github.com/charmbracelet/x/term"
-	"github.com/iocalebs/patrolbot/internal/cli/clierr"
+	"github.com/iocalebs/patrolbot/internal/errdefs"
 	"github.com/iocalebs/patrolbot/internal/report/reporter"
 )
 
@@ -29,8 +29,8 @@ func errHandler(w io.Writer, styles fang.Styles, err error) {
 
 	_, _ = fmt.Fprintln(w, styles.ErrorHeader.String())
 
-	var multiError *clierr.MultiError
-	if errors.As(err, &multiError) {
+	if strings.Contains(err.Error(), "\n") {
+		// Keep deliberate newlines in multiline errors
 		style := styles.ErrorText.UnsetTransform().Transform(func(s string) string {
 			if s == "" {
 				return s
@@ -75,7 +75,7 @@ func isUsageError(err error) bool {
 		"unknown command",
 		"invalid argument",
 	} {
-		var errUsage clierr.UsageError
+		var errUsage errdefs.UsageError
 		if strings.HasPrefix(msg, prefix) || errors.As(err, &errUsage) {
 			return true
 		}

@@ -12,6 +12,7 @@ import (
 	"text/template"
 
 	"github.com/iocalebs/patrolbot/internal/config"
+	"github.com/iocalebs/patrolbot/internal/errdefs"
 	"github.com/iocalebs/patrolbot/internal/report/provider"
 )
 
@@ -47,7 +48,8 @@ func (r *Reporter) Report(ctx context.Context, reportType string, w io.Writer) (
 	}
 
 	if reportCfg.Template == "" {
-		return config.ReportType{}, fmt.Errorf("%w: no template configured for report type %s", ErrInvalidConfig, reportType)
+		err := fmt.Errorf("%w: no template configured for report type %q", errdefs.NewConfigError(), reportType)
+		return config.ReportType{}, err
 	}
 
 	tmpl, err := template.ParseFiles(filepath.Join(r.cfg.TemplateDir, reportCfg.Template))

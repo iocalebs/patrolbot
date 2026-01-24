@@ -14,10 +14,10 @@ import (
 	"time"
 
 	"github.com/charmbracelet/huh"
-	"github.com/iocalebs/patrolbot/internal/cli/clierr"
 	"github.com/iocalebs/patrolbot/internal/clock"
 	"github.com/iocalebs/patrolbot/internal/config"
 	"github.com/iocalebs/patrolbot/internal/discord"
+	"github.com/iocalebs/patrolbot/internal/errdefs"
 	"github.com/iocalebs/patrolbot/internal/mediawiki"
 	"github.com/iocalebs/patrolbot/internal/report/provider"
 	"github.com/iocalebs/patrolbot/internal/report/reporter"
@@ -53,7 +53,7 @@ func (h *handler) run(ctx context.Context, args []string, opts opts) error {
 	}
 
 	if len(args) == 0 {
-		return clierr.UsageError("missing report type")
+		return errdefs.UsageError("missing report type")
 	}
 
 	var buf bytes.Buffer

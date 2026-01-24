@@ -116,10 +116,10 @@ func TestCurrentWiki(t *testing.T) {
 					},
 				},
 			},
-			wantErr: `invalid wiki configuration for "zwen":
-- .auth.username not set
-- .auth.password not set
-- .reports.templateDir not set`,
+			wantErr: `invalid configuration:
+- .wikis["zwen"].auth.username not set
+- .wikis["zwen"].auth.password not set
+- .wikis["zwen"].reports.templateDir not set`,
 		},
 	}
 

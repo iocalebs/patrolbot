@@ -9,7 +9,7 @@ import (
 	"strings"
 
 	"github.com/go-viper/mapstructure/v2"
-	"github.com/iocalebs/patrolbot/internal/cli/clierr"
+	"github.com/iocalebs/patrolbot/internal/errdefs"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
@@ -25,9 +25,6 @@ var (
 
 	// ErrWikiNotFound indicates that a wiki was selected that does not exist in the map of wikis.
 	ErrWikiNotFound = errors.New("wiki not found")
-
-	// ErrWikiInvalid indicates that the configuration of the selected wiki is invalid.
-	ErrWikiInvalid = errors.New("invalid wiki configuration")
 )
 
 // AddFlag adds a --config flag for passing a custom config file.
@@ -107,24 +104,23 @@ func (c Config) CurrentWiki() (Wiki, error) {
 	errs := []string{}
 
 	if wiki.Site.URL == "" {
-		errs = append(errs, ".site.url not set")
+		errs = append(errs, fmt.Sprintf(".wikis[\"%s\"].site.url not set", c.Wiki))
 	}
 
 	if wiki.Auth.Username == "" {
-		errs = append(errs, ".auth.username not set")
+		errs = append(errs, fmt.Sprintf(".wikis[\"%s\"].auth.username not set", c.Wiki))
 	}
 
 	if wiki.Auth.Password == "" {
-		errs = append(errs, ".auth.password not set")
+		errs = append(errs, fmt.Sprintf(".wikis[\"%s\"].auth.password not set", c.Wiki))
 	}
 
 	if wiki.Reports.TemplateDir == "" {
-		errs = append(errs, ".reports.templateDir not set")
+		errs = append(errs, fmt.Sprintf(".wikis[\"%s\"].reports.templateDir not set", c.Wiki))
 	}
 
 	if len(errs) > 0 {
-		msg := fmt.Sprintf("invalid wiki configuration for %q", c.Wiki)
-		return Wiki{}, clierr.NewMultiError(msg, errs)
+		return Wiki{}, errdefs.NewConfigError(errs...)
 	}
 
 	return wiki, nil
