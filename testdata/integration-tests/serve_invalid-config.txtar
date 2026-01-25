@@ -7,6 +7,12 @@ cmp stderr stderr-invalid-server-config.golden
 ! exec patrolbot serve -c config-zero-header-timeout.yaml
 cmp stderr stderr-slowloris.golden
 
+! exec patrolbot serve -c config-no-discord-publicKey.yaml
+cmp stderr stderr-publickey-not-set.golden
+
+! exec patrolbot serve -c config-invalid-discord-publicKey.yaml
+cmp stderr stderr-publickey-invalid.golden
+
 -- config-no-server.yaml --
 wiki: zwen
 
@@ -17,20 +23,36 @@ server:
 -- config-zero-header-timeout.yaml --
 server:
   port: 8080
-  readHeaderTimeout: 0
+  timeouts:
+    readHeaderTimeout: 0
+
+-- config-no-discord-publicKey.yaml --
+discord:
+  publicKey: ""
+server:
+  port: 8080
+  timeouts:
+    readHeaderTimeout: 5s
+
+-- config-invalid-discord-publicKey.yaml --
+discord:
+  publicKey: "foo"
+server:
+  port: 8080
+  timeouts:
+    readHeaderTimeout: 5s
 
 -- stderr-no-server-config.golden --
           
    ERROR  
           
-  Invalid configuration:                                                                                              
-  - .server not set                                                                                                   
+  Failed to initialize server: invalid configuration: .server not set.                                                
 
 -- stderr-invalid-server-config.golden --
           
    ERROR  
           
-  Invalid configuration:                                                                                              
+  Failed to initialize server: invalid configuration:                                                                 
   - .server.port not set                                                                                              
   - .server.timeouts.readHeaderTimeout must be greater than zero to guard against slowloris attacks                   
 
@@ -38,6 +60,20 @@ server:
           
    ERROR  
           
-  Invalid configuration:                                                                                              
-  - .server.timeouts.readHeaderTimeout must be greater than zero to guard against slowloris attacks                   
+  Failed to initialize server: invalid configuration: .server.timeouts.readHeaderTimeout must be greater than zero to 
+  guard against slowloris attacks.                                                                                    
+
+-- stderr-publickey-not-set.golden --
+          
+   ERROR  
+          
+  Failed to initialize server: failed to initialize /interactions handler: invalid configuration: .discord.publicKey  
+  not set.                                                                                                            
+
+-- stderr-publickey-invalid.golden --
+          
+   ERROR  
+          
+  Failed to initialize server: failed to initialize /interactions handler: invalid configuration: failed to decode    
+  .discord.publicKey: encoding/hex: invalid byte: U+006F 'o'.                                                         
 

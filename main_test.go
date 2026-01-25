@@ -2,9 +2,12 @@ package main_test
 
 import (
 	"bytes"
+	"crypto/ed25519"
+	"encoding/hex"
 	"flag"
 	"os"
 	"regexp"
+	"strconv"
 	"strings"
 	"testing"
 	"time"
@@ -23,6 +26,7 @@ func TestCommands(t *testing.T) {
 		UpdateScripts: *update,
 		Cmds: map[string]func(ts *testscript.TestScript, neg bool, args []string){
 			"scrub": scrub,
+			"sign":  sign,
 			"sleep": sleep,
 			"stub":  httpstub.Cmd("stub"),
 		},
@@ -51,6 +55,38 @@ func TestCommands(t *testing.T) {
 	}
 
 	testscript.Run(t, params)
+}
+
+// Simulate Discord's request signing logic.
+// Creates a new Ed25519 key and signs the contents of the provided file, i.e. request body.
+// The signature, timestamp, and hex-encoded public key are stored in env variables under the provided names.
+func sign(ts *testscript.TestScript, _ bool, args []string) {
+	const (
+		inPath int = iota
+		signatureEnv
+		timestampEnv
+		publicKeyEnv
+	)
+
+	if len(args) != 4 {
+		ts.Fatalf("usage: sign inPath signatureEnv timestampEnv publicKeyEnv")
+	}
+
+	body := ts.ReadFile(args[inPath])
+
+	timestamp := strconv.FormatInt(time.Now().Unix(), 10)
+	msg := append([]byte(timestamp), []byte(body)...)
+
+	pub, priv, err := ed25519.GenerateKey(nil)
+	if err != nil {
+		ts.Fatalf("error generating Ed25519 key pair: %v", err)
+	}
+
+	sig := ed25519.Sign(priv, msg)
+
+	ts.Setenv(args[signatureEnv], hex.EncodeToString(sig))
+	ts.Setenv(args[timestampEnv], timestamp)
+	ts.Setenv(args[publicKeyEnv], hex.EncodeToString(pub))
 }
 
 func sleep(ts *testscript.TestScript, _ bool, args []string) {
@@ -125,11 +161,17 @@ func scrubEnv(ts *testscript.TestScript, text string) string {
 
 // Set all timestamps to epoch time.
 func scrubTimestamps(text string) string {
+	epoch := time.Unix(0, 0).UTC()
+
 	// Pattern for RFC3339: 2026-01-20T09:28:27.051219-05:00
 	re := regexp.MustCompile(`\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?(Z|[+-]\d{2}:\d{2})`)
-	epoch := time.Unix(0, 0).UTC().Format(time.RFC3339Nano)
+	text = re.ReplaceAllString(text, epoch.Format(time.RFC3339Nano))
 
-	return re.ReplaceAllString(text, epoch)
+	// Pattern for RFC1123: Sun, 25 Jan 2026 00:26:54 GMT
+	re = regexp.MustCompile(`\b[A-Za-z]{3}, \d{1,2} [A-Za-z]{3} \d{4} \d{2}:\d{2}:\d{2} GMT\b`)
+	text = re.ReplaceAllString(text, epoch.Format("Mon, 02 Jan 2006 15:04:05 GMT"))
+
+	return text
 }
 
 // Scrub empty frames from the start of a charmbracelet/vhs recording.

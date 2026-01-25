@@ -5,16 +5,16 @@
 sleep 500ms
 kill
 wait
-scrub stderr stderr-scrubbed
-cmp stderr-scrubbed stderr-info-log.golden
+scrub stderr
+cmp stderr stderr-info-log.golden
 
 # Log level can be overridden via env variable
 env PATROLBOT_LOG_LEVEL=ERROR
 sleep 500ms
 kill
 wait
-scrub stderr stderr-scrubbed
-! grep ".+" stderr-scrubbed
+scrub stderr
+! grep ".+" stderr
 
 -- config-default-log.yaml --
 server:

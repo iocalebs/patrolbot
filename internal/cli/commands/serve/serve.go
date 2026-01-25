@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/iocalebs/patrolbot/internal/cli/clierr"
 	"github.com/iocalebs/patrolbot/internal/config"
 	"github.com/iocalebs/patrolbot/internal/gcp"
 	"github.com/iocalebs/patrolbot/internal/server"
@@ -39,37 +38,12 @@ func NewCommand() *cobra.Command {
 }
 
 func newServer(cfg config.Config) (*server.Server, error) {
-	err := validateServerConfig(cfg.Server)
-	if err != nil {
-		return nil, err
-	}
-
 	logger := gcp.NewLogger(os.Stderr, cfg.Log.Level)
 
-	return server.NewServer(*cfg.Server, logger, gcp.TraceMiddleware), nil
-}
-
-func validateServerConfig(cfg *config.Server) error {
-	if cfg == nil {
-		return clierr.NewMultiError("invalid configuration", []string{".server not set"})
+	srv, err := server.NewServer(cfg, logger, gcp.TraceMiddleware)
+	if err != nil {
+		return nil, fmt.Errorf("failed to initialize server: %w", err)
 	}
 
-	errs := []string{}
-
-	if cfg.Port == 0 {
-		errs = append(errs, ".server.port not set")
-	}
-
-	if cfg.Timeouts.ReadHeaderTimeout <= 0 {
-		errs = append(
-			errs,
-			".server.timeouts.readHeaderTimeout must be greater than zero to guard against slowloris attacks",
-		)
-	}
-
-	if len(errs) > 0 {
-		return clierr.NewMultiError("invalid configuration", errs)
-	}
-
-	return nil
+	return srv, nil
 }

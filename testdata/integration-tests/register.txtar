@@ -12,14 +12,14 @@ stub POST .*zwfr/commands 200 stub.json register-command-fr.http
 exec patrolbot register
 cmp register-command-en.http register-command-en.http.golden
 cmp register-command-fr.http register-command-fr.http.golden
-scrub stderr stderr-scrubbed
-cmp stderr-scrubbed stderr-success.golden
+scrub stderr
+cmp stderr stderr-success.golden
 
 # Command fails due to Discord API error
 stub POST .*/commands 400 stub.json
 ! exec patrolbot register
-scrub stderr stderr-scrubbed
-cmp stderr-scrubbed stderr-fail.golden
+scrub stderr
+cmp stderr stderr-fail.golden
 
 -- stub.json --
 {}

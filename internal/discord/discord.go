@@ -1,4 +1,5 @@
-// Package discord provides a Discord API client.
+// Package discord provides a Discord API client, as well as types and functions for receiving Interactions via
+// HTTP webhook
 package discord
 
 //go:generate go run ../tools/gentestdata --config ../../config.yaml

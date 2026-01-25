@@ -1,14 +1,22 @@
 package server
 
 import (
+	"fmt"
 	"net/http"
 
+	"github.com/iocalebs/patrolbot/internal/config"
 	"github.com/iocalebs/patrolbot/internal/server/routes/interactions"
 )
 
-func newMux() http.Handler {
+func mux(cfg config.Config) (http.Handler, error) {
 	mux := http.NewServeMux()
-	mux.Handle("/interactions", interactions.NewHandler())
 
-	return mux
+	interactionsHandler, err := interactions.NewHandler(cfg)
+	if err != nil {
+		return nil, fmt.Errorf("failed to initialize /interactions handler: %w", err)
+	}
+
+	mux.Handle("/interactions", interactionsHandler)
+
+	return mux, nil
 }
