@@ -25,9 +25,9 @@ cmp stderr stderr-success.golden
 cmp req-recentchanges.http req-recentchanges.golden.http
 cmp req-createmessage.http req-createmessage.golden.http
 
-# Scenario: --send-discord flag used to skip confirmation prompt, but Discord post fails
+# Scenario: --yes flag used to skip confirmation prompt, but Discord post fails
 stub POST /channels/channel456/messages 503
-! exec patrolbot report weekly --send-discord
+! exec patrolbot report weekly --yes
 cmp stderr stderr-discord-error.golden
 
 -- decline-prompt --

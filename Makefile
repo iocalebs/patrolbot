@@ -45,7 +45,7 @@ docs:
 	pkgsite -open .
 
 e2e: build
-	./patrolbot report --send-discord --wiki testwiki weekly
+	./patrolbot report weekly --wiki testwiki --yes
 
 generate:
 	go generate ./...

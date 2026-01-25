@@ -21,9 +21,9 @@ func NewCommand() *cobra.Command {
 				return fmt.Errorf("error checking --list flag: %w", err)
 			}
 
-			sendDiscord, err := cmd.Flags().GetBool("send-discord")
+			sendDiscord, err := cmd.Flags().GetBool("yes")
 			if err != nil {
-				return fmt.Errorf("error checking --send-discord flag: %w", err)
+				return fmt.Errorf("error checking --yes flag: %w", err)
 			}
 
 			cfg, err := config.Load(cmd.Flags())
@@ -47,16 +47,17 @@ func NewCommand() *cobra.Command {
 
 	config.AddFlag(cmd.Flags())
 	cmd.Flags().Bool("list", false, "List available report types")
-	cmd.Flags().Bool(
-		"send-discord",
-		false,
-		"Send report to configured Discord channel without prompting for confirmation first",
-	)
 	cmd.Flags().StringP(
 		"wiki",
 		"w",
 		"",
 		"Target wiki",
+	)
+	cmd.Flags().BoolP(
+		"yes",
+		"y",
+		false,
+		"Automatically answer \"yes\" to any prompts",
 	)
 
 	return cmd
