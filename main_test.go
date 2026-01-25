@@ -51,22 +51,44 @@ func TestCommands(t *testing.T) {
 }
 
 func scrub(ts *testscript.TestScript, _ bool, args []string) {
-	scrubbed := ts.ReadFile(args[0])
+	file := args[0]
+	scrubbed := ts.ReadFile(file)
 	scrubbed = scrubWorkDir(ts, scrubbed)
 	scrubbed = scrubVHS(scrubbed)
 	scrubbed = scrubMockServerAddr(ts, scrubbed)
 	scrubbed = trimTrailingWhitespace(scrubbed)
 
-	var outPath string
-	if len(args) > 1 {
-		outPath = ts.MkAbs(args[1])
-	} else {
-		outPath = ts.MkAbs(args[0])
-	}
+	var err error
 
-	err := os.WriteFile(outPath, []byte(scrubbed), 0600)
-	if err != nil {
-		ts.Fatalf("scrub: %v", err)
+	switch file {
+	case "stdout":
+		_, err = ts.Stdout().Write([]byte(scrubbed))
+		if err != nil {
+			ts.Fatalf("scrub: %v", err)
+		}
+
+		// Calling Stdout() flushes both stdout and stderr, therefore stderr needs to be copied over (and vice-versa)
+		_, err := ts.Stderr().Write([]byte(ts.ReadFile("stderr")))
+		if err != nil {
+			ts.Fatalf("scrub: %v", err)
+		}
+
+	case "stderr":
+		_, err = ts.Stderr().Write([]byte(scrubbed))
+		if err != nil {
+			ts.Fatalf("scrub: %v", err)
+		}
+
+		_, err = ts.Stdout().Write([]byte(ts.ReadFile("stdout")))
+		if err != nil {
+			ts.Fatalf("scrub: %v", err)
+		}
+
+	default:
+		err = os.WriteFile(ts.MkAbs(file), []byte(scrubbed), 0600)
+		if err != nil {
+			ts.Fatalf("scrub: %v", err)
+		}
 	}
 }
 

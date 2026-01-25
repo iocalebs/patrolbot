@@ -16,8 +16,8 @@ chmod 000 $HOME
 # Prevents line wrapping so scrub command can work properly
 env __FANG_TEST_WIDTH=300
 ! exec patrolbot init
-scrub stderr stderr-scrubbed
-cmp stderr-scrubbed err-stat-home-config.golden
+scrub stderr
+cmp stderr err-stat-home-config.golden
 rm -r $HOME
 env __FANG_TEST_WIDTH=
 

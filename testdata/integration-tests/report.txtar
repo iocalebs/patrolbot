@@ -19,8 +19,8 @@ stub GET /w/api.php.*list=recentchanges 200 stub-recentchanges.json req-recentch
 stub POST /channels/channel456/messages 200 stub-createmessage.json req-createmessage.http
 ttyin -stdin accept-prompt
 exec patrolbot report weekly
-scrub stdout stdout-scrubbed
-cmp stdout-scrubbed stdout-success.golden
+scrub stdout
+cmp stdout stdout-success.golden
 cmp stderr stderr-success.golden
 cmp req-recentchanges.http req-recentchanges.golden.http
 cmp req-createmessage.http req-createmessage.golden.http
