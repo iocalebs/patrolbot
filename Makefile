@@ -3,6 +3,7 @@ export GOCOVERDIR := coverage
 .PHONY: build
 .PHONY: clean
 .PHONY: cover
+.PHONY: docker
 .PHONY: docs 
 .PHONY: e2e
 .PHONY: generate 
@@ -41,6 +42,10 @@ cover:
 	go tool gocovmerge $(GOCOVERDIR)/profile-merged.txt $(GOCOVERDIR)/profile-zero.txt > $(GOCOVERDIR)/tmp.txt
 	mv $(GOCOVERDIR)/tmp.txt $(GOCOVERDIR)/profile-merged.txt
 	go tool cover -html=$(GOCOVERDIR)/profile-merged.txt
+
+docker:
+	docker build -t patrolbot:local .
+	docker run --rm -p 8080:8080 patrolbot:local
 
 docs:
 	pkgsite -open .

@@ -1,0 +1,9 @@
+.github/
+.terraform/
+.vscode/
+
+coverage/
+config.schema.json
+**/*_test.go
+**/testdata
+**/*.md
