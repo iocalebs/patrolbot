@@ -45,7 +45,7 @@ cover:
 
 docker:
 	docker build -t patrolbot:local .
-	docker run --rm -p 8080:8080 patrolbot:local
+	docker run --env-file .env --rm -p 8080:8080 patrolbot:local
 
 docs:
 	pkgsite -open .
