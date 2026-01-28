@@ -1,9 +1,6 @@
 .env
-coverage
+coverage/
 patrolbot
 
 # Terraform
-.terraform
-terraform.tfstate
-terraform.tfstate.backup
-terraform.tfstate.*.backup
+.terraform/
