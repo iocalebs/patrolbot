@@ -10,25 +10,31 @@ cmp stderr stderr-info-log.golden
 
 # Log level can be overridden via env variable
 env PATROLBOT_LOG_LEVEL=ERROR
+! exec patrolbot serve --config config-with-log.yaml &
 sleep 500ms
 kill
 wait
 scrub stderr
-! grep ".+" stderr
+cmp stderr stderr-error-log.golden
 
 -- config-default-log.yaml --
+discord:
+  publicKey: 62ba213b620e0fdd7ee296059267ef48b5ebec3e852915fb14f9f390609ffe72
 server:
-  port: 8080
+  port: 8081
   timeouts:
     readHeaderTimeout: 5s
 
 -- config-with-log.yaml --
+discord:
+  publicKey: 62ba213b620e0fdd7ee296059267ef48b5ebec3e852915fb14f9f390609ffe72
 log:
   level: INFO
 server:
-  port: 8080
+  port: 8081
   timeouts:
     readHeaderTimeout: 5s
 
 -- stderr-info-log.golden --
-{"time":"1970-01-01T00:00:00Z","severity":"INFO","logging.googleapis.com/sourceLocation":{"function":"github.com/iocalebs/patrolbot/internal/server.(*Server).Start","file":"/Users/c/src/iocalebs/patrolbot/internal/server/server.go","line":44},"message":"Starting HTTP server","addr":":8080"}
+{"time":"1970-01-01T00:00:00Z","severity":"INFO","logging.googleapis.com/sourceLocation":{"function":"github.com/iocalebs/patrolbot/internal/server.(*Server).Start","file":"/Users/c/src/iocalebs/patrolbot/internal/server/server.go","line":54},"message":"Starting HTTP server","addr":":8081"}
+-- stderr-error-log.golden --
