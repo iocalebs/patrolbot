@@ -5,6 +5,7 @@ on:
 
 permissions:
   contents: read
+  id-token: write
 
 env:
   GO_VERSION: "1.25"
@@ -55,6 +56,14 @@ jobs:
       - uses: actions/setup-go@v6
         with:
           go-version: ${{ env.GO_VERSION }}
+      - uses: google-github-actions/auth@v3
+        with:
+          project_id: ${{ vars.GOOGLE_PROJECT }}
+          workload_identity_provider: ${{ vars.GOOGLE_WORKLOAD_IDENTITY_PROVIDER }}
+      - uses: google-github-actions/setup-gcloud@v3
+        with:
+          project_id: ${{ vars.GOOGLE_PROJECT }}
+          skip_install: true
       - name: Install sops
         run: |
           wget https://github.com/getsops/sops/releases/download/v3.11.0/sops-v3.11.0.linux.amd64 -O sops
