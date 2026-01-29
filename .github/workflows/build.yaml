@@ -50,12 +50,17 @@ jobs:
 
   e2e:
     runs-on: ubuntu-latest
-    env:
-      PATROLBOT_DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}
-      PATROLBOT_WIKIS_TESTWIKI_AUTH_PASSWORD: ${{ secrets.BOTPASSWORD_ZWEN }}
     steps:
       - uses: actions/checkout@v6
       - uses: actions/setup-go@v6
         with:
           go-version: ${{ env.GO_VERSION }}
-      - run: make e2e
+      - name: Install sops
+        run: |
+          wget https://github.com/getsops/sops/releases/download/v3.11.0/sops-v3.11.0.linux.amd64 -O sops
+          chmod +x sops
+          sudo mv sops /usr/local/bin/
+      - name: make e2e
+        run: |
+          env $(sops decrypt --input-type dotenv --output-type dotenv .env.enc | xargs) \
+            make e2e
