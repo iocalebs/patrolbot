@@ -1,0 +1,47 @@
+name: Reports - Weekly
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 9 * * 6" # Every Saturday at 9am UTC (4am EST)
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  reports:
+    runs-on: ubuntu-latest
+    env:
+      PATROLBOT_DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-go@v6
+        with:
+          go-version: "1.25"
+      - run: make build
+      - uses: google-github-actions/auth@v3
+        with:
+          project_id: ${{ vars.GOOGLE_PROJECT }}
+          workload_identity_provider: ${{ vars.GOOGLE_WORKLOAD_IDENTITY_PROVIDER }}
+      - uses: google-github-actions/setup-gcloud@v3
+        with:
+          project_id: ${{ vars.GOOGLE_PROJECT }}
+          skip_install: true
+      - name: Install sops
+        run: |
+          wget https://github.com/getsops/sops/releases/download/v3.11.0/sops-v3.11.0.linux.amd64 -O sops
+          chmod +x sops
+          sudo mv sops /usr/local/bin/
+
+      - name: patrolbot report expiring --wiki testwiki 
+        run: |
+            env $(sops decrypt --input-type dotenv --output-type dotenv .env.enc | xargs) \
+              ./patrolbot report expiring --wiki testwiki --yes
+        continue-on-error: true
+
+      - name: patrolbot report expiring --wiki zwen 
+        run: |
+         env $(sops decrypt --input-type dotenv --output-type dotenv .env.enc | xargs) \
+            ./patrolbot report expiring --wiki zwen --yes
+        continue-on-error: true
