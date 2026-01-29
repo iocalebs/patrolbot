@@ -1,5 +1,6 @@
 export GOCOVERDIR := coverage
 
+.PHONY: apply
 .PHONY: build
 .PHONY: clean
 .PHONY: cover
@@ -11,10 +12,14 @@ export GOCOVERDIR := coverage
 .PHONY: generate 
 .PHONY: lint
 .PHONY: login
+.PHONY: plan
 .PHONY: short
 .PHONY: test 
 .PHONY: update
 .PHONY: updateall
+
+apply:
+	cd terraform && terraform apply
 
 build:
 	go build -o patrolbot
@@ -70,6 +75,9 @@ lint:
 
 login:
 	gcloud auth application-default login
+
+plan:
+	cd terraform && terraform plan
 
 short: build
 	go test ./... -short

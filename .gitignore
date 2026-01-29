@@ -3,4 +3,4 @@ coverage/
 patrolbot
 
 # Terraform
-.terraform/
+terraform/.terraform/

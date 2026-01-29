@@ -10,5 +10,8 @@
   "go.lintTool": "golangci-lint-v2",
   "go.lintOnSave": "workspace",
   "go.lintFlags": ["--fast-only"],
-  "go.testFlags": ["-v"]
+  "go.testFlags": ["-v"],
+  "[terraform]": {
+    "editor.defaultFormatter": "hashicorp.terraform"
+  },
 }
