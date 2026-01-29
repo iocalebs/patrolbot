@@ -8,6 +8,7 @@ export GOCOVERDIR := coverage
 .PHONY: docker
 .PHONY: docs 
 .PHONY: e2e
+.PHONY: edit
 .PHONY: encrypt
 .PHONY: generate 
 .PHONY: lint
@@ -63,6 +64,9 @@ docs:
 
 e2e: build
 	./patrolbot report expiring --wiki testwiki --yes
+
+edit:
+	EDITOR="code --wait" sops edit --input-type dotenv --output-type dotenv .env.enc
 
 encrypt:
 	sops encrypt .env > .env.enc
