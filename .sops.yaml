@@ -1,0 +1,4 @@
+creation_rules:
+  - path_regex: \.env$
+    gcp_kms:
+      - projects/patrolbot-485721/locations/global/keyRings/sops-keyring/cryptoKeys/sops-key

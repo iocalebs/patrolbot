@@ -3,11 +3,14 @@ export GOCOVERDIR := coverage
 .PHONY: build
 .PHONY: clean
 .PHONY: cover
+.PHONY: decrypt
 .PHONY: docker
 .PHONY: docs 
 .PHONY: e2e
+.PHONY: encrypt
 .PHONY: generate 
-.PHONY: lint 
+.PHONY: lint
+.PHONY: login
 .PHONY: short
 .PHONY: test 
 .PHONY: update
@@ -43,6 +46,9 @@ cover:
 	mv $(GOCOVERDIR)/tmp.txt $(GOCOVERDIR)/profile-merged.txt
 	go tool cover -html=$(GOCOVERDIR)/profile-merged.txt
 
+decrypt:
+	sops decrypt --input-type dotenv --output-type dotenv .env.enc > .env
+
 docker:
 	docker build -t patrolbot:local .
 	docker run --env-file .env --rm -p 8080:8080 patrolbot:local
@@ -53,11 +59,17 @@ docs:
 e2e: build
 	./patrolbot report expiring --wiki testwiki --yes
 
+encrypt:
+	sops encrypt .env > .env.enc
+
 generate:
 	go generate ./...
 
 lint:
 	golangci-lint run --fix ./...
+
+login:
+	gcloud auth application-default login
 
 short: build
 	go test ./... -short
