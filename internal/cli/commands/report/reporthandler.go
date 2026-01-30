@@ -9,7 +9,6 @@ import (
 	"maps"
 	"net/http"
 	"net/http/cookiejar"
-	"os"
 	"slices"
 	"time"
 
@@ -107,22 +106,8 @@ func (h *handler) newReporter(wiki config.Wiki) (*reporter.Reporter, error) {
 		Timeout: wiki.Client.Timeout,
 	}
 
-	clock := clock.Func(func() time.Time {
-		mockTime := os.Getenv("MOCK_TIME")
-		if mockTime != "" {
-			now, err := time.Parse(time.RFC3339, mockTime)
-			if err == nil {
-				return now
-			}
-
-			h.logger.Error("Error parsing $MOCK_TIME %q: %v", mockTime, now)
-		}
-
-		return time.Now()
-	})
-
 	mwclient := mediawiki.NewClient(wiki, &httpClient, h.logger, h.config.UserAgent)
-	provider := provider.New(h.logger, clock, mwclient, wiki)
+	provider := provider.New(h.logger, clock.Mock(h.logger), mwclient, wiki)
 	reporter := reporter.New(wiki.Reports, provider)
 
 	return reporter, nil
