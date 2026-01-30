@@ -92,9 +92,8 @@ func TestProvider_Data_TokensError(t *testing.T) {
 	}))
 	wiki := config.Wiki{
 		Site: config.WikiSite{
-			URL:          srv.URL,
-			ScriptPath:   "/w",
-			RCMaxAgeDays: 30,
+			URL:        srv.URL,
+			ScriptPath: "/w",
 		},
 	}
 	mwclient := mediawiki.NewClient(wiki, http.DefaultClient, slog.Default(), "")
@@ -146,9 +145,8 @@ func TestProvider_Data_LoginError(t *testing.T) {
 
 	wiki := config.Wiki{
 		Site: config.WikiSite{
-			URL:          srv.URL,
-			ScriptPath:   "/w",
-			RCMaxAgeDays: 30,
+			URL:        srv.URL,
+			ScriptPath: "/w",
 		},
 	}
 	mwclient := mediawiki.NewClient(wiki, http.DefaultClient, slog.Default(), "")
@@ -340,5 +338,84 @@ func TestProvider_Data_PatrolExpiring(t *testing.T) {
 	diff := cmp.Diff(want, got.PatrolExpiring)
 	if diff != "" {
 		t.Fatalf("result mismatch (-want +got):\n%s", diff)
+	}
+}
+
+// Calling API:Login twice in a session results in an pi-login-fail-badsessionprovider error.
+func TestProvider_Data_LoginOnce(t *testing.T) {
+	t.Parallel()
+
+	countReqTokens := 0
+	countReqLogin := 0
+	countReqRC := 0
+
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		q := r.URL.Query()
+		switch {
+		case q.Get("action") == "query" && q.Get("meta") == "tokens" && q.Get("type") == "login":
+			countReqTokens++
+			w.Write([]byte(`
+				{
+					"query": {
+						"tokens": {
+							"logintoken": "8af20f35764bee599652a5d5d9e804d469444fb1+\\"
+						}
+					}
+				}
+			`))
+		case q.Get("action") == "login":
+			countReqLogin++
+			w.Write([]byte(`
+				{
+					"login": {
+						"result": "Success",
+						"lguserid": 45359339,
+						"lgusername": "PhantomCaleb"
+					}
+				}
+			`))
+		case q.Get("action") == "query" && q.Get("list") == "recentchanges":
+			countReqRC++
+			w.Write([]byte(`
+				{
+					"query": {
+						"recentchanges": []
+					}
+				}
+			`))
+		default:
+			w.WriteHeader(http.StatusNotImplemented)
+		}
+	}))
+	wiki := config.Wiki{
+		Site: config.WikiSite{
+			URL:          srv.URL,
+			ScriptPath:   "/w",
+			RCMaxAgeDays: 30,
+		},
+	}
+	mwclient := mediawiki.NewClient(wiki, http.DefaultClient, slog.Default(), "")
+	provider := provider.New(slog.Default(), clock.Func(time.Now), mwclient, wiki)
+
+	reportConfig := config.ReportData{
+		PatrolExpiring: &config.PatrolExpiring{
+			Windows: []config.Duration{
+				{Days: 1},
+			},
+		},
+	}
+	_ = provider.Data(t.Context(), reportConfig)
+	_ = provider.Data(t.Context(), reportConfig)
+
+	if countReqTokens != 1 {
+		t.Errorf("got %d API:Tokens requests, want %d", countReqTokens, 1)
+	}
+
+	if countReqLogin != 1 {
+		t.Errorf("got %d API:Login requests, want %d", countReqLogin, 1)
+	}
+
+	if countReqRC != 2 {
+		t.Errorf("got %d API:RecentChanges requests, want %d", countReqRC, 2)
 	}
 }

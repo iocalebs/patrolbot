@@ -20,8 +20,9 @@ import (
 //
 // [Action API]: https://www.mediawiki.org/wiki/API:Action_API
 type Provider struct {
-	logger   *slog.Logger
 	clock    clock.Clock
+	loggedIn bool
+	logger   *slog.Logger
 	mwclient *mediawiki.Client
 	wiki     config.Wiki
 }
@@ -47,29 +48,35 @@ func (p *Provider) Data(ctx context.Context, dataConfig config.ReportData) data.
 		return reportData
 	}
 
-	token, err := p.mwclient.LoginToken(ctx)
-	if err != nil {
-		p.logError(ctx, "Error obtaining login token from MediaWiki API:Tokens", err)
-		reportData.Error = fmt.Sprintf("Error logging into MediaWiki: %v", err)
+	if !p.loggedIn {
+		token, err := p.mwclient.LoginToken(ctx)
+		if err != nil {
+			p.logError(ctx, "Error obtaining login token from MediaWiki API:Tokens", err)
+			reportData.Error = fmt.Sprintf("Error logging into MediaWiki: %v", err)
 
-		return reportData
-	}
+			return reportData
+		}
 
-	err = p.mwclient.Login(ctx, token)
-	if err != nil {
-		p.logError(ctx, "Error executing login via MediaWiki API:Login", err)
-		reportData.Error = fmt.Sprintf("Error logging into MediaWiki: %v", err)
+		err = p.mwclient.Login(ctx, token)
+		if err != nil {
+			p.logError(ctx, "Error executing login via MediaWiki API:Login", err)
+			reportData.Error = fmt.Sprintf("Error logging into MediaWiki: %v", err)
 
-		return reportData
+			return reportData
+		}
+
+		p.loggedIn = true
 	}
 
 	if dataConfig.PatrolExpiring != nil {
-		reportData.PatrolExpiring, err = p.patrolExpiring(ctx, *dataConfig.PatrolExpiring)
+		expiring, err := p.patrolExpiring(ctx, *dataConfig.PatrolExpiring)
 		if err != nil {
 			msg := err.Error()
 			msg = strings.ToUpper(msg[0:1]) + msg[1:]
 			reportData.Error = msg
 		}
+
+		reportData.PatrolExpiring = expiring
 	}
 
 	return reportData
