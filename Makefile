@@ -12,8 +12,12 @@ export GOCOVERDIR := coverage
 .PHONY: encrypt
 .PHONY: generate 
 .PHONY: lint
+.PHONY: local
 .PHONY: login
+.PHONY: ngrok
 .PHONY: plan
+.PHONY: register
+.PHONY: serve
 .PHONY: short
 .PHONY: test 
 .PHONY: update
@@ -54,6 +58,7 @@ cover:
 
 decrypt:
 	sops decrypt --input-type dotenv --output-type dotenv .env.enc > .env
+	direnv allow
 
 docker:
 	docker build -t patrolbot:local .
@@ -77,11 +82,24 @@ generate:
 lint:
 	golangci-lint run --fix ./...
 
+local:
+	cp .env.local .env
+	direnv allow
+
 login:
 	gcloud auth application-default login
 
+ngrok:
+	ngrok http 8080
+
 plan:
 	cd terraform && terraform plan
+
+register: build
+	./patrolbot register
+
+serve:
+	air serve
 
 short: build
 	go test ./... -short
