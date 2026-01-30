@@ -1,4 +1,8 @@
-{{ define "expiring" }}
+{{ if .Error }}
+```
+{{ .Error }}
+```
+{{- else }}
 Unpatrolled edits expiring soon:
 {{- range .PatrolExpiring.Windows }}
 - {{ .Count }} in the next 
@@ -14,4 +18,3 @@ Unpatrolled edits expiring soon:
 {{- end }}
 Link to patrol backlog: <{{ .Config.Site.URL }}{{ .Config.Site.ArticlePath }}/Special:RecentChanges?reviewStatus=unpatrolled&limit={{ .Config.Site.RCLinkLimit }}&days={{ .Config.Site.RCMaxAgeDays }}&urlversion=2>
 {{ end }}
-{{- template "expiring" . }}
