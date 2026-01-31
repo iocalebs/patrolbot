@@ -6,6 +6,8 @@ package discordsign
 import (
 	"crypto/ed25519"
 	"encoding/hex"
+	"fmt"
+	"os"
 	"strconv"
 	"time"
 
@@ -30,21 +32,19 @@ func Init(env *testscript.Env) {
 }
 
 // Cmd returns a [github.com/rogpeppe/go-internal/testscript] command that signs the contents of the provided file,
-// i.e. request body. The signature and timestamp are stored in env variables under the provided names.
+// i.e. request body. Signature and timestamp request headers are written to the specified file.
 func Cmd(name string) func(*testscript.TestScript, bool, []string) {
 	return func(ts *testscript.TestScript, _ bool, args []string) {
 		const (
 			inPath int = iota
-			signatureEnv
-			timestampEnv
+			outPath
 		)
 
-		if len(args) != 3 {
-			ts.Fatalf("usage: %s inPath signatureEnv timestampEnv", name)
+		if len(args) != 2 {
+			ts.Fatalf("usage: %s inPath outPath", name)
 		}
 
 		body := ts.ReadFile(args[inPath])
-
 		timestamp := strconv.FormatInt(time.Now().Unix(), 10)
 		msg := append([]byte(timestamp), []byte(body)...)
 
@@ -54,7 +54,16 @@ func Cmd(name string) func(*testscript.TestScript, bool, []string) {
 		}
 
 		sig := ed25519.Sign(priv, msg)
-		ts.Setenv(args[signatureEnv], hex.EncodeToString(sig))
-		ts.Setenv(args[timestampEnv], timestamp)
+		headers := fmt.Sprintf(
+			"X-Signature-Ed25519: %s\nX-Signature-Timestamp: %s\n",
+			hex.EncodeToString(sig),
+			timestamp,
+		)
+		headersFile := ts.MkAbs(args[1])
+
+		err := os.WriteFile(headersFile, []byte(headers), 0600)
+		if err != nil {
+			ts.Fatalf("Error writing headers file: %v", err)
+		}
 	}
 }

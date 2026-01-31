@@ -15,8 +15,8 @@ scrub stdout
 cmp stdout unauthorized.golden
 
 # Valid ping request
-sign ping.json SIGNATURE TIMESTAMP
-exec curl -i -X POST http://localhost:$PORT/interactions --data-binary @ping.json --header X-Signature-Ed25519:$SIGNATURE --header X-Signature-Timestamp:$TIMESTAMP
+sign ping.json headers.txt
+exec curl -i -X POST http://localhost:$PORT/interactions --header @headers.txt --data-binary @ping.json
 scrub stdout
 cmp stdout pong.golden
 
