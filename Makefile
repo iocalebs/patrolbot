@@ -49,7 +49,7 @@ cover:
 	go test -coverprofile=$(GOCOVERDIR)/profile-zero.txt -parallel=1 -run "a^" ./...
 # go internal tools and test utils are removed from the report.
 	sed -e '/^github\.com\/iocalebs\/patrolbot\/internal\/tools/d' \
-	    -e '/^github\.com\/iocalebs\/patrolbot\/internal\/httpstub/d' \
+	    -e '/^github\.com\/iocalebs\/patrolbot\/internal\/testscriptutil/d' \
 	    $(GOCOVERDIR)/profile-zero.txt > $(GOCOVERDIR)/profile-zero.tmp
 	mv $(GOCOVERDIR)/profile-zero.tmp $(GOCOVERDIR)/profile-zero.txt
 	go tool gocovmerge $(GOCOVERDIR)/profile-merged.txt $(GOCOVERDIR)/profile-zero.txt > $(GOCOVERDIR)/tmp.txt

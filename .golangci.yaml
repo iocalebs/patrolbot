@@ -39,7 +39,7 @@ linters:
     rules:
   
       # Allow "magic numbers" for parsing command-line args
-      - source: if len\(args\) [><] \d+ \{
+      - source: if len\(args\) (==|!=|>=|<=|>|<) \d+ \{
         linters:
           - mnd
 
