@@ -25,7 +25,7 @@ func NewServer(cfg config.Config, logger *slog.Logger, middleware ...func(http.H
 		return nil, err
 	}
 
-	handler, err := mux(cfg)
+	handler, err := handler(cfg, logger)
 	if err != nil {
 		return nil, err
 	}

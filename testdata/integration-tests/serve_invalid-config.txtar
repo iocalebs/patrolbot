@@ -67,13 +67,12 @@ server:
           
    ERROR  
           
-  Failed to initialize server: failed to initialize /interactions handler: invalid configuration: .discord.publicKey  
-  not set.                                                                                                            
+  Failed to initialize server: invalid configuration: .discord.publicKey not set.                                     
 
 -- stderr-publickey-invalid.golden --
           
    ERROR  
           
-  Failed to initialize server: failed to initialize /interactions handler: invalid configuration: failed to decode    
-  .discord.publicKey: encoding/hex: invalid byte: U+006F 'o'.                                                         
+  Failed to initialize server: invalid configuration: failed to decode .discord.publicKey: encoding/hex: invalid byte:
+  U+006F 'o'.                                                                                                         
 

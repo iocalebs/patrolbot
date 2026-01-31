@@ -44,13 +44,14 @@ linters:
           - mnd
 
       # Allow long URLs in comment lines
-      - source: ^[\s]*// https://[^\s]+
+      - source: ^[\s]*// (See:\s*)?https://[^\s]+
         linters:
           - lll
 
       # Allow DAMP vs DRY in tests
       - path: _test\.go
         linters:
+          - cyclop
           - dupl
           - funlen
           - goconst

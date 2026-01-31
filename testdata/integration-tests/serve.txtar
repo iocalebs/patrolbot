@@ -1,20 +1,22 @@
 sign ping.json SIGNATURE TIMESTAMP PATROLBOT_DISCORD_PUBLICKEY
 
+env PORT=8082
+env PATROLBOT_SERVER_PORT=$PORT
 exec patrolbot serve &
 sleep 500ms
 
 # No signature headers
-exec curl -i -X POST http://localhost:8080/interactions --data-binary @ping.json
+exec curl -i -X POST http://localhost:$PORT/interactions --data-binary @ping.json
 scrub stdout
 cmp stdout unauthorized.golden
 
 # Invalid signature headers
-exec curl -i -X POST http://localhost:8080/interactions --data-binary @ping.json --header X-Signature-Ed25519:foo --header X-Signature-Timestamp:bar
+exec curl -i -X POST http://localhost:$PORT/interactions --data-binary @ping.json --header X-Signature-Ed25519:foo --header X-Signature-Timestamp:bar
 scrub stdout
 cmp stdout unauthorized.golden
 
 # Valid ping request
-exec curl -i -X POST http://localhost:8080/interactions --data-binary @ping.json  --header X-Signature-Ed25519:$SIGNATURE --header X-Signature-Timestamp:$TIMESTAMP
+exec curl -i -X POST http://localhost:$PORT/interactions --data-binary @ping.json --header X-Signature-Ed25519:$SIGNATURE --header X-Signature-Timestamp:$TIMESTAMP
 scrub stdout
 cmp stdout pong.golden
 
@@ -22,7 +24,7 @@ cmp stdout pong.golden
 discord:
   publicKey: ""
 server:
-  port: 8080
+  port: 0
   timeouts:
     readTimeout: 15s
     readHeaderTimeout: 5s

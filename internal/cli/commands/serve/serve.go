@@ -3,6 +3,8 @@ package serve
 
 import (
 	"fmt"
+	"log/slog"
+	"net/http"
 	"os"
 
 	"github.com/iocalebs/patrolbot/internal/config"
@@ -40,10 +42,31 @@ func NewCommand() *cobra.Command {
 func newServer(cfg config.Config) (*server.Server, error) {
 	logger := gcp.NewLogger(os.Stderr, cfg.Log.Level)
 
-	srv, err := server.NewServer(cfg, logger, gcp.TraceMiddleware)
+	srv, err := server.NewServer(cfg, logger, gcp.TraceMiddleware, logRequestCancellation(logger))
 	if err != nil {
 		return nil, fmt.Errorf("failed to initialize server: %w", err)
 	}
 
 	return srv, nil
+}
+
+func logRequestCancellation(logger *slog.Logger) func(http.Handler) http.Handler {
+	return func(next http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			ctx := r.Context()
+
+			done := make(chan struct{})
+
+			go func() {
+				select {
+				case <-ctx.Done():
+					logger.ErrorContext(r.Context(), "request cancelled")
+				case <-done:
+				}
+			}()
+
+			next.ServeHTTP(w, r)
+			close(done)
+		})
+	}
 }

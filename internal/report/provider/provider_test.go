@@ -354,6 +354,7 @@ func TestProvider_Data_LoginOnce(t *testing.T) {
 		switch {
 		case q.Get("action") == "query" && q.Get("meta") == "tokens" && q.Get("type") == "login":
 			countReqTokens++
+
 			w.Write([]byte(`
 				{
 					"query": {
@@ -365,6 +366,7 @@ func TestProvider_Data_LoginOnce(t *testing.T) {
 			`))
 		case q.Get("action") == "login":
 			countReqLogin++
+
 			w.Write([]byte(`
 				{
 					"login": {
@@ -376,6 +378,7 @@ func TestProvider_Data_LoginOnce(t *testing.T) {
 			`))
 		case q.Get("action") == "query" && q.Get("list") == "recentchanges":
 			countReqRC++
+
 			w.Write([]byte(`
 				{
 					"query": {
