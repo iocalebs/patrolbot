@@ -1,6 +1,9 @@
-env PATROLBOT_DISCORD_PUBLICKEY=$PUBLIC_KEY
+env MOCK_TIME=2026-01-31T00:00:00Z
 env PORT=8082
 env PATROLBOT_SERVER_PORT=$PORT
+env PATROLBOT_DISCORD_API=http://$STUB_ADDR
+env PATROLBOT_DISCORD_PUBLICKEY=$PUBLIC_KEY
+env PATROLBOT_WIKIS_ZWEN_SITE_URL=http://$STUB_ADDR
 exec patrolbot serve &
 sleep 500ms
 
@@ -20,9 +23,71 @@ exec curl -i -X POST http://localhost:$PORT/interactions --header @headers.txt -
 scrub stdout
 cmp stdout pong.golden
 
+# Invalid request body
+sign invalid-body.txt headers.txt
+exec curl -i -X POST http://localhost:$PORT/interactions --header @headers.txt --data-binary @invalid-body.txt
+scrub stdout
+cmp stdout bad-request.golden
+
+# Invalid interaction type
+sign invalid-interaction-type.json headers.txt
+exec curl -i -X POST http://localhost:$PORT/interactions --header @headers.txt --data-binary @invalid-interaction-type.json
+scrub stdout
+cmp stdout unsupported-interaction.golden
+
+# Invalid command
+sign invalid-command.json headers.txt
+exec curl -i -X POST http://localhost:$PORT/interactions --header @headers.txt --data-binary @invalid-command.json
+scrub stdout
+cmp stdout unsupported-command.golden
+
+# Invalid guild_id
+sign invalid-guild-id.json headers.txt
+exec curl -i -X POST http://localhost:$PORT/interactions --header @headers.txt --data-binary @invalid-guild-id.json
+scrub stdout
+cmp stdout guild-not-configured.golden
+
+# Invalid config for wiki corresponding to guild_id
+sign invalid-config.json headers.txt
+exec curl -i -X POST http://localhost:$PORT/interactions --header @headers.txt --data-binary @invalid-config.json
+scrub stdout
+cmp stdout invalid-config.golden
+
+# Missing /report option
+sign report-no-option.json headers.txt
+exec curl -i -X POST http://localhost:$PORT/interactions --header @headers.txt --data-binary @report-no-option.json
+scrub stdout
+cmp stdout no-report-type.golden
+
+# Invalid /report option
+sign invalid-option.json headers.txt
+exec curl -i -X POST http://localhost:$PORT/interactions --header @headers.txt --data-binary @invalid-option.json
+scrub stdout
+cmp stdout invalid-report-type.golden
+
+# /report command succeeds
+stub GET /w/api.php.*meta=tokens 200 stub-mwtokens.json req-mwtokens.http
+stub POST /w/api.php.*action=login 200 stub-mwlogin.json req-mwlogin.http
+stub GET /w/api.php.*list=recentchanges 200 stub-recentchanges.json req-recentchanges.http
+sign report.json headers.txt
+exec curl -i -X POST http://localhost:$PORT/interactions --header @headers.txt --data-binary @report.json
+scrub stdout
+cmp stdout report-success.golden
+cmp req-mwtokens.http req-mwtokens.golden.http
+cmp req-mwlogin.http req-mwlogin.golden.http
+cmp req-recentchanges.http req-recentchanges.golden.http
+
+# /report command fails due to MediaWiki API error
+stub GET /w/api.php.*list=recentchanges 502
+exec curl -i -X POST http://localhost:$PORT/interactions --header @headers.txt --data-binary @report.json
+scrub stdout
+cmp stdout report-mediawiki-502-error.golden
+
 -- config.yaml --
 discord:
   publicKey: ""
+log:
+  level: DEBUG
 server:
   port: 0
   timeouts:
@@ -30,9 +95,159 @@ server:
     readHeaderTimeout: 5s
     writeTimeout: 15s
     idleTimeout: 60s
+wikis:
+  invalidwiki:
+    reports:
+      discordServerID: invalidWikiServerID
+  invalidwiki2:
+    site:
+      url: ""
+    reports:
+      discordServerID: ""
+  zwen:
+    site:
+      url: ""
+      scriptPath: /w
+      articlePath: /wiki
+      rcLinkLimit: 1000
+      rcMaxAgeDays: 30
+    auth:
+      username: username
+      password: password
+    client:
+      from: phantomcalebs@gmail.com
+      timeout: 10s
+    reports:
+      templateDir: ./templates
+      discordServerID: server123
+      types:
+        expiring:
+          template: expiring.tmpl
+          discordChannelID: channel456
+          data:
+            patrolExpiring:
+              windows:
+                - days: 7
+                - days: 14
+                - days: 30
+-- templates/expiring.tmpl --
+{{ if .Error }}
+```
+{{ .Error }}
+```
+{{- else }}
+Unpatrolled edits expiring soon:
+{{- range .PatrolExpiring.Windows }}
+- {{ .Count }} in the next {{ .Duration.Days }} days
+{{- end }}
+Link to patrol backlog: <{{ .Config.Site.URL }}{{ .Config.Site.ArticlePath }}/Special:RecentChanges?reviewStatus=unpatrolled&limit={{ .Config.Site.RCLinkLimit }}&days={{ .Config.Site.RCMaxAgeDays }}&urlversion=2>
+{{ end }}
+
 
 -- ping.json --
 { "type": 1 }
+-- invalid-body.txt --
+foo
+-- invalid-interaction-type.json --
+{ "type": 8 }
+-- invalid-command.json --
+{
+    "type": 2,
+    "data": {
+        "name": "foo"
+    }
+}
+-- invalid-guild-id.json --
+{
+    "type": 2,
+    "data": {
+        "guild_id": "foo",
+        "name": "report"
+    }
+}
+-- invalid-config.json --
+{
+    "type": 2,
+    "data": {
+        "guild_id": "invalidWikiServerID",
+        "name": "report"
+    }
+}
+-- report-no-option.json --
+{
+    "type": 2,
+    "data": {
+        "guild_id": "server123",
+        "name": "report"
+    }
+}
+-- invalid-option.json --
+{
+    "type": 2,
+    "data": {
+        "guild_id": "server123",
+        "name": "report",
+        "options": [
+            {
+                "name": "foo"
+            }
+        ]
+    }
+}
+-- report.json --
+{
+    "type": 2,
+    "data": {
+        "guild_id": "server123",
+        "name": "report",
+        "options": [
+            {
+                "name": "expiring"
+            }
+        ]
+    }
+}
+
+-- stub-mwtokens.json --
+{
+  "batchcomplete": true,
+  "query": {
+    "tokens": {
+      "logintoken": "8af20f35764bee599652a5d5d9e804d469444fb1+\\"
+    }
+  }
+}
+-- stub-mwlogin.json --
+{
+  "login": {
+    "result": "Success",
+    "lguserid": 45359339,
+    "lgusername": "PhantomCaleb"
+  }
+}
+-- stub-recentchanges.json --
+{
+  "batchcomplete": true,
+  "query": {
+    "recentchanges": [
+      {
+        "timestamp": "2026-01-01T01:00:00Z"
+      },
+      {
+        "timestamp": "2026-01-02T00:00:00Z"
+      },
+      {
+        "timestamp": "2026-01-08T00:00:00Z"
+      },
+      {
+        "timestamp": "2026-01-15T00:00:00Z"
+      },
+      {
+        "timestamp": "2026-01-15T01:00:00Z"
+      }
+    ]
+  }
+}
 
 -- unauthorized.golden --
 HTTP/1.1 401 Unauthorized
@@ -46,3 +261,87 @@ Date: Thu, 01 Jan 1970 00:00:00 GMT
 Content-Length: 11
 
 {"type":1}
+-- bad-request.golden --
+HTTP/1.1 400 Bad Request
+Date: Thu, 01 Jan 1970 00:00:00 GMT
+Content-Length: 0
+
+-- unsupported-interaction.golden --
+HTTP/1.1 200 OK
+Content-Type: application/json
+Date: Thu, 01 Jan 1970 00:00:00 GMT
+Content-Length: 70
+
+{"type":4,"data":{"content":"Error: unsupported interaction type 8"}}
+-- unsupported-command.golden --
+HTTP/1.1 200 OK
+Content-Type: application/json
+Date: Thu, 01 Jan 1970 00:00:00 GMT
+Content-Length: 65
+
+{"type":4,"data":{"content":"Error: unsupported command `foo`"}}
+-- guild-not-configured.golden --
+HTTP/1.1 200 OK
+Content-Type: application/json
+Date: Thu, 01 Jan 1970 00:00:00 GMT
+Content-Length: 83
+
+{"type":4,"data":{"content":"Error: PatrolBot is not configured for this server"}}
+-- invalid-config.golden --
+HTTP/1.1 200 OK
+Content-Type: application/json
+Date: Thu, 01 Jan 1970 00:00:00 GMT
+Content-Length: 259
+
+{"type":4,"data":{"content":"Error: invalid configuration:\n- .wikis[\"invalidwiki\"].site.url not set\n- .wikis[\"invalidwiki\"].auth.username not set\n- .wikis[\"invalidwiki\"].auth.password not set\n- .wikis[\"invalidwiki\"].reports.templateDir not set"}}
+-- no-report-type.golden --
+HTTP/1.1 200 OK
+Content-Type: application/json
+Date: Thu, 01 Jan 1970 00:00:00 GMT
+Content-Length: 63
+
+{"type":4,"data":{"content":"Error: no report type provided"}}
+-- invalid-report-type.golden --
+HTTP/1.1 200 OK
+Content-Type: application/json
+Date: Thu, 01 Jan 1970 00:00:00 GMT
+Content-Length: 64
+
+{"type":4,"data":{"content":"Error: invalid report type: foo"}}
+-- report-success.golden --
+HTTP/1.1 200 OK
+Content-Type: application/json
+Date: Thu, 01 Jan 1970 00:00:00 GMT
+Content-Length: 308
+
+{"type":4,"data":{"content":"\nUnpatrolled edits expiring soon:\n- 3 in the next 7 days\n- 4 in the next 14 days\n- 5 in the next 30 days\nLink to patrol backlog: \u003chttp://$STUB_ADDR/wiki/Special:RecentChanges?reviewStatus=unpatrolled\u0026limit=1000\u0026days=30\u0026urlversion=2\u003e\n\n\n\n"}}
+-- report-mediawiki-502-error.golden --
+HTTP/1.1 200 OK
+Content-Type: application/json
+Date: Thu, 01 Jan 1970 00:00:00 GMT
+Content-Length: 107
+
+{"type":4,"data":{"content":"\n```\nError executing API:RecentChanges query: 502 Bad Gateway\n```\n\n\n"}}
+-- req-mwtokens.golden.http --
+GET /w/api.php?action=query&errorformat=plaintext&format=json&formatversion=2&meta=tokens&type=login&uselang=user HTTP/1.1
+Host: $STUB_ADDR
+Accept-Encoding: gzip
+From: phantomcalebs@gmail.com
+
+
+-- req-mwlogin.golden.http --
+POST /w/api.php?action=login&errorformat=plaintext&format=json&formatversion=2&uselang=user HTTP/1.1
+Host: $STUB_ADDR
+Accept-Encoding: gzip
+Content-Length: 90
+Content-Type: application/x-www-form-urlencoded
+From: phantomcalebs@gmail.com
+
+lgname=username&lgpassword=password&lgtoken=8af20f35764bee599652a5d5d9e804d469444fb1%2B%5C
+-- req-recentchanges.golden.http --
+GET /w/api.php?action=query&errorformat=plaintext&format=json&formatversion=2&list=recentchanges&rcdir=newer&rcend=2026-01-31T00%3A00%3A00Z&rclimit=500&rcshow=%21patrolled&rcstart=2026-01-01T00%3A00%3A00Z&uselang=user HTTP/1.1
+Host: $STUB_ADDR
+Accept-Encoding: gzip
+From: phantomcalebs@gmail.com
+
+

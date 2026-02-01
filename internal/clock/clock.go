@@ -29,11 +29,14 @@ func Mock(logger *slog.Logger) Clock { //nolint:ireturn
 		if mockTime != "" {
 			now, err := time.Parse(time.RFC3339, mockTime)
 			if err == nil {
+				logger.Debug("Using mock time", "MOCK_TIME", mockTime)
 				return now
 			}
 
-			logger.Error("Error parsing $MOCK_TIME %q: %v", mockTime, now)
+			logger.Error("Error parsing $MOCK_TIME", "MOCK_TIME", mockTime, "err", err)
 		}
+
+		logger.Debug("MOCK_TIME not set, using current time")
 
 		return time.Now()
 	})

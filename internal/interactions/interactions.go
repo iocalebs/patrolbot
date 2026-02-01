@@ -95,10 +95,6 @@ func (h *Handler) respond(ctx context.Context, interaction discord.Interaction) 
 }
 
 func (h *Handler) report(ctx context.Context, interaction discord.Interaction) (discord.InteractionResponse, string) {
-	if len(interaction.Data.Options) < 1 {
-		return discord.InteractionResponse{}, "no report type provided"
-	}
-
 	reporter, ok := h.reporters[interaction.Data.GuildID]
 	if !ok {
 		err, ok := h.invalidConfig[interaction.Data.GuildID]
@@ -107,6 +103,10 @@ func (h *Handler) report(ctx context.Context, interaction discord.Interaction) (
 		}
 
 		return discord.InteractionResponse{}, err.Error()
+	}
+
+	if len(interaction.Data.Options) < 1 {
+		return discord.InteractionResponse{}, "no report type provided"
 	}
 
 	var buffer bytes.Buffer
