@@ -22,6 +22,7 @@ func TestCommands(t *testing.T) {
 	params := testscript.Params{
 		Dir:           "testdata/integration-tests",
 		UpdateScripts: *update,
+		Deadline:      time.Now().Add(time.Minute * 1),
 		Cmds: map[string]func(ts *testscript.TestScript, neg bool, args []string){
 			"scrub": scrub,
 			"sign":  discordsign.Cmd("sign"),
