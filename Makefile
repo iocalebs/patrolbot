@@ -27,7 +27,7 @@ apply:
 	cd terraform && terraform apply
 
 build:
-	go build -o patrolbot
+	go build -trimpath -o patrolbot
 
 clean:
 	rm -f patrolbot
@@ -37,7 +37,7 @@ cover:
 	rm -rf $(GOCOVERDIR)
 	mkdir -p $(GOCOVERDIR)/integration
 	mkdir -p $(GOCOVERDIR)/unit
-	go build -cover -o patrolbot
+	go build -trimpath -cover -o patrolbot
 	-GOCOVERDIR=$(CURDIR)/$(GOCOVERDIR)/integration go test -count=1 -parallel=1 main_test.go
 	-go test -cover -parallel=1 ./internal/... -args -test.gocoverdir=$(CURDIR)/$(GOCOVERDIR)/unit
 	go tool covdata textfmt -i=./$(GOCOVERDIR)/integration -o=./$(GOCOVERDIR)/profile-integation.txt
