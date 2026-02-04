@@ -15,24 +15,6 @@ resource "google_project_service" "secretmanager" {
   service = "secretmanager.googleapis.com"
 }
 
-resource "google_kms_key_ring" "sops" {
-  name     = "sops-keyring"
-  location = "global"
-
-  depends_on = [google_project_service.kms]
-}
-
-resource "google_kms_crypto_key" "sops" {
-  name            = "sops-key"
-  key_ring        = google_kms_key_ring.sops.id
-  rotation_period = "7776000s" # 90 days
-  purpose         = "ENCRYPT_DECRYPT"
-
-  lifecycle {
-    prevent_destroy = true
-  }
-}
-
 resource "google_iam_workload_identity_pool" "ci" {
   workload_identity_pool_id = "ci-pool"
   display_name              = "CI/CD Pool"
@@ -57,6 +39,24 @@ resource "google_iam_workload_identity_pool_provider" "github" {
   }
 
   attribute_condition = "assertion.repository=='${github_repository.patrolbot.full_name}'"
+}
+
+resource "google_kms_key_ring" "sops" {
+  name     = "sops-keyring"
+  location = "global"
+
+  depends_on = [google_project_service.kms]
+}
+
+resource "google_kms_crypto_key" "sops" {
+  name            = "sops-key"
+  key_ring        = google_kms_key_ring.sops.id
+  rotation_period = "7776000s" # 90 days
+  purpose         = "ENCRYPT_DECRYPT"
+
+  lifecycle {
+    prevent_destroy = true
+  }
 }
 
 resource "google_kms_crypto_key_iam_member" "github_sops" {
