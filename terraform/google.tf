@@ -19,8 +19,9 @@ resource "google_iam_workload_identity_pool" "ci" {
   workload_identity_pool_id = "ci-pool"
   display_name              = "CI/CD Pool"
   description               = "Workload identity pool for CI/CD runners"
-
-  depends_on = [google_project_service.iam]
+  depends_on = [
+    google_project_service.iam
+  ]
 }
 
 resource "google_iam_workload_identity_pool_provider" "github" {
@@ -44,8 +45,9 @@ resource "google_iam_workload_identity_pool_provider" "github" {
 resource "google_kms_key_ring" "sops" {
   name     = "sops-keyring"
   location = "global"
-
-  depends_on = [google_project_service.kms]
+  depends_on = [
+    google_project_service.kms
+  ]
 }
 
 resource "google_kms_crypto_key" "sops" {
