@@ -11,6 +11,10 @@ resource "google_project_service" "kms" {
   service = "cloudkms.googleapis.com"
 }
 
+resource "google_project_service" "secretmanager" {
+  service = "secretmanager.googleapis.com"
+}
+
 resource "google_kms_key_ring" "sops" {
   name     = "sops-keyring"
   location = "global"
@@ -59,4 +63,20 @@ resource "google_kms_crypto_key_iam_member" "github_sops" {
   crypto_key_id = google_kms_crypto_key.sops.id
   role          = "roles/cloudkms.cryptoKeyEncrypterDecrypter"
   member        = "principalSet://iam.googleapis.com/${google_iam_workload_identity_pool.ci.name}/attribute.repository/${github_repository.patrolbot.full_name}"
+}
+
+resource "google_secret_manager_secret" "discord_token" {
+  secret_id = "discord-token"
+  replication {
+    auto {}
+  }
+  depends_on = [google_project_service.secretmanager]
+}
+
+resource "google_secret_manager_secret" "botpassword_zwen" {
+  secret_id = "botpassword-zwen"
+  replication {
+    auto {}
+  }
+  depends_on = [google_project_service.secretmanager]
 }

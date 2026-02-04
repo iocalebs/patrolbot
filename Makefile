@@ -1,4 +1,5 @@
 export GOCOVERDIR := coverage
+export CLOUDSDK_CORE_PROJECT=patrolbot-485721
 
 .PHONY: apply
 .PHONY: build
@@ -17,6 +18,7 @@ export GOCOVERDIR := coverage
 .PHONY: ngrok
 .PHONY: plan
 .PHONY: register
+.PHONY: secrets
 .PHONY: serve
 .PHONY: short
 .PHONY: test 
@@ -97,6 +99,10 @@ plan:
 
 register: build
 	./patrolbot register
+
+secrets:
+	./scripts/update-secret.sh discord-token PATROLBOT_DISCORD_TOKEN
+	./scripts/update-secret.sh botpassword-zwen PATROLBOT_WIKIS_ZWEN_AUTH_PASSWORD
 
 serve:
 	air serve
