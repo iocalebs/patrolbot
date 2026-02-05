@@ -18,5 +18,6 @@ FROM gcr.io/distroless/static:nonroot
 WORKDIR /
 COPY --from=build --chown=nonroot:nonroot /app/patrolbot /patrolbot
 COPY config.yaml /config.yaml
+COPY templates /templates
 ENTRYPOINT ["/patrolbot"]
 CMD ["serve", "--config", "/config.yaml"]
