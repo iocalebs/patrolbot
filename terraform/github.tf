@@ -10,6 +10,18 @@ resource "github_repository" "patrolbot" {
   has_discussions = true
 }
 
+resource "github_actions_variable" "google_artifact_registry_host" {
+  repository    = github_repository.patrolbot.name
+  variable_name = "GOOGLE_ARTIFACT_REGISTRY_HOST"
+  value         = split("/", google_artifact_registry_repository.patrolbot.registry_uri)[0]
+}
+
+resource "github_actions_variable" "google_artifact_registry_repository_uri" {
+  repository    = github_repository.patrolbot.name
+  variable_name = "GOOGLE_ARTIFACT_REGISTRY_REPO_URI"
+  value         = google_artifact_registry_repository.patrolbot.registry_uri
+}
+
 resource "github_actions_variable" "google_project" {
   repository    = github_repository.patrolbot.name
   variable_name = "GOOGLE_PROJECT"

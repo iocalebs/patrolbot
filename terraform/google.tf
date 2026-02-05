@@ -3,6 +3,10 @@ provider "google" {
   region  = "us-central1"
 }
 
+resource "google_project_service" "artifact_registry" {
+  service = "artifactregistry.googleapis.com"
+}
+
 resource "google_project_service" "iam" {
   service = "iam.googleapis.com"
 }
@@ -13,6 +17,25 @@ resource "google_project_service" "kms" {
 
 resource "google_project_service" "secretmanager" {
   service = "secretmanager.googleapis.com"
+}
+
+resource "google_artifact_registry_repository" "patrolbot" {
+  repository_id = "patrolbot"
+  format        = "DOCKER"
+
+  docker_config {
+    immutable_tags = true
+  }
+
+  depends_on = [
+    google_project_service.artifact_registry
+  ]
+}
+
+resource "google_artifact_registry_repository_iam_member" "github" {
+  repository = google_artifact_registry_repository.patrolbot.repository_id
+  role       = "roles/artifactregistry.writer"
+  member     = "principalSet://iam.googleapis.com/${google_iam_workload_identity_pool.ci.name}/attribute.repository/${github_repository.patrolbot.full_name}"
 }
 
 resource "google_iam_workload_identity_pool" "ci" {
