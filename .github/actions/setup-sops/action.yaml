@@ -1,0 +1,11 @@
+name: Setup 
+description: Install SOPS so that encrypted .env secrets can be used to run PatrolBot CLI commands in GitHub Actions
+runs:
+  using: composite
+  steps:
+    - name: Install sops
+      shell: bash
+      run: |
+        wget https://github.com/getsops/sops/releases/download/v3.11.0/sops-v3.11.0.linux.amd64 -O sops
+        chmod +x sops
+        sudo mv sops /usr/local/bin/

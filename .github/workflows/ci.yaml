@@ -57,11 +57,7 @@ jobs:
         with:
           project_id: ${{ vars.GOOGLE_PROJECT }}
           workload_identity_provider: ${{ vars.GOOGLE_WORKLOAD_IDENTITY_PROVIDER }}
-      - name: Install sops
-        run: |
-          wget https://github.com/getsops/sops/releases/download/v3.11.0/sops-v3.11.0.linux.amd64 -O sops
-          chmod +x sops
-          sudo mv sops /usr/local/bin/
+      - uses: ./.github/actions/setup-sops
       - name: make e2e
         run: |
           env $(sops decrypt --input-type dotenv --output-type dotenv .env.enc | xargs) \
