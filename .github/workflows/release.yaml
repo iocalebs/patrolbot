@@ -8,6 +8,7 @@ permissions:
   id-token: write
 
 jobs:
+  # Build and push container image to Google Artifact Registry
   image:
     runs-on: ubuntu-latest
     outputs:
@@ -40,6 +41,7 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
+  # Deploy PatrolBot service on Google Cloud Run
   deploy:
     runs-on: ubuntu-latest
     needs: [image]
@@ -60,4 +62,22 @@ jobs:
             PATROLBOT_WIKIS_ZWEN_AUTH_PASSWORD=botpassword-zwen:latest
             PATROLBOT_WIKIS_TESTWIKI_AUTH_PASSWORD=botpassword-zwen:latest
 
-
+  # Register Discord bot commands
+  register:
+    runs-on: ubuntu-latest
+    needs: [deploy]
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-go@v6
+        with:
+          go-version-file: go.mod
+      - uses: google-github-actions/auth@v3
+        with:
+          project_id: ${{ vars.GOOGLE_PROJECT }}
+          workload_identity_provider: ${{ vars.GOOGLE_WORKLOAD_IDENTITY_PROVIDER }}
+      - uses: ./.github/actions/setup-sops
+      - name: make register
+        run: |
+          env $(sops decrypt --input-type dotenv --output-type dotenv .env.enc | xargs) \
+            make register
+    
