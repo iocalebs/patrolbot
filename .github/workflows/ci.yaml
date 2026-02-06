@@ -55,6 +55,25 @@ jobs:
         with:
           go-version-file: go.mod
 
+  trivy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: docker/setup-buildx-action@v3
+      - uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: false
+          load: true
+          tags: patrolbot:temp
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+      - uses: aquasecurity/trivy-action@0.33.1
+        with:
+          image-ref: patrolbot:temp
+          exit-code: "1"
+          severity: "CRITICAL,HIGH"
+
   e2e:
     runs-on: ubuntu-latest
     steps:
