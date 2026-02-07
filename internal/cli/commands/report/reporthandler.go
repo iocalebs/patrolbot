@@ -108,7 +108,11 @@ func (h *handler) newReporter(wiki config.Wiki) (*reporter.Reporter, error) {
 
 	mwclient := mediawiki.NewClient(wiki, &httpClient, h.logger, h.config.UserAgent)
 	provider := provider.New(h.logger, clock.Mock(h.logger), mwclient, wiki)
-	reporter := reporter.New(wiki.Reports, provider)
+
+	reporter, err := reporter.New(wiki.Reports, provider)
+	if err != nil {
+		return nil, fmt.Errorf("error initializing report generator: %w", err)
+	}
 
 	return reporter, nil
 }

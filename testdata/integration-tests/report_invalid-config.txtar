@@ -8,13 +8,16 @@ cmp stderr stderr-wiki-not-found.golden
 ! exec patrolbot report expiring --wiki invalid1
 cmp stderr stderr-invalid-wiki-config.golden
 
-! exec patrolbot report --wiki invalid2
+! exec patrolbot report expiring --wiki invalid2
+cmp stderr stderr-templatedir-not-set.golden
+
+! exec patrolbot report --wiki invalid3
 cmp stderr stderr-report-type-not-set.golden
 
-! exec patrolbot report foo --wiki invalid2
+! exec patrolbot report foo --wiki invalid3
 cmp stderr stderr-report-type-not-found.golden
 
-! exec patrolbot report expiring --wiki invalid2
+! exec patrolbot report expiring --wiki invalid3
 cmp stderr stderr-report-template-not-set.golden
 
 -- config.yaml --
@@ -25,9 +28,15 @@ wikis:
     auth:
       username: ""
       password: ""
+  invalid2:
+    site:
+      url: http://localhost:foo
+    auth:
+      username: "user"
+      password: "pass"
     reports:
       templateDir: ""
-  invalid2:
+  invalid3:
     site:
       url: http://localhost:foo
     auth:
@@ -59,7 +68,12 @@ wikis:
   - .wikis["invalid1"].site.url not set                                                                               
   - .wikis["invalid1"].auth.username not set                                                                          
   - .wikis["invalid1"].auth.password not set                                                                          
-  - .wikis["invalid1"].reports.templateDir not set                                                                    
+
+-- stderr-templatedir-not-set.golden --
+          
+   ERROR  
+          
+  Error initializing report generator: invalid configuration: templateDir not set.                                    
 
 -- stderr-report-type-not-set.golden --
           

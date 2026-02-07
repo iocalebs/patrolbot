@@ -33,11 +33,15 @@ type Reporter struct {
 }
 
 // New creates a new [Reporter] instance.
-func New(cfg config.Reports, provider *provider.Provider) *Reporter {
+func New(cfg config.Reports, provider *provider.Provider) (*Reporter, error) {
+	if cfg.TemplateDir == "" {
+		return nil, errdefs.NewConfigError("templateDir not set")
+	}
+
 	return &Reporter{
 		cfg:      cfg,
 		provider: provider,
-	}
+	}, nil
 }
 
 // Report writes a report to the given [io.Writer].

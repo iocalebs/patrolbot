@@ -53,6 +53,12 @@ exec curl -i -X POST http://localhost:$PORT/interactions --header @headers.txt -
 scrub stdout
 cmp stdout invalid-config.golden
 
+# Invalid config - templateDir not set
+sign invalid-config-templatedir.json headers.txt
+exec curl -i -X POST http://localhost:$PORT/interactions --header @headers.txt --data-binary @invalid-config-templatedir.json
+scrub stdout
+cmp stdout invalid-config-templatedir.golden
+
 # Missing /report option
 sign report-no-option.json headers.txt
 exec curl -i -X POST http://localhost:$PORT/interactions --header @headers.txt --data-binary @report-no-option.json
@@ -104,6 +110,15 @@ wikis:
       url: ""
     reports:
       discordServerID: ""
+  invalidwiki3:
+    site:
+      url: http://localhost:foo
+    auth:
+      username: "user"
+      password: "pass"
+    reports:
+      discordServerID: invalidtemplatedir
+      templateDir: ""
   zwen:
     site:
       url: ""
@@ -170,6 +185,14 @@ foo
     "type": 2,
     "data": {
         "guild_id": "invalidWikiServerID",
+        "name": "report"
+    }
+}
+-- invalid-config-templatedir.json --
+{
+    "type": 2,
+    "data": {
+        "guild_id": "invalidtemplatedir",
         "name": "report"
     }
 }
@@ -291,9 +314,16 @@ Content-Length: 83
 HTTP/1.1 200 OK
 Content-Type: application/json
 Date: Thu, 01 Jan 1970 00:00:00 GMT
-Content-Length: 259
+Content-Length: 204
 
-{"type":4,"data":{"content":"Error: invalid configuration:\n- .wikis[\"invalidwiki\"].site.url not set\n- .wikis[\"invalidwiki\"].auth.username not set\n- .wikis[\"invalidwiki\"].auth.password not set\n- .wikis[\"invalidwiki\"].reports.templateDir not set"}}
+{"type":4,"data":{"content":"Error: invalid configuration:\n- .wikis[\"invalidwiki\"].site.url not set\n- .wikis[\"invalidwiki\"].auth.username not set\n- .wikis[\"invalidwiki\"].auth.password not set"}}
+-- invalid-config-templatedir.golden --
+HTTP/1.1 200 OK
+Content-Type: application/json
+Date: Thu, 01 Jan 1970 00:00:00 GMT
+Content-Length: 119
+
+{"type":4,"data":{"content":"Error: error initializing report generator: invalid configuration: templateDir not set"}}
 -- no-report-type.golden --
 HTTP/1.1 200 OK
 Content-Type: application/json

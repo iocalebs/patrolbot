@@ -112,16 +112,12 @@ func TestCurrentWiki(t *testing.T) {
 							Username: "",
 							Password: "",
 						},
-						Reports: config.Reports{
-							TemplateDir: "",
-						},
 					},
 				},
 			},
 			wantErr: `invalid configuration:
 - .wikis["zwen"].auth.username not set
-- .wikis["zwen"].auth.password not set
-- .wikis["zwen"].reports.templateDir not set`,
+- .wikis["zwen"].auth.password not set`,
 		},
 	}
 

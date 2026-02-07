@@ -119,10 +119,6 @@ func (c Config) CurrentWiki() (Wiki, error) {
 		errs = append(errs, fmt.Sprintf(".wikis[\"%s\"].auth.password not set", c.Wiki))
 	}
 
-	if wiki.Reports.TemplateDir == "" {
-		errs = append(errs, fmt.Sprintf(".wikis[\"%s\"].reports.templateDir not set", c.Wiki))
-	}
-
 	if len(errs) > 0 {
 		return Wiki{}, errdefs.NewConfigError(errs...)
 	}

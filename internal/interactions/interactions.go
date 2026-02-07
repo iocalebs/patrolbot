@@ -5,6 +5,7 @@ package interactions
 import (
 	"bytes"
 	"context"
+	"errors"
 	"fmt"
 	"log/slog"
 	"net/http"
@@ -13,6 +14,7 @@ import (
 	"github.com/iocalebs/patrolbot/internal/clock"
 	"github.com/iocalebs/patrolbot/internal/config"
 	"github.com/iocalebs/patrolbot/internal/discord"
+	"github.com/iocalebs/patrolbot/internal/errdefs"
 	"github.com/iocalebs/patrolbot/internal/mediawiki"
 	"github.com/iocalebs/patrolbot/internal/report/provider"
 	"github.com/iocalebs/patrolbot/internal/report/reporter"
@@ -45,7 +47,12 @@ func NewHandler(cfg config.Config, logger *slog.Logger) (*Handler, error) {
 		}
 
 		reporter, err := newReporter(cfg, wikiCfg, logger)
-		if err != nil {
+
+		var configerr *errdefs.ConfigError
+		if errors.As(err, &configerr) {
+			invalidConfig[guildID] = err
+			continue
+		} else if err != nil {
 			return nil, err
 		}
 
@@ -139,7 +146,11 @@ func newReporter(cfg config.Config, wiki config.Wiki, logger *slog.Logger) (*rep
 
 	mwclient := mediawiki.NewClient(wiki, &httpClient, logger, cfg.UserAgent)
 	provider := provider.New(logger, clock.Mock(logger), mwclient, wiki)
-	reporter := reporter.New(wiki.Reports, provider)
+
+	reporter, err := reporter.New(wiki.Reports, provider)
+	if err != nil {
+		return nil, fmt.Errorf("error initializing report generator: %w", err)
+	}
 
 	return reporter, nil
 }
