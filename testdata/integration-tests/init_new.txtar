@@ -86,7 +86,7 @@ wikis:
       scriptPath: ""
       articlePath: ""
       rcLinkLimit: 500
-      rcMaxAgeDays: 30
+      rcMaxAgeDays: 90
     auth:
       username: "PhantomCaleb@Patrolbot"
       password: "password"
