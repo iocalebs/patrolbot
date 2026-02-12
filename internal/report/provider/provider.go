@@ -49,7 +49,7 @@ func (p *Provider) Data(ctx context.Context, dataConfig config.ReportData) data.
 	}
 
 	if !p.loggedIn {
-		token, err := p.mwclient.LoginToken(ctx)
+		tokens, err := p.mwclient.Tokens(ctx, "login")
 		if err != nil {
 			p.logError(ctx, "Error obtaining login token from MediaWiki API:Tokens", err)
 			reportData.Error = fmt.Sprintf("Error logging into MediaWiki: %v", err)
@@ -57,7 +57,7 @@ func (p *Provider) Data(ctx context.Context, dataConfig config.ReportData) data.
 			return reportData
 		}
 
-		err = p.mwclient.Login(ctx, token)
+		err = p.mwclient.Login(ctx, tokens.Login)
 		if err != nil {
 			p.logError(ctx, "Error executing login via MediaWiki API:Login", err)
 			reportData.Error = fmt.Sprintf("Error logging into MediaWiki: %v", err)

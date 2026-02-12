@@ -38,7 +38,7 @@ func tests() []actionTest {
 		{
 			name: "LoginToken",
 			requestFunc: func(ctx context.Context, client *mediawiki.Client) error {
-				_, err := client.LoginToken(ctx)
+				_, err := client.Tokens(ctx, "login")
 				return err
 			},
 		},

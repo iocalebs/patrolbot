@@ -5,40 +5,40 @@ import (
 	"net/http"
 )
 
-// Token represents a MediaWiki API token.
-type Token string
+// Tokens represents one or more MediaWiki API tokens.
+type Tokens struct {
+	Login string `json:"logintoken"`
+}
 
 type queryResponseTokens struct {
 	baseResponse
 
 	Query struct {
-		Tokens struct {
-			LoginToken string `json:"logintoken"`
-		} `json:"tokens"`
+		Tokens Tokens `json:"tokens"`
 	}
 }
 
-// LoginToken retrieves a login token from [API:Tokens].
+// Tokens retrieves tokens from [API:Tokens] given a type string.
 //
 // [API:Tokens]: https://www.mediawiki.org/wiki/API:Tokens
-func (c *Client) LoginToken(ctx context.Context) (Token, error) {
+func (c *Client) Tokens(ctx context.Context, tokenType string) (Tokens, error) {
 	req, err := c.newRequest(ctx, http.MethodGet, nil)
 	if err != nil {
-		return "", err
+		return Tokens{}, err
 	}
 
 	q := req.URL.Query()
 	q.Set("action", "query")
 	q.Set("meta", "tokens")
-	q.Set("type", "login")
+	q.Set("type", tokenType)
 	req.URL.RawQuery = q.Encode()
 
 	var res queryResponseTokens
 
 	err = c.do(ctx, req, &res)
 	if err != nil {
-		return "", err
+		return Tokens{}, err
 	}
 
-	return Token(res.Query.Tokens.LoginToken), nil
+	return res.Query.Tokens, nil
 }

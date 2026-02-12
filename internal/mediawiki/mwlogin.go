@@ -29,11 +29,11 @@ type loginResponseBody struct {
 //
 // [bot password]: https://www.mediawiki.org/wiki/Manual:Bot_passwords
 // [API:Login]: https://www.mediawiki.org/wiki/API:Login
-func (c *Client) Login(ctx context.Context, token Token) error {
+func (c *Client) Login(ctx context.Context, token string) error {
 	formBody := url.Values{
 		"lgname":     {c.config.Auth.Username},
 		"lgpassword": {c.config.Auth.Password},
-		"lgtoken":    {string(token)},
+		"lgtoken":    {token},
 	}.Encode()
 
 	req, err := c.newRequest(ctx, http.MethodPost, strings.NewReader(formBody))

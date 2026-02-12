@@ -13,28 +13,30 @@ import (
 	"github.com/iocalebs/patrolbot/internal/mediawiki"
 )
 
-func TestLoginToken(t *testing.T) {
+func TestToken(t *testing.T) {
 	t.Parallel()
 
 	tests := []struct {
-		name         string          // test case name
-		statusCode   int             // HTTP status code to return in mock API response
-		responseBody []byte          // mock API response body
-		wantToken    mediawiki.Token // expected token value
-		wantErr      error           // expected error value, or nil if no error expected
+		name         string           // test case name
+		statusCode   int              // HTTP status code to return in mock API response
+		responseBody []byte           // mock API response body
+		wantTokens   mediawiki.Tokens // expected Tokens value
+		wantErr      error            // expected error value, or nil if no error expected
 	}{
 		{
 			name:         "ValidLoginToken",
 			statusCode:   http.StatusOK,
 			responseBody: readFile(t, "testdata/mwtokens_login.json"),
-			wantToken:    "8af20f35764bee599652a5d5d9e804d469444fb1+\\",
-			wantErr:      nil,
+			wantTokens: mediawiki.Tokens{
+				Login: "8af20f35764bee599652a5d5d9e804d469444fb1+\\",
+			},
+			wantErr: nil,
 		},
 		{
 			name:         "WarningResponse",
 			statusCode:   http.StatusOK,
 			responseBody: readFile(t, "testdata/mwtokens_warnings.json"),
-			wantToken:    "",
+			wantTokens:   mediawiki.Tokens{},
 			wantErr: &mediawiki.APIError{
 				Errors: []string{},
 				Warnings: []string{
@@ -61,7 +63,7 @@ func TestLoginToken(t *testing.T) {
 			cfg.Site.URL = srv.URL
 
 			mwclient := mediawiki.NewClient(cfg, http.DefaultClient, slog.Default(), "")
-			token, err := mwclient.LoginToken(context.Background())
+			tokens, err := mwclient.Tokens(context.Background(), "login")
 
 			if test.wantErr != nil {
 				wantType := reflect.TypeOf(test.wantErr)
@@ -77,8 +79,9 @@ func TestLoginToken(t *testing.T) {
 				t.Fatalf("unexpected error: %v", err)
 			}
 
-			if token != test.wantToken {
-				t.Fatalf("Invalid token value: got %q, want %q", token, test.wantToken)
+			diff := cmp.Diff(test.wantTokens, tokens)
+			if diff != "" {
+				t.Fatalf("Tokens() mismatch (-want +got):\n%s", diff)
 			}
 		})
 	}

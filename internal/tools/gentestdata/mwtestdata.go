@@ -69,7 +69,7 @@ func setupMediaWiki(cfg config.Wiki, overwrite bool) (*mediawiki.Client, *captur
 }
 
 func tokensLogin(ctx context.Context, mwclient *mediawiki.Client, transport *capturingTransport) error {
-	_, err := mwclient.LoginToken(ctx)
+	_, err := mwclient.Tokens(ctx, "login")
 	if err != nil {
 		return err
 	}
@@ -84,7 +84,7 @@ func tokensWarnings(ctx context.Context, mwclient *mediawiki.Client, transport *
 		req.URL.RawQuery = q.Encode()
 	}
 
-	_, err := mwclient.LoginToken(ctx)
+	_, err := mwclient.Tokens(ctx, "login")
 	if err != nil && !errors.As(err, new(*mediawiki.APIError)) {
 		return err
 	}
@@ -102,12 +102,12 @@ func loginFailedWrongToken(ctx context.Context, mwclient *mediawiki.Client, tran
 }
 
 func loginSuccess(ctx context.Context, mwclient *mediawiki.Client, transport *capturingTransport) error {
-	token, err := mwclient.LoginToken(ctx)
+	tokens, err := mwclient.Tokens(ctx, "login")
 	if err != nil {
 		return err
 	}
 
-	err = mwclient.Login(ctx, token)
+	err = mwclient.Login(ctx, tokens.Login)
 	if err != nil {
 		return err
 	}
