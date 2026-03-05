@@ -29,3 +29,8 @@ func NewClient(config config.Wiki, httpClient *http.Client, logger *slog.Logger,
 
 	return client
 }
+
+// Wiki returns the client's configured wiki.
+func (c *Client) Wiki() config.Wiki {
+	return c.config
+}

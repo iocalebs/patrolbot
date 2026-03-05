@@ -7,7 +7,8 @@ import (
 
 // Tokens represents one or more MediaWiki API tokens.
 type Tokens struct {
-	Login string `json:"logintoken"`
+	Login  string `json:"logintoken"`
+	Patrol string `json:"patroltoken"`
 }
 
 type queryResponseTokens struct {

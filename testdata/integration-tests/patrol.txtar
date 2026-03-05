@@ -1,0 +1,22 @@
+exec patrolbot patrol --help
+cmp stdout help.golden
+
+exec patrolbot patrol -h
+cmp stdout help.golden
+
+-- help.golden --
+
+  Iterate over unpatrolled revisions in Special:RecentChanges confirm whether to mark them as patrolled.                
+         
+  USAGE  
+         
+    patrolbot patrol [--flags]  
+         
+  FLAGS  
+         
+    -c --config  Path to config file (default locations: ./config.yaml, $HOME/.patrolbot/config.yaml)
+    -h --help    Help for patrol
+    --latest     Patrol newest revisions first (default: oldest first)
+    -u --user    User to patrol (default: all users)
+    -w --wiki    Target wiki
+
