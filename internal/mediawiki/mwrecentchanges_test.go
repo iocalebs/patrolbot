@@ -151,6 +151,7 @@ func TestRecentChangesQueryParametersAll(t *testing.T) {
 		RCEnd:   time,
 		RCDir:   "newer",
 		RCProp:  []string{"timestamp", "title"},
+		RCUser:  "Dany36",
 		RCShow:  "foo",
 		RCLimit: 10,
 	})
@@ -170,6 +171,7 @@ func TestRecentChangesQueryParametersAll(t *testing.T) {
 		"rcend":         []string{"2026-01-13T00:00:00Z"},
 		"rclimit":       []string{"10"},
 		"rcprop":        []string{"timestamp|title"},
+		"rcuser":        []string{"Dany36"},
 		"rcshow":        []string{"foo"},
 		"rcstart":       []string{"2026-01-13T00:00:00Z"},
 		"uselang":       []string{"user"},

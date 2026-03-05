@@ -23,6 +23,9 @@ type RecentChangesQueryParams struct {
 	// newer: List oldest first - rcstart has to be before rcend.
 	RCDir string
 
+	// Only list changes by this user.
+	RCUser string
+
 	// Which properties to get.
 	RCProp []string
 
@@ -110,6 +113,10 @@ func (p *RecentChangesPaginator) NextPage(ctx context.Context) (RecentChangesPag
 
 	if p.params.RCDir != "" {
 		query.Set("rcdir", p.params.RCDir)
+	}
+
+	if p.params.RCUser != "" {
+		query.Set("rcuser", p.params.RCUser)
 	}
 
 	if len(p.params.RCProp) > 0 {
