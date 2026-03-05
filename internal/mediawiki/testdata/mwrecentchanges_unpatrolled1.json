@@ -1,7 +1,7 @@
 {
   "batchcomplete": true,
   "continue": {
-    "rccontinue": "20260109053420|420464",
+    "rccontinue": "20260206210745|434425",
     "continue": "-||"
   },
   "query": {
@@ -9,62 +9,141 @@
       {
         "type": "edit",
         "ns": 0,
-        "title": "Downloadable Content",
-        "timestamp": "2026-01-13T08:32:02Z"
-      },
-      {
-        "type": "edit",
-        "ns": 0,
-        "title": "Odolwa",
-        "timestamp": "2026-01-12T14:57:21Z"
-      },
-      {
-        "type": "edit",
-        "ns": 0,
-        "title": "Goron",
-        "timestamp": "2026-01-12T07:30:15Z"
-      },
-      {
-        "type": "edit",
-        "ns": 0,
-        "title": "Sanke Carp",
-        "timestamp": "2026-01-12T07:06:37Z"
-      },
-      {
-        "type": "new",
-        "ns": 2,
-        "title": "User:SabineWren165",
-        "timestamp": "2026-01-12T00:52:21Z"
-      },
-      {
-        "type": "edit",
-        "ns": 4,
-        "title": "Zelda Wiki:Image Requests",
-        "timestamp": "2026-01-10T18:03:46Z"
-      },
-      {
-        "type": "edit",
-        "ns": 0,
-        "title": "Gallery:Four Swords Adventures",
-        "timestamp": "2026-01-10T18:01:43Z"
+        "title": "Princess Zelda",
+        "pageid": 970,
+        "revid": 1326635,
+        "old_revid": 1316412,
+        "rcid": 434688,
+        "user": "Chuck"
       },
       {
         "type": "log",
         "ns": 6,
-        "title": "File:FSA Prerelease Logo.png",
-        "timestamp": "2026-01-10T18:01:05Z"
+        "title": "File:BotW Windblight Model.png",
+        "pageid": 196690,
+        "revid": 1326620,
+        "old_revid": 0,
+        "rcid": 434673,
+        "user": "MajoraSpeed",
+        "logid": 944820,
+        "logtype": "upload",
+        "logaction": "upload",
+        "logparams": {
+          "img_sha1": "245denr8fsc0hprxtn4o8q2gqrhmw63",
+          "img_timestamp": "2026-02-07T12:21:06Z"
+        }
+      },
+      {
+        "type": "log",
+        "ns": 6,
+        "title": "File:MM English Logo.png",
+        "pageid": 21701,
+        "revid": 1326472,
+        "old_revid": 0,
+        "rcid": 434523,
+        "userhidden": true,
+        "logid": 944721,
+        "logtype": "upload",
+        "logaction": "overwrite",
+        "logparams": {
+          "img_sha1": "npbbqvqx5e0xfnu0osi168etq4xb8v7",
+          "img_timestamp": "2026-02-06T23:38:14Z"
+        },
+        "suppressed": true
+      },
+      {
+        "type": "log",
+        "ns": 6,
+        "title": "File:OoT3D Navi Artwork.png",
+        "pageid": 41914,
+        "revid": 1326467,
+        "old_revid": 0,
+        "rcid": 434518,
+        "userhidden": true,
+        "logid": 944717,
+        "logtype": "upload",
+        "logaction": "overwrite",
+        "logparams": {
+          "img_sha1": "5401vr6bb3nxsx3glhozge8mtgacr96",
+          "img_timestamp": "2026-02-06T23:36:52Z"
+        },
+        "suppressed": true
+      },
+      {
+        "type": "log",
+        "ns": 6,
+        "title": "File:OoT3D Navi Artwork.png",
+        "pageid": 41914,
+        "revid": 1326466,
+        "old_revid": 0,
+        "rcid": 434517,
+        "userhidden": true,
+        "logid": 944716,
+        "logtype": "upload",
+        "logaction": "overwrite",
+        "logparams": {
+          "img_sha1": "440hoeh8napmc3d3unrqprj5odrrupw",
+          "img_timestamp": "2026-02-06T23:36:27Z"
+        },
+        "suppressed": true
+      },
+      {
+        "type": "log",
+        "ns": 6,
+        "title": "File:ZW Logo White.png",
+        "pageid": 70347,
+        "revid": 1326464,
+        "old_revid": 0,
+        "rcid": 434515,
+        "userhidden": true,
+        "logid": 944714,
+        "logtype": "upload",
+        "logaction": "overwrite",
+        "logparams": {
+          "img_sha1": "5401vr6bb3nxsx3glhozge8mtgacr96",
+          "img_timestamp": "2026-02-06T23:34:40Z"
+        },
+        "suppressed": true
       },
       {
         "type": "edit",
         "ns": 0,
-        "title": "Lord Jabu-Jabu",
-        "timestamp": "2026-01-10T04:27:54Z"
+        "title": "Slippery Falcon (Tarrey Town Branch)",
+        "pageid": 103279,
+        "revid": 1326385,
+        "old_revid": 1303001,
+        "rcid": 434433,
+        "user": "21Kakai"
       },
       {
-        "type": "new",
-        "ns": 6,
-        "title": "File:ZW Thumb Salvager Trousers.png",
-        "timestamp": "2026-01-09T05:35:19Z"
+        "type": "edit",
+        "ns": 0,
+        "title": "Hebra",
+        "pageid": 91732,
+        "revid": 1326384,
+        "old_revid": 1300649,
+        "rcid": 434432,
+        "user": "21Kakai"
+      },
+      {
+        "type": "edit",
+        "ns": 0,
+        "title": "Necluda",
+        "pageid": 116456,
+        "revid": 1326381,
+        "old_revid": 1300336,
+        "rcid": 434429,
+        "user": "21Kakai"
+      },
+      {
+        "type": "edit",
+        "ns": 0,
+        "title": "Gerudo (Region)",
+        "pageid": 81844,
+        "revid": 1326380,
+        "old_revid": 1300022,
+        "rcid": 434428,
+        "user": "21Kakai"
       }
     ]
   }

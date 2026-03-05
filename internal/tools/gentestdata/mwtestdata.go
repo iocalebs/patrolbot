@@ -120,7 +120,7 @@ func recentChanges(ctx context.Context, mwclient *mediawiki.Client, transport *c
 		RCStart: time.Now(),
 		RCEnd:   time.Now().Add(-7 * 24 * time.Hour),
 		RCShow:  "!patrolled",
-		RCProp:  []string{"timestamp", "title"},
+		RCProp:  []string{"ids", "loginfo", "title", "user"},
 	}
 
 	paginator := mediawiki.NewRecentChangesPaginator(mwclient, params)

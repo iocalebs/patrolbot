@@ -22,6 +22,9 @@ linters:
           - pkg: internal/discord
             rules:
               json: snake
+          - pkg: internal/mediawiki
+            rules:
+              json: snake
 
     varnamelen:
       ignore-decls:

@@ -39,9 +39,15 @@ type RecentChangesQueryParams struct {
 
 // RecentChange represents an entry in [Special:RecentChanges].
 //
-// [Special:RecentChangs]: https://www.mediawiki.org/wiki/Help:Recent_changes
+// [Special:RecentChanges]: https://www.mediawiki.org/wiki/Help:Recent_changes
 type RecentChange struct {
-	Timestamp time.Time `json:"timestamp"`
+	LogAction     string    `json:"logaction"`
+	LogType       string    `json:"logtype"`
+	OldRevisionID int       `json:"old_revid"`
+	RevisionID    int       `json:"revid"`
+	Timestamp     time.Time `json:"timestamp"`
+	Title         string    `json:"title"`
+	User          string    `json:"user"`
 }
 
 type recentChangesQueryResponse struct {
