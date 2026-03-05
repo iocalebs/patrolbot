@@ -20,8 +20,8 @@ export CLOUDSDK_CORE_PROJECT=patrolbot-485721
 .PHONY: register
 .PHONY: secrets
 .PHONY: serve
-.PHONY: short
-.PHONY: test 
+.PHONY: test
+.PHONY: testall
 .PHONY: update
 .PHONY: updateall
 
@@ -107,10 +107,10 @@ secrets:
 serve:
 	air serve
 
-short: build
+test: build
 	go test ./... -short
 
-test: build
+testall: build
 	go test ./...
 
 update: build
