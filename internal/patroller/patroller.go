@@ -111,6 +111,20 @@ func (p *Patroller) Err() error {
 	return p.err
 }
 
+// Diff returns a unified diff of the revision the patroller is currently on.
+func (p *Patroller) Diff(ctx context.Context) (string, error) {
+	diff, err := p.mwclient.Compare(ctx, mediawiki.CompareQueryParams{
+		DiffType: mediawiki.DiffTypeUnified,
+		FromRev:  p.current.OldRevisionID,
+		ToRev:    p.current.RevisionID,
+	})
+	if err != nil {
+		return "", fmt.Errorf("error fetching diff: %w", err)
+	}
+
+	return diff, nil
+}
+
 // Timestamp returns the timestamp of the revision the patroller is currently on.
 func (p *Patroller) Timestamp() time.Time {
 	return p.current.Timestamp

@@ -35,6 +35,7 @@ linters:
         - u *url.URL
         - r *http.Request
         - re *regexp.Regexp
+        - sb strings.Builder
         - w http.ResponseWriter
         - w io.Writer
 

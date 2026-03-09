@@ -96,14 +96,19 @@ func newPatroller(cfg config.Config, opts patroller.Opts) (*patroller.Patroller,
 
 func theme() Theme {
 	var (
+		cyan    = lipgloss.Color("6")
+		green   = lipgloss.Color("2")
 		indigo  = lipgloss.AdaptiveColor{Light: "#5A56E0", Dark: "#7571F9"}
-		magenta = lipgloss.Color("#FF55FF")
-		red     = lipgloss.AdaptiveColor{Light: "#FF4672", Dark: "#ED567A"}
+		magenta = lipgloss.Color("5")
+		red     = lipgloss.Color("1")
 	)
 
 	return Theme{
-		prompt: lipgloss.NewStyle().Foreground(indigo).Bold(true),
-		title:  lipgloss.NewStyle().Foreground(magenta),
-		error:  lipgloss.NewStyle().Foreground(red).Bold(true),
+		error:       lipgloss.NewStyle().Foreground(red).Bold(true),
+		hunk:        lipgloss.NewStyle().Foreground(cyan),
+		lineAdded:   lipgloss.NewStyle().Foreground(green),
+		lineRemoved: lipgloss.NewStyle().Foreground(red),
+		prompt:      lipgloss.NewStyle().Foreground(indigo).Bold(true),
+		title:       lipgloss.NewStyle().Foreground(magenta),
 	}
 }

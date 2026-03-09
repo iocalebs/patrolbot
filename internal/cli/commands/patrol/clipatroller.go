@@ -23,9 +23,12 @@ type CLIPatroller struct {
 
 // Theme defines the styles for the CLI output text.
 type Theme struct {
-	prompt lipgloss.Style
-	title  lipgloss.Style
-	error  lipgloss.Style
+	error       lipgloss.Style
+	hunk        lipgloss.Style
+	lineAdded   lipgloss.Style
+	lineRemoved lipgloss.Style
+	prompt      lipgloss.Style
+	title       lipgloss.Style
 }
 
 func newCobraPatroller(patroller *patroller.Patroller, cmd *cobra.Command, theme Theme) *CLIPatroller {
@@ -53,6 +56,13 @@ func (p *CLIPatroller) run() error {
 		//nolint:gosmopolitan
 		// This command runs on a user's local machine -- we want to display timestamps in their local timezone.
 		cmd.Println(patroller.Timestamp().Local().Format(time.RFC1123))
+
+		diff, err := p.diff()
+		if err != nil {
+			p.printErr("Error generating diff: " + err.Error())
+		} else {
+			cmd.Println("\n" + diff + "\n")
+		}
 
 		quit, err := p.prompt(scanner)
 		if err != nil {
@@ -89,7 +99,6 @@ func (p *CLIPatroller) prompt(scanner *bufio.Scanner) (bool, error) {
 			return false, nil
 		case "n", "":
 			return false, nil
-			// no-op
 		case "o":
 			p.open()
 		case "q":
@@ -98,6 +107,36 @@ func (p *CLIPatroller) prompt(scanner *bufio.Scanner) (bool, error) {
 			p.printErr("\nUnknown command '" + input + "'")
 		}
 	}
+}
+
+func (p *CLIPatroller) diff() (string, error) {
+	diff, err := p.patroller.Diff(p.cmd.Context())
+	if err != nil {
+		return "", fmt.Errorf("error generating revision diff: %w", err)
+	}
+
+	diff = strings.Replace(diff, `<tr><td colspan="4"><pre>`, "", 1)
+	diff = strings.Replace(diff, "\n</pre></td></tr>", "", 1)
+	diff = strings.ReplaceAll(diff, "\n \n ", "\n\n")
+
+	var sb strings.Builder
+
+	for line := range strings.SplitSeq(diff, "\n") {
+		switch {
+		case strings.HasPrefix(line, "@@"):
+			sb.WriteString(p.theme.hunk.Render(line))
+		case strings.HasPrefix(line, "+"):
+			sb.WriteString(p.theme.lineAdded.Render(line))
+		case strings.HasPrefix(line, "-"):
+			sb.WriteString(p.theme.lineRemoved.Render(line))
+		default:
+			sb.WriteString(line)
+		}
+
+		sb.WriteString("\n")
+	}
+
+	return sb.String(), nil
 }
 
 func (p *CLIPatroller) markPatrolled() {
