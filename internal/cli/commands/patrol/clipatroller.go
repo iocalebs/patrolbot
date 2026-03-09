@@ -140,7 +140,12 @@ func (p *CLIPatroller) diff() (string, error) {
 }
 
 func (p *CLIPatroller) markPatrolled() {
-	p.cmd.Println("TODO - mark patrolled")
+	err := p.patroller.MarkPatrolled(p.cmd.Context())
+	if err != nil {
+		p.printErr("Error marking revision as patrolled: " + err.Error())
+	} else {
+		p.cmd.Printf("Revision %d by %s marked as patrolled.\n", p.patroller.RevisionID(), p.patroller.User())
+	}
 }
 
 func (p *CLIPatroller) open() {

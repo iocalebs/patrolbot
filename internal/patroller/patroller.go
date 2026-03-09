@@ -64,23 +64,10 @@ func New(mwclient *mediawiki.Client, opts Opts) *Patroller {
 // After Next returns false, the [Patroller.Err] method will return the first error that occurred.
 func (p *Patroller) Next(ctx context.Context) bool {
 	if p.patrolToken == "" {
-		tokens, err := p.mwclient.Tokens(ctx, "login|patrol")
-		if err != nil {
-			err = fmt.Errorf("MediaWiki login error: %w", err)
-			p.setErr(err)
-
+		p.patrolToken = p.login(ctx)
+		if p.err != nil {
 			return false
 		}
-
-		err = p.mwclient.Login(ctx, tokens.Login)
-		if err != nil {
-			err = fmt.Errorf("MediaWiki login error: %w", err)
-			p.setErr(err)
-
-			return false
-		}
-
-		p.patrolToken = tokens.Patrol
 	}
 
 	if !p.rcPaginator.HasMorePages() {
@@ -125,6 +112,23 @@ func (p *Patroller) Diff(ctx context.Context) (string, error) {
 	return diff, nil
 }
 
+// MarkPatrolled marks the revision the patroller is currently on as patrolled.
+func (p *Patroller) MarkPatrolled(ctx context.Context) error {
+	err := p.mwclient.Patrol(ctx, p.patrolToken, mediawiki.PatrolParams{
+		RevisionID: p.current.RevisionID,
+	})
+	if err != nil {
+		return fmt.Errorf("error marking revision as patrolled: %w", err)
+	}
+
+	return nil
+}
+
+// RevisionID returns the revision ID of the revision the patroller is currently on.
+func (p *Patroller) RevisionID() int {
+	return p.current.RevisionID
+}
+
 // Timestamp returns the timestamp of the revision the patroller is currently on.
 func (p *Patroller) Timestamp() time.Time {
 	return p.current.Timestamp
@@ -157,6 +161,37 @@ func (p *Patroller) URL() (string, error) {
 // User returns the user of the revision the patroller is currently on.
 func (p *Patroller) User() string {
 	return p.current.User
+}
+
+func (p *Patroller) login(ctx context.Context) string {
+	// Step 1: Get login token
+	tokens, err := p.mwclient.Tokens(ctx, "login")
+	if err != nil {
+		err = fmt.Errorf("MediaWiki login error: %w", err)
+		p.setErr(err)
+
+		return ""
+	}
+
+	// Step 2: Log in with the login token
+	err = p.mwclient.Login(ctx, tokens.Login)
+	if err != nil {
+		err = fmt.Errorf("MediaWiki login error: %w", err)
+		p.setErr(err)
+
+		return ""
+	}
+
+	// Step 3: Get patrol token after login
+	tokens, err = p.mwclient.Tokens(ctx, "patrol")
+	if err != nil {
+		err = fmt.Errorf("failed to retrieve patrol token: %w", err)
+		p.setErr(err)
+
+		return ""
+	}
+
+	return tokens.Patrol
 }
 
 func (p *Patroller) setErr(err error) {
