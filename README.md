@@ -2,22 +2,25 @@
 
 [![codecov](https://codecov.io/gh/iocalebs/patrolbot/graph/badge.svg?token=2T23W9WZUL)](https://codecov.io/gh/iocalebs/patrolbot)
 
-PatrolBot is a Discord bot that generates reports regarding a MediaWiki site's [patrol logs](https://en.wikipedia.org/wiki/Wikipedia:Recent_changes_patrol).
-
-It was initially built for [Zelda Wiki](http://zeldawiki.wiki) but is designed to be usable by any wiki in any language.
+PatrolBot is a Discord bot and command-line tool that assists with [patrolling](https://www.mediawiki.org/wiki/Help:Patrolled_edits) MediaWiki sites. It was initially built for [Zelda Wiki](http://zeldawiki.wiki), but it is designed to be usable by any wiki in any language.
 
 ![Screenshot of a PatrolBot report posted in a Discord channel](.github/images/report.png)
 
-## Discord Commands
+## Discord Bot
+
+The PatrolBot Discord bot can generate reports on the state of a wiki's patrol backlog. These reports can be generated [periodically](.github/workflows/weekly.yaml) or on-demand via the `/report` command.
 
 | Command | Description |
 | ------- | ----------- |
 | `/report <type>` | Generate a report using data from one or more MediaWiki [Action API](https://www.mediawiki.org/wiki/API:Action_API) queries. |
 
+## CLI
 
-## PatrolBot CLI
+The PatrolBot CLI (command line interface) helps patrollers work through the wiki's backlog via keyboard interface. It is particularly well suited to patrolling large quantities of smaller edits (i.e. maintenance tasks) in rapid succession. It can also be helpful for loading the oldest revisions in the backlog, which can sometimes be tricky to access from Special:RecentChanges.
 
-To install and run PatrolBot locally:
+### Getting started
+
+To install and run the PatrolBot CLI:
 
 1. [Install Go](https://go.dev/doc/install)
 
@@ -27,25 +30,23 @@ To install and run PatrolBot locally:
 go install github.com/iocalebs/patrolbot@latest
 ```
 
-3. Initialize PatrolBot templates and configuration:
+3. Initialize PatrolBot configuration:
 
 ```sh
 patrolbot init
 ```
 
-4. Generate a report:
+4. Start patrolling:
 
 ```sh
-patrolbot report expiring
+patrolbot patrol
 ```
 
 Run `patrolbot --help` for more information on available CLI commands.
 
 ## Configuration
 
-The bot server uses the [config.yaml](./config.yaml) and [templates](./templates/) in the project root to determine what report types are available, how they're worded, and what API queries they use.
-
-When running PatrolBot locally, you can customize reports by editing the `config.yaml` file and/or templates in `$HOME/.patrolbot` created by `patrolbot init`.
+If you wish to customize PatrolBot for your own wiki's purposes, note that the bot uses [config.yaml](./config.yaml) and [templates](./templates/) to determine what reports are available, how they're worded, and what API queries they use.
 
 - See [`Config`](https://pkg.go.dev/github.com/iocalebs/patrolbot/internal/config#Config) type documentation details on supported configuration properties
 - See [`ReportData`](https://pkg.go.dev/github.com/iocalebs/patrolbot/internal/report/data#ReportData) type documentation for details on the data available in report templates.
