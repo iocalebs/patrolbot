@@ -56,7 +56,7 @@ func promptOverwrite(ctx context.Context, path string) (bool, error) {
 	return true, nil
 }
 
-func promptConfig(ctx context.Context) (formData, error) { //nolint:funlen
+func promptConfig(ctx context.Context) (formData, error) {
 	var (
 		data formData
 		url  url.URL

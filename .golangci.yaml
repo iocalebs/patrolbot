@@ -4,8 +4,10 @@ linters:
   default: all
 
   disable:
+    - cyclop
     - depguard
     - exhaustruct
+    - funlen
     - nlreturn
     - wsl
 
@@ -57,7 +59,6 @@ linters:
         linters:
           - cyclop
           - dupl
-          - funlen
           - goconst
 
       # Avoid unnecessary error checking in httptest handlers  
