@@ -4,7 +4,8 @@
 
 PatrolBot is a Discord bot and command-line tool that assists with [patrolling](https://www.mediawiki.org/wiki/Help:Patrolled_edits) MediaWiki sites. It was initially built for [Zelda Wiki](http://zeldawiki.wiki), but it is designed to be usable by any wiki in any language.
 
-![Screenshot of a PatrolBot report posted in a Discord channel](.github/images/report.png)
+![A PatrolBot report posted in a Discord channel](.github/images/report.png)
+![Using the PatrolBot CLI to patrol edits](.github/images/clipatrol.png)
 
 ## Discord Bot
 
@@ -12,7 +13,7 @@ The PatrolBot Discord bot can generate reports on the state of a wiki's patrol b
 
 | Command | Description |
 | ------- | ----------- |
-| `/report <type>` | Generate a report using data from one or more MediaWiki [Action API](https://www.mediawiki.org/wiki/API:Action_API) queries. |
+| `/report <type>` | Generate a report using data from one or more MediaWiki [Action API](https://www.mediawiki.org/wiki/API:Action_API) queries. |z
 
 ## CLI
 
