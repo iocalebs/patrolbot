@@ -31,7 +31,7 @@ type Theme struct {
 	title       lipgloss.Style
 }
 
-func newCobraPatroller(patroller *patroller.Patroller, cmd *cobra.Command, theme Theme) *CLIPatroller {
+func newCLIPatroller(patroller *patroller.Patroller, cmd *cobra.Command, theme Theme) *CLIPatroller {
 	return &CLIPatroller{
 		cmd:       cmd,
 		patroller: patroller,

@@ -23,6 +23,10 @@ type RecentChangesQueryParams struct {
 	// newer: List oldest first - rcstart has to be before rcend.
 	RCDir string
 
+	// Filter changes to only these namespaces.
+	// Uses namespace numbers, not names.
+	RCNamespace []int
+
 	// Only list changes by this user.
 	RCUser string
 
@@ -119,6 +123,15 @@ func (p *RecentChangesPaginator) NextPage(ctx context.Context) (RecentChangesPag
 
 	if p.params.RCDir != "" {
 		query.Set("rcdir", p.params.RCDir)
+	}
+
+	if len(p.params.RCNamespace) > 0 {
+		namespaces := make([]string, len(p.params.RCNamespace))
+		for i, ns := range p.params.RCNamespace {
+			namespaces[i] = strconv.Itoa(ns)
+		}
+
+		query.Set("rcnamespace", strings.Join(namespaces, "|"))
 	}
 
 	if p.params.RCUser != "" {

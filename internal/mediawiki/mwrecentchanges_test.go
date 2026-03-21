@@ -147,13 +147,14 @@ func TestRecentChangesQueryParametersAll(t *testing.T) {
 	time := time.Date(2026, 01, 13, 0, 0, 0, 0, time.UTC)
 	mwclient := mediawiki.NewClient(cfg, http.DefaultClient, slog.Default(), "")
 	paginator := mediawiki.NewRecentChangesPaginator(mwclient, mediawiki.RecentChangesQueryParams{
-		RCStart: time,
-		RCEnd:   time,
-		RCDir:   "newer",
-		RCProp:  []string{"timestamp", "title"},
-		RCUser:  "Dany36",
-		RCShow:  "foo",
-		RCLimit: 10,
+		RCStart:     time,
+		RCEnd:       time,
+		RCDir:       "newer",
+		RCProp:      []string{"timestamp", "title"},
+		RCNamespace: []int{0, 1},
+		RCUser:      "Dany36",
+		RCShow:      "foo",
+		RCLimit:     10,
 	})
 
 	_, err := paginator.NextPage(t.Context())
@@ -170,6 +171,7 @@ func TestRecentChangesQueryParametersAll(t *testing.T) {
 		"rcdir":         []string{"newer"},
 		"rcend":         []string{"2026-01-13T00:00:00Z"},
 		"rclimit":       []string{"10"},
+		"rcnamespace":   []string{"0|1"},
 		"rcprop":        []string{"timestamp|title"},
 		"rcuser":        []string{"Dany36"},
 		"rcshow":        []string{"foo"},

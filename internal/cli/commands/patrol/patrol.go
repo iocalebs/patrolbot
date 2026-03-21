@@ -31,24 +31,28 @@ func NewCommand() *cobra.Command {
 				return fmt.Errorf("error parsing flags: %w", err)
 			}
 
+			namespace, err := cmd.Flags().GetString("namespace")
+			if err != nil {
+				return fmt.Errorf("error parsing flags: %w", err)
+			}
+
 			user, err := cmd.Flags().GetString("user")
 			if err != nil {
 				return fmt.Errorf("error parsing flags: %w", err)
 			}
 
 			opts := patroller.Opts{
-				Latest: latest,
-				User:   user,
+				Latest:    latest,
+				Namespace: namespace,
+				User:      user,
 			}
 
-			patroller, err := newPatroller(cfg, opts)
+			patroller, err := newPatroller(cmd, cfg, opts)
 			if err != nil {
 				return err
 			}
 
-			cobraPatroller := newCobraPatroller(patroller, cmd, theme())
-
-			return cobraPatroller.run()
+			return patroller.run()
 		},
 	}
 
@@ -57,6 +61,11 @@ func NewCommand() *cobra.Command {
 		"latest",
 		false,
 		"Patrol newest revisions first (default: oldest first)",
+	)
+	cmd.Flags().String(
+		"namespace",
+		"",
+		"Namespace to patrol (default: all namespaces)",
 	)
 	cmd.Flags().StringP(
 		"user",
@@ -74,7 +83,7 @@ func NewCommand() *cobra.Command {
 	return cmd
 }
 
-func newPatroller(cfg config.Config, opts patroller.Opts) (*patroller.Patroller, error) {
+func newPatroller(cmd *cobra.Command, cfg config.Config, opts patroller.Opts) (*CLIPatroller, error) {
 	wiki, err := cfg.CurrentWiki()
 	if err != nil {
 		return nil, fmt.Errorf("invalid wiki configuration: %w", err)
@@ -91,7 +100,14 @@ func newPatroller(cfg config.Config, opts patroller.Opts) (*patroller.Patroller,
 	}
 	mwclient := mediawiki.NewClient(wiki, httpClient, slog.Default(), cfg.UserAgent)
 
-	return patroller.New(mwclient, opts), nil
+	patroller, err := patroller.New(mwclient, opts)
+	if err != nil {
+		return nil, fmt.Errorf("error initializing patroller: %w", err)
+	}
+
+	cliPatroller := newCLIPatroller(patroller, cmd, theme())
+
+	return cliPatroller, nil
 }
 
 func theme() Theme {

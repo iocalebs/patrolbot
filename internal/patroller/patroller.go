@@ -30,12 +30,15 @@ type Opts struct {
 	// If false, it will start with the oldest unpatrolled revision and work forwards.
 	Latest bool
 
+	// If non-empty, the patroller will only return revisions in this namespace.
+	Namespace string
+
 	// If non-empty, the patroller will only return revisions made by this user.
 	User string
 }
 
 // New returns a new [Patroller].
-func New(mwclient *mediawiki.Client, opts Opts) *Patroller {
+func New(mwclient *mediawiki.Client, opts Opts) (*Patroller, error) {
 	params := mediawiki.RecentChangesQueryParams{
 		RCLimit: 1,
 		RCProp:  []string{"ids", "loginfo", "timestamp", "title", "user"},
@@ -47,6 +50,15 @@ func New(mwclient *mediawiki.Client, opts Opts) *Patroller {
 		params.RCDir = "newer"
 	}
 
+	if opts.Namespace != "" {
+		ns, err := strconv.Atoi(opts.Namespace)
+		if err != nil {
+			return nil, fmt.Errorf("invalid namespace number: %w", err)
+		}
+
+		params.RCNamespace = []int{ns}
+	}
+
 	if opts.User != "" {
 		params.RCUser = opts.User
 	}
@@ -56,7 +68,7 @@ func New(mwclient *mediawiki.Client, opts Opts) *Patroller {
 	return &Patroller{
 		mwclient:    mwclient,
 		rcPaginator: paginator,
-	}
+	}, nil
 }
 
 // Next advances to the next unpatrolled revision in the backlog.

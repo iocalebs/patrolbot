@@ -17,6 +17,7 @@ cmp stdout help.golden
     -c --config  Path to config file (default locations: ./config.yaml, $HOME/.patrolbot/config.yaml)
     -h --help    Help for patrol
     --latest     Patrol newest revisions first (default: oldest first)
+    --namespace  Namespace to patrol (default: all namespaces)
     -u --user    User to patrol (default: all users)
     -w --wiki    Target wiki
 
