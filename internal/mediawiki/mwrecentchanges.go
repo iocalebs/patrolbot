@@ -51,6 +51,7 @@ type RecentChange struct {
 	RevisionID    int       `json:"revid"`
 	Timestamp     time.Time `json:"timestamp"`
 	Title         string    `json:"title"`
+	Type          string    `json:"type"`
 	User          string    `json:"user"`
 }
 

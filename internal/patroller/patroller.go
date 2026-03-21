@@ -124,6 +124,12 @@ func (p *Patroller) Diff(ctx context.Context) (string, error) {
 	return diff, nil
 }
 
+// LogAction returns the string "upload" if the current revision is a new file upload, "overwrite" if it's an upload
+// on an existing file, or an empty string if it's a regular edit.
+func (p *Patroller) LogAction() string {
+	return p.current.LogAction
+}
+
 // MarkPatrolled marks the revision the patroller is currently on as patrolled.
 func (p *Patroller) MarkPatrolled(ctx context.Context) error {
 	err := p.mwclient.Patrol(ctx, p.patrolToken, mediawiki.PatrolParams{
@@ -139,6 +145,11 @@ func (p *Patroller) MarkPatrolled(ctx context.Context) error {
 // RevisionID returns the revision ID of the revision the patroller is currently on.
 func (p *Patroller) RevisionID() int {
 	return p.current.RevisionID
+}
+
+// RevisionType returns the type of the revision the patroller is currently on (e.g. "edit", "new", "log").
+func (p *Patroller) RevisionType() string {
+	return p.current.Type
 }
 
 // Timestamp returns the timestamp of the revision the patroller is currently on.

@@ -52,6 +52,17 @@ func (p *CLIPatroller) run() error {
 		}
 
 		cmd.Println("\n>>> " + p.theme.title.Render(patroller.Title()) + " <<<")
+
+		switch {
+		case patroller.RevisionType() == "new":
+			cmd.Println("New page")
+		case patroller.LogAction() == "upload":
+			cmd.Println("New file version")
+		case patroller.LogAction() == "overwrite":
+			cmd.Println("New file")
+		default:
+			cmd.Println("Edit")
+		}
 		cmd.Println("User:" + patroller.User())
 		//nolint:gosmopolitan
 		// This command runs on a user's local machine -- we want to display timestamps in their local timezone.
