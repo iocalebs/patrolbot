@@ -3,6 +3,7 @@ package patrol
 import (
 	"bufio"
 	"fmt"
+	"html"
 	"os"
 	"os/exec"
 	"runtime"
@@ -134,6 +135,7 @@ func (p *CLIPatroller) diff() (string, error) {
 	diff = strings.Replace(diff, `<tr><td colspan="4"><pre>`, "", 1)
 	diff = strings.Replace(diff, "\n</pre></td></tr>", "", 1)
 	diff = strings.ReplaceAll(diff, "\n \n ", "\n\n")
+	diff = html.UnescapeString(diff)
 
 	var sb strings.Builder
 
