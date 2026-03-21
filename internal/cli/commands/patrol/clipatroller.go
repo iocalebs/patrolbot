@@ -23,6 +23,7 @@ type CLIPatroller struct {
 
 // Theme defines the styles for the CLI output text.
 type Theme struct {
+	comment     lipgloss.Style
 	error       lipgloss.Style
 	hunk        lipgloss.Style
 	lineAdded   lipgloss.Style
@@ -57,22 +58,26 @@ func (p *CLIPatroller) run() error {
 		case patroller.RevisionType() == "new":
 			cmd.Println("New page")
 		case patroller.LogAction() == "upload":
-			cmd.Println("New file version")
-		case patroller.LogAction() == "overwrite":
 			cmd.Println("New file")
+		case patroller.LogAction() == "overwrite":
+			cmd.Println("New file version")
 		default:
 			cmd.Println("Edit")
 		}
+
 		cmd.Println("User:" + patroller.User())
 		//nolint:gosmopolitan
 		// This command runs on a user's local machine -- we want to display timestamps in their local timezone.
 		cmd.Println(patroller.Timestamp().Local().Format(time.RFC1123))
+		cmd.Println("Comment: " + p.theme.comment.Render(patroller.Comment()))
 
-		diff, err := p.diff()
-		if err != nil {
-			p.printErr("Error generating diff: " + err.Error())
-		} else {
-			cmd.Println("\n" + diff + "\n")
+		if patroller.RevisionType() != "log" {
+			diff, err := p.diff()
+			if err != nil {
+				p.printErr("Error generating diff: " + err.Error())
+			} else {
+				cmd.Println("\n" + diff + "\n")
+			}
 		}
 
 		quit, err := p.prompt(scanner)

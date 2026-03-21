@@ -45,6 +45,7 @@ type RecentChangesQueryParams struct {
 //
 // [Special:RecentChanges]: https://www.mediawiki.org/wiki/Help:Recent_changes
 type RecentChange struct {
+	Comment       string    `json:"comment"`
 	LogAction     string    `json:"logaction"`
 	LogType       string    `json:"logtype"`
 	OldRevisionID int       `json:"old_revid"`

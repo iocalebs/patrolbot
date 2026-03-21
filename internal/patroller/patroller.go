@@ -8,6 +8,7 @@ import (
 	"io"
 	"net/url"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/iocalebs/patrolbot/internal/mediawiki"
@@ -41,7 +42,7 @@ type Opts struct {
 func New(mwclient *mediawiki.Client, opts Opts) (*Patroller, error) {
 	params := mediawiki.RecentChangesQueryParams{
 		RCLimit: 1,
-		RCProp:  []string{"ids", "loginfo", "timestamp", "title", "user"},
+		RCProp:  []string{"comment", "ids", "loginfo", "timestamp", "title", "user"},
 		RCShow:  "!patrolled",
 	}
 	if opts.Latest {
@@ -110,8 +111,24 @@ func (p *Patroller) Err() error {
 	return p.err
 }
 
+// Comment returns the comment of the revision the patroller is currently on.
+func (p *Patroller) Comment() string {
+	return p.current.Comment
+}
+
 // Diff returns a unified diff of the revision the patroller is currently on.
 func (p *Patroller) Diff(ctx context.Context) (string, error) {
+	if p.current.Type == "new" {
+		text, err := p.mwclient.RevisionText(ctx, mediawiki.RevisionQueryParams{
+			RevisionID: p.current.RevisionID,
+		})
+		if err != nil {
+			return "", fmt.Errorf("error fetching new page revision text: %w", err)
+		}
+
+		return newPageDiff(text), nil
+	}
+
 	diff, err := p.mwclient.Compare(ctx, mediawiki.CompareQueryParams{
 		DiffType: mediawiki.DiffTypeUnified,
 		FromRev:  p.current.OldRevisionID,
@@ -122,6 +139,25 @@ func (p *Patroller) Diff(ctx context.Context) (string, error) {
 	}
 
 	return diff, nil
+}
+
+func newPageDiff(text string) string {
+	lines := strings.Split(text, "\n")
+
+	var sb strings.Builder
+
+	sb.WriteString(fmt.Sprintf("@@ -0,0 +1,%d @@\n", len(lines)))
+
+	for i, line := range lines {
+		sb.WriteString("+")
+		sb.WriteString(line)
+
+		if i != len(lines)-1 {
+			sb.WriteString("\n")
+		}
+	}
+
+	return sb.String()
 }
 
 // LogAction returns the string "upload" if the current revision is a new file upload, "overwrite" if it's an upload

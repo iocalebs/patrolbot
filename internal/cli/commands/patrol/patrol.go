@@ -120,6 +120,7 @@ func theme() Theme {
 	)
 
 	return Theme{
+		comment:     lipgloss.NewStyle().Italic(true),
 		error:       lipgloss.NewStyle().Foreground(red).Bold(true),
 		hunk:        lipgloss.NewStyle().Foreground(cyan),
 		lineAdded:   lipgloss.NewStyle().Foreground(green),
