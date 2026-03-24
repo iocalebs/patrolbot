@@ -20,4 +20,4 @@ runs:
     - name: Install VHS
       shell: bash
       run: |
-        go install github.com/charmbracelet/vhs@latest
+        go install github.com/charmbracelet/vhs@v0.10
