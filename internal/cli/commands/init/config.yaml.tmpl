@@ -1,9 +1,9 @@
 # For more information on how PatrolBot sources config, refer to "patrolbot config --help"
 discord:
   api: https://discord.com/api/v10
-  appID: "{{ .Discord.AppID }}"
-  publicKey: "{{ .Discord.PublicKey }}"
-  token: "{{ .Discord.Token }}"
+  appID: ""
+  publicKey: ""
+  token: ""
 log:
   level: INFO
 userAgent: "PatrolBot/1.0 (+https://github.com/iocalebs/patrolbot)"
@@ -24,11 +24,11 @@ wikis:
       timeout: "10s"
     reports:
       templateDir: "./templates"
-      discordServerID: "{{ .DiscordServerID }}"
+      discordServerID: ""
       types:
         expiring:
           template: "expiring.tmpl"
-          discordChannelID: "{{ .DiscordChannelID }}"
+          discordChannelID: ""
           description: "Counts the number of edits expiring in the next few weeks"
           data:
             patrolExpiring:

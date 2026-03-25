@@ -75,20 +75,6 @@ Show
 Type "phantomcalebs@example.test"
 Enter
 
-# Discord bot config
-Type "appID"
-Enter
-Type "public key"
-Enter
-Type "token"
-Enter
-
-# Discord server and channel ID
-Type "server1234"
-Enter
-Type "channel1234"
-Enter
-
 -- expiring.golden.tmpl --
 {{ if .Error }}
 ```
@@ -114,9 +100,9 @@ Link to patrol backlog: <{{ .Config.Site.URL }}{{ .Config.Site.ArticlePath }}/Sp
 # For more information on how PatrolBot sources config, refer to "patrolbot config --help"
 discord:
   api: https://discord.com/api/v10
-  appID: "appID"
-  publicKey: "public key"
-  token: "token"
+  appID: ""
+  publicKey: ""
+  token: ""
 log:
   level: INFO
 userAgent: "PatrolBot/1.0 (+https://github.com/iocalebs/patrolbot)"
@@ -137,11 +123,11 @@ wikis:
       timeout: "10s"
     reports:
       templateDir: "./templates"
-      discordServerID: "server1234"
+      discordServerID: ""
       types:
         expiring:
           template: "expiring.tmpl"
-          discordChannelID: "channel1234"
+          discordChannelID: ""
           description: "Counts the number of edits expiring in the next few weeks"
           data:
             patrolExpiring:
@@ -202,14 +188,14 @@ wikis:
   You can confirm the wiki's article path by adding {{ARTICLEPATH}} to a sandbox page. Omit the /$1 at the end.
   > /wiki
 
-
-
-
-
-
-
-
 enter next
+
+
+
+
+
+
+
 
 
 
@@ -237,14 +223,14 @@ enter next
   You can confirm the wiki's article path by adding {{ARTICLEPATH}} to a sandbox page. Omit the /$1 at the end.
   > /wiki
 
-
-
-
-
-
-
-
  * Invalid input: URL cannot be empty
+
+
+
+
+
+
+
 
 
 
@@ -271,13 +257,6 @@ enter next
   Article path
   You can confirm the wiki's article path by adding {{ARTICLEPATH}} to a sandbox page. Omit the /$1 at the end.
   > /wiki
-
-
-
-
-
-
-
 
 shift+tab back • enter next
 
@@ -290,6 +269,13 @@ shift+tab back • enter next
 
 
 
+
+
+
+
+
+
+
 ────────────────────────────────────────────────────────────────────────────────
 > patrolbot init
   Wiki URL
@@ -307,14 +293,14 @@ shift+tab back • enter next
   You can confirm the wiki's article path by adding {{ARTICLEPATH}} to a sandbox page. Omit the /$1 at the end.
   > /wiki
 
-
-
-
-
-
-
-
  * Invalid input: Wiki name cannot be empty
+
+
+
+
+
+
+
 
 
 
@@ -342,14 +328,14 @@ shift+tab back • enter next
   You can confirm the wiki's article path by adding {{ARTICLEPATH}} to a sandbox page. Omit the /$1 at the end.
   > /wiki
 
-
-
-
-
-
-
-
 shift+tab back • enter next
+
+
+
+
+
+
+
 
 
 
@@ -377,14 +363,14 @@ shift+tab back • enter next
 ┃ You can confirm the wiki's article path by adding {{ARTICLEPATH}} to a sandbox page. Omit the /$1 at the end.
 ┃ > /wiki
 
-
-
-
-
-
-
-
 shift+tab back • enter next
+
+
+
+
+
+
+
 
 
 
@@ -412,14 +398,14 @@ shift+tab back • enter next
   >
 
 
-
-
-
-
-
-
-
 shift+tab back • enter next
+
+
+
+
+
+
+
 
 
 
@@ -447,14 +433,14 @@ shift+tab back • enter next
 ┃ >
 
 
-
-
-
-
-
-
-
 shift+tab back • enter next
+
+
+
+
+
+
+
 
 
 
@@ -482,6 +468,7 @@ shift+tab back • enter next
 
 
 
+shift+tab back • enter submit
 
 
 
@@ -489,7 +476,6 @@ shift+tab back • enter next
 
 
 
-shift+tab back • enter next
 
 
 
@@ -517,328 +503,6 @@ shift+tab back • enter next
 
 
 
-
-
-
-
-
-
-
-shift+tab back • enter next
-
-
-
-
-
-
-
-
-
-
-────────────────────────────────────────────────────────────────────────────────
-> patrolbot init
-  Create a Discord app for PatrolBot
-
-  https://discord.com/developers/applications?new_application=true
-
-
-┃ Application ID
-┃ On the General Information page, copy the value for Application ID.
-┃ >
-
-  Public key
-  On the General Information page, copy the value for Public Key.
-  >
-
-  Bot token
-  On the Bot page under Token, click "Reset Token" to generate a new bot token.
-  >
-
-  Add bot to Discord server
-
-  On the Installation page under Install Link, open the Discord Provided Link in a browser and add the bot to the desired server.
-
-
-shift+tab back • enter next
-
-
-
-
-
-
-
-
-
-
-────────────────────────────────────────────────────────────────────────────────
-> patrolbot init
-  Create a Discord app for PatrolBot
-
-  https://discord.com/developers/applications?new_application=true
-
-
-┃ Application ID
-┃ On the General Information page, copy the value for Application ID.
-┃ > appID
-
-  Public key
-  On the General Information page, copy the value for Public Key.
-  >
-
-  Bot token
-  On the Bot page under Token, click "Reset Token" to generate a new bot token.
-  >
-
-  Add bot to Discord server
-
-  On the Installation page under Install Link, open the Discord Provided Link in a browser and add the bot to the desired server.
-
-
-shift+tab back • enter next
-
-
-
-
-
-
-
-
-
-
-────────────────────────────────────────────────────────────────────────────────
-> patrolbot init
-  Create a Discord app for PatrolBot
-
-  https://discord.com/developers/applications?new_application=true
-
-
-  Application ID
-  On the General Information page, copy the value for Application ID.
-  > appID
-
-┃ Public key
-┃ On the General Information page, copy the value for Public Key.
-┃ >
-
-  Bot token
-  On the Bot page under Token, click "Reset Token" to generate a new bot token.
-  >
-
-  Add bot to Discord server
-
-  On the Installation page under Install Link, open the Discord Provided Link in a browser and add the bot to the desired server.
-
-
-shift+tab back • enter next
-
-
-
-
-
-
-
-
-
-
-────────────────────────────────────────────────────────────────────────────────
-> patrolbot init
-  Create a Discord app for PatrolBot
-
-  https://discord.com/developers/applications?new_application=true
-
-
-  Application ID
-  On the General Information page, copy the value for Application ID.
-  > appID
-
-┃ Public key
-┃ On the General Information page, copy the value for Public Key.
-┃ > public key
-
-  Bot token
-  On the Bot page under Token, click "Reset Token" to generate a new bot token.
-  >
-
-  Add bot to Discord server
-
-  On the Installation page under Install Link, open the Discord Provided Link in a browser and add the bot to the desired server.
-
-
-shift+tab back • enter next
-
-
-
-
-
-
-
-
-
-
-────────────────────────────────────────────────────────────────────────────────
-> patrolbot init
-  Create a Discord app for PatrolBot
-
-  https://discord.com/developers/applications?new_application=true
-
-
-  Application ID
-  On the General Information page, copy the value for Application ID.
-  > appID
-
-  Public key
-  On the General Information page, copy the value for Public Key.
-  > public key
-
-┃ Bot token
-┃ On the Bot page under Token, click "Reset Token" to generate a new bot token.
-┃ >
-
-  Add bot to Discord server
-
-  On the Installation page under Install Link, open the Discord Provided Link in a browser and add the bot to the desired server.
-
-
-shift+tab back • enter next
-
-
-
-
-
-
-
-
-
-
-────────────────────────────────────────────────────────────────────────────────
-> patrolbot init
-  Create a Discord app for PatrolBot
-
-  https://discord.com/developers/applications?new_application=true
-
-
-  Application ID
-  On the General Information page, copy the value for Application ID.
-  > appID
-
-  Public key
-  On the General Information page, copy the value for Public Key.
-  > public key
-
-┃ Bot token
-┃ On the Bot page under Token, click "Reset Token" to generate a new bot token.
-┃ > token
-
-  Add bot to Discord server
-
-  On the Installation page under Install Link, open the Discord Provided Link in a browser and add the bot to the desired server.
-
-
-shift+tab back • enter next
-
-
-
-
-
-
-
-
-
-
-────────────────────────────────────────────────────────────────────────────────
-> patrolbot init
-┃ Discord server ID
-┃ Enter the ID of the Discord server you added the bot to.
-┃ To obtain a server's ID, right click the server icon and click "Copy Server ID".
-┃ >
-
-  Discord channel ID
-  Enter the ID of the Discord channel where PatrolBot should post reports.
-  To obtain a channel's ID, right click it in the channel list and click "Copy Channel ID".
-  >
-
-
-
-
-
-
-
-
-
-
-
-
-
-shift+tab back • enter next
-
-
-
-
-
-
-
-
-
-
-────────────────────────────────────────────────────────────────────────────────
-> patrolbot init
-┃ Discord server ID
-┃ Enter the ID of the Discord server you added the bot to.
-┃ To obtain a server's ID, right click the server icon and click "Copy Server ID".
-┃ > server1234
-
-  Discord channel ID
-  Enter the ID of the Discord channel where PatrolBot should post reports.
-  To obtain a channel's ID, right click it in the channel list and click "Copy Channel ID".
-  >
-
-
-
-
-
-
-
-
-
-
-
-
-
-shift+tab back • enter next
-
-
-
-
-
-
-
-
-
-
-────────────────────────────────────────────────────────────────────────────────
-> patrolbot init
-  Discord server ID
-  Enter the ID of the Discord server you added the bot to.
-  To obtain a server's ID, right click the server icon and click "Copy Server ID".
-  > server1234
-
-┃ Discord channel ID
-┃ Enter the ID of the Discord channel where PatrolBot should post reports.
-┃ To obtain a channel's ID, right click it in the channel list and click "Copy Channel ID".
-┃ >
-
-
-
-
-
-
-
-
-
-
-
-
-
 shift+tab back • enter submit
 
 
@@ -847,34 +511,6 @@ shift+tab back • enter submit
 
 
 
-
-
-
-────────────────────────────────────────────────────────────────────────────────
-> patrolbot init
-  Discord server ID
-  Enter the ID of the Discord server you added the bot to.
-  To obtain a server's ID, right click the server icon and click "Copy Server ID".
-  > server1234
-
-┃ Discord channel ID
-┃ Enter the ID of the Discord channel where PatrolBot should post reports.
-┃ To obtain a channel's ID, right click it in the channel list and click "Copy Channel ID".
-┃ > channel1234
-
-
-
-
-
-
-
-
-
-
-
-
-
-shift+tab back • enter submit
 
 
 
