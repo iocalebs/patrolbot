@@ -78,6 +78,10 @@ func scrub(ts *testscript.TestScript, _ bool, args []string) {
 	scrubbed = scrubTimestamps(scrubbed)
 	scrubbed = scrubVHS(scrubbed)
 	scrubbed = trimTrailingWhitespace(scrubbed)
+	// Captured stdout/stderr can end at EOF without a trailing newline, but
+	// txtar golden sections are newline-terminated text. Normalize the scrubbed
+	// output here so cmp can still be used for full transcript comparisons.
+	scrubbed = strings.TrimRight(scrubbed, "\n") + "\n"
 
 	var err error
 

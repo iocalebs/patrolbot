@@ -276,7 +276,6 @@ foo
 HTTP/1.1 401 Unauthorized
 Date: Thu, 01 Jan 1970 00:00:00 GMT
 Content-Length: 0
-
 -- pong.golden --
 HTTP/1.1 200 OK
 Content-Type: application/json
@@ -288,7 +287,6 @@ Content-Length: 11
 HTTP/1.1 400 Bad Request
 Date: Thu, 01 Jan 1970 00:00:00 GMT
 Content-Length: 0
-
 -- unsupported-interaction.golden --
 HTTP/1.1 200 OK
 Content-Type: application/json

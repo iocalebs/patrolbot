@@ -44,4 +44,3 @@ env __FANG_TEST_WIDTH=
    ERROR
 
   Error checking home config directory: stat $WORK/home/.patrolbot: permission denied.
-
