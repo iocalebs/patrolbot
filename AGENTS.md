@@ -20,6 +20,8 @@ Follow standard Go formatting: tabs for indentation, `gofmt`/`go fmt` layout, an
 ## Testing Guidelines
 Unit tests live beside the code they cover. Integration tests are driven by [`main_test.go`](/Users/c/src/iocalebs/patrolbot/main_test.go) and the `.txtar` scripts in [`testdata/integration-tests`](/Users/c/src/iocalebs/patrolbot/testdata/integration-tests). Use `make update` or `make updateall` only when intentionally refreshing golden outputs. Keep new fixtures deterministic by scrubbing timestamps, ports, and other environment-specific values. 
 
+In general, avoid directly editing goldens in integration tests - these should be updated automatically by `make update` or `make updateall`. If any changes to goldens occur as a result of running an update command, review the git diffs to validate them.
+
 ## Commit & Pull Request Guidelines
 Recent history uses short, imperative commit subjects such as `Add test coverage for patrol command` and `Update trivy version`. Keep commits focused and descriptive. PRs should summarize the behavior change, note config or infrastructure impact, link the relevant issue when applicable, and include screenshots or terminal captures for user-visible CLI or report output changes.
 
