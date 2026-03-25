@@ -37,10 +37,11 @@ func TestCommands(t *testing.T) {
 
 			discordsign.Init(env)
 
-			// Add host path and patrolbot binary to test PATH
-			// Assuming binary was already built in go test's working dir
+			// Add host path and cwd (containing patrolbot binary under test) to test PATH
+			// cwd must be prepended to win over any local installations of patrolbot
+			// that may be present in the host PATH.
 			hostPath := os.Getenv("PATH")
-			testPath := hostPath + string(os.PathListSeparator) + cwd
+			testPath := cwd + string(os.PathListSeparator) + hostPath
 			env.Setenv("PATH", testPath)
 
 			srv := httpstub.InitServer(env, func(dump []byte) []byte {
