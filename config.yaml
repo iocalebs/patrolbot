@@ -13,7 +13,7 @@ server:
     readHeaderTimeout: 5s
     writeTimeout: 15s
     idleTimeout: 60s
-userAgent: PatrolBot/1.0 (+https://github.com/iocalebs/patrolbot)
+userAgent: PatrolBot/0.3.0 (+https://github.com/iocalebs/patrolbot)
 wiki: "" # Env variable PATROLBOT_WIKI or flag --wiki
 wikis:
   zwen: &zwen
