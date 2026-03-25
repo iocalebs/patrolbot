@@ -73,3 +73,15 @@ linters:
         linters:
           - err113
           - wrapcheck
+
+      # MediaWiki endpoints are supplied via trusted config - SSRF attack risk is negligible.
+      - path: internal/mediawiki/.*\.go
+        text: G704
+        linters:
+          - gosec
+      
+      # Discord endpoints are supplied via trusted config - SSRF attack risk is negligible.
+      - path: internal/discord/.*\.go
+        text: G704
+        linters:
+          - gosec

@@ -170,7 +170,7 @@ func dumpRequest(ts *testscript.TestScript, r *http.Request, path string, mutate
 		dump = mutateDump(dump)
 	}
 
-	err = os.WriteFile(path, dump, 0600)
+	err = os.WriteFile(path, dump, 0600) //nolint:gosec // Test utility writes to a path created from testscript workdir.
 	if err != nil {
 		ts.Fatalf("Failed to write request to file: %v", err)
 	}

@@ -146,7 +146,7 @@ func newPageDiff(text string) string {
 
 	var sb strings.Builder
 
-	sb.WriteString(fmt.Sprintf("@@ -0,0 +1,%d @@\n", len(lines)))
+	fmt.Fprintf(&sb, "@@ -0,0 +1,%d @@\n", len(lines))
 
 	for i, line := range lines {
 		sb.WriteString("+")

@@ -188,7 +188,7 @@ func TestProvider_Data_RecentChangesError(t *testing.T) {
 						}
 					}
 				`))
-		case r.FormValue("action") == "login":
+		case r.FormValue("action") == "login": //nolint:gosec // Test handler only; request size is controlled by the test.
 			w.Write([]byte(`
 					{
 						"login": {
