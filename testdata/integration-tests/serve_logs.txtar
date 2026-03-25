@@ -40,3 +40,4 @@ server:
 {"time":"1970-01-01T00:00:00Z","severity":"INFO","logging.googleapis.com/sourceLocation":{"function":"github.com/iocalebs/patrolbot/internal/server.(*Server).Start","file":"github.com/iocalebs/patrolbot/internal/server/server.go","line":75},"message":"Initiating graceful shutdown"}
 {"time":"1970-01-01T00:00:00Z","severity":"INFO","logging.googleapis.com/sourceLocation":{"function":"github.com/iocalebs/patrolbot/internal/server.(*Server).Start","file":"github.com/iocalebs/patrolbot/internal/server/server.go","line":83},"message":"Graceful shutdown completed"}
 -- stderr-error-log.golden --
+

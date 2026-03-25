@@ -8,3 +8,6 @@ import "github.com/iocalebs/patrolbot/internal/cli"
 func main() {
 	cli.Execute()
 }
+
+// TODO: Simplify init (no Discord bot)
+// TODO: patrol command test coverage
