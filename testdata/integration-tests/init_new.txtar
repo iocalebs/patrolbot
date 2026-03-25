@@ -5,6 +5,7 @@
 env HOME=$WORK/home
 exec vhs cassette.tape
 scrub output.ascii
+scrub $HOME/.patrolbot/config.yaml
 cmp $HOME/.patrolbot/config.yaml new-config.golden.yaml
 cmp output.ascii output.golden
 
@@ -80,7 +81,7 @@ wikis:
       from: "phantomcalebs@example.test"
       timeout: "10s"
     reports:
-      templateDir: "./templates"
+      templateDir: "$WORK/home/.patrolbot/templates"
       discordServerID: ""
       types:
         expiring:

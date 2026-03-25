@@ -15,8 +15,9 @@ import (
 var errInvalidInput = errors.New("Invalid input") //nolint:staticcheck
 
 type formData struct {
-	WikiName string
-	Wiki     config.Wiki
+	WikiName    string
+	TemplateDir string
+	Wiki        config.Wiki
 }
 
 func notEmpty(fieldName string) func(string) error {

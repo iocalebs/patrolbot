@@ -23,7 +23,7 @@ wikis:
       from: "{{ .Wiki.Client.From }}"
       timeout: "10s"
     reports:
-      templateDir: "./templates"
+      templateDir: "{{ .TemplateDir }}"
       discordServerID: ""
       types:
         expiring:

@@ -9,6 +9,7 @@ cp custom.tmpl $HOME/.patrolbot/templates/custom.tmpl
 
 exec vhs cassette.tape
 scrub output.ascii
+scrub $HOME/.patrolbot/config.yaml
 cmp $HOME/.patrolbot/config.yaml new-config.golden.yaml
 cmp output.ascii output.golden
 cmp $HOME/.patrolbot/templates/expiring.tmpl expiring.golden.tmpl
@@ -122,7 +123,7 @@ wikis:
       from: "phantomcalebs@example.test"
       timeout: "10s"
     reports:
-      templateDir: "./templates"
+      templateDir: "$WORK/home/.patrolbot/templates"
       discordServerID: ""
       types:
         expiring:

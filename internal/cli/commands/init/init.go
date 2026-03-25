@@ -65,6 +65,8 @@ func NewCommand() *cobra.Command {
 				return err
 			}
 
+			formData.TemplateDir = filepath.Join(dir, "templates")
+
 			err = writeConfig(formData, path)
 			if err != nil {
 				return err
