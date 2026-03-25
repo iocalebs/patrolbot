@@ -68,7 +68,7 @@ jobs:
           tags: patrolbot:temp
           cache-from: type=gha
           cache-to: type=gha,mode=max
-      - uses: aquasecurity/trivy-action@0.33.1
+      - uses: aquasecurity/trivy-action@v0.35.0
         with:
           image-ref: patrolbot:temp
           exit-code: "1"
