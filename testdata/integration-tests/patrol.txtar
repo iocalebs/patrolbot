@@ -1,8 +1,82 @@
+env PATROLBOT_WIKIS_ZWEN_SITE_URL=http://$STUB_ADDR
+# The patrol command formats revision timestamps in the local timezone, so we set
+# TZ to make output stable across developer environments.
+env TZ=GMT
+
 exec patrolbot patrol --help
 cmp stdout help.golden
 
 exec patrolbot patrol -h
 cmp stdout help.golden
+
+# Scenario: user quits after reviewing one edit
+stub GET /w/api.php.*meta=tokens.*type=login 200 stub-login-token.json req-mwtokens-login.http
+stub POST /w/api.php.*action=login 200 stub-mwlogin.json req-mwlogin.http
+stub GET /w/api.php.*meta=tokens.*type=patrol 200 stub-patrol-token.json req-mwtokens-patrol.http
+stub GET /w/api.php.*list=recentchanges 200 stub-recentchanges.json req-recentchanges-quit.http
+stub GET /w/api.php.*action=compare 200 stub-compare.json req-compare-quit.http
+ttyin -stdin quit-prompt
+exec patrolbot patrol
+scrub stdout
+cmp stdout stdout-quit.golden
+cmp req-mwtokens-login.http req-mwtokens-login.golden.http
+cmp req-mwlogin.http req-mwlogin.golden.http
+cmp req-mwtokens-patrol.http req-mwtokens-patrol.golden.http
+cmp req-recentchanges-quit.http req-recentchanges.golden.http
+cmp req-compare-quit.http req-compare.golden.http
+
+# Scenario: flags influence the recentchanges query
+stub GET /w/api.php.*meta=tokens.*type=login 200 stub-login-token.json
+stub POST /w/api.php.*action=login 200 stub-mwlogin.json
+stub GET /w/api.php.*meta=tokens.*type=patrol 200 stub-patrol-token.json
+stub GET /w/api.php.*list=recentchanges 200 stub-recentchanges.json req-recentchanges-flags.http
+stub GET /w/api.php.*action=compare 200 stub-compare.json
+ttyin -stdin quit-prompt
+exec patrolbot patrol --latest --namespace 4 --user ExampleUser
+cmp req-recentchanges-flags.http req-recentchanges-flags.golden.http
+
+# Scenario: user marks the edit as patrolled
+stub GET /w/api.php.*meta=tokens.*type=login 200 stub-login-token.json req-mwtokens-login-success.http
+stub POST /w/api.php.*action=login 200 stub-mwlogin.json req-mwlogin-success.http
+stub GET /w/api.php.*meta=tokens.*type=patrol 200 stub-patrol-token.json req-mwtokens-patrol-success.http
+stub GET /w/api.php.*list=recentchanges 200 stub-recentchanges.json req-recentchanges-success.http
+stub GET /w/api.php.*action=compare 200 stub-compare.json req-compare-success.http
+stub POST /w/api.php.*action=patrol 200 stub-patrol.json req-patrol.http
+ttyin -stdin accept-prompt
+exec patrolbot patrol
+scrub stdout
+cmp stdout stdout-success.golden
+cmp req-mwtokens-login-success.http req-mwtokens-login.golden.http
+cmp req-mwlogin-success.http req-mwlogin.golden.http
+cmp req-mwtokens-patrol-success.http req-mwtokens-patrol.golden.http
+cmp req-recentchanges-success.http req-recentchanges.golden.http
+cmp req-compare-success.http req-compare.golden.http
+cmp req-patrol.http req-patrol.golden.http
+
+-- accept-prompt --
+y
+
+-- decline-prompt --
+n
+
+-- quit-prompt --
+q
+
+-- config.yaml --
+userAgent: PatrolBot/1.0 (+https://github.com/iocalebs/patrolbot)
+wiki: zwen
+wikis:
+  zwen:
+    site:
+      url: ""
+      scriptPath: /w
+      articlePath: /wiki
+    auth:
+      username: username
+      password: password
+    client:
+      from: phantomcalebs@gmail.com
+      timeout: 10s
 
 -- help.golden --
 
@@ -21,3 +95,148 @@ cmp stdout help.golden
     -u --user    User to patrol (default: all users)
     -w --wiki    Target wiki
 
+-- stdout-quit.golden --
+
+>>> Main Page <<<
+Edit
+User:ExampleUser
+Thu, 01 Jan 1970 00:00:00 GMT
+Comment: Fixed typo
+
+@@ -1 +1 @@
+-old line
++new line
+
+
+Mark as patrolled? ([y]es, [N]o, [o]pen in browser, [q]uit):
+-- stdout-success.golden --
+
+>>> Main Page <<<
+Edit
+User:ExampleUser
+Thu, 01 Jan 1970 00:00:00 GMT
+Comment: Fixed typo
+
+@@ -1 +1 @@
+-old line
++new line
+
+
+Mark as patrolled? ([y]es, [N]o, [o]pen in browser, [q]uit): Revision 42 by ExampleUser marked as patrolled.
+-- stub-login-token.json --
+{
+  "batchcomplete": true,
+  "query": {
+    "tokens": {
+      "logintoken": "8af20f35764bee599652a5d5d9e804d469444fb1+\\"
+    }
+  }
+}
+
+-- stub-patrol-token.json --
+{
+  "batchcomplete": true,
+  "query": {
+    "tokens": {
+      "patroltoken": "patroltoken+\\"
+    }
+  }
+}
+
+-- stub-mwlogin.json --
+{
+  "login": {
+    "result": "Success",
+    "lguserid": 45359339,
+    "lgusername": "PhantomCaleb"
+  }
+}
+
+-- stub-recentchanges.json --
+{
+  "batchcomplete": true,
+  "query": {
+    "recentchanges": [
+      {
+        "comment": "Fixed typo",
+        "old_revid": 41,
+        "revid": 42,
+        "timestamp": "2026-01-01T00:00:00Z",
+        "title": "Main Page",
+        "type": "edit",
+        "user": "ExampleUser"
+      }
+    ]
+  }
+}
+
+-- stub-compare.json --
+{
+  "compare": {
+    "body": "<tr><td colspan=\"4\"><pre>@@ -1 +1 @@\n-old line\n+new line\n</pre></td></tr>"
+  }
+}
+
+-- stub-patrol.json --
+{}
+
+-- req-mwtokens-login.golden.http --
+GET /w/api.php?action=query&errorformat=plaintext&format=json&formatversion=2&meta=tokens&type=login&uselang=user HTTP/1.1
+Host: $STUB_ADDR
+Accept-Encoding: gzip
+From: phantomcalebs@gmail.com
+User-Agent: PatrolBot/1.0 (+https://github.com/iocalebs/patrolbot)
+
+
+-- req-mwtokens-patrol.golden.http --
+GET /w/api.php?action=query&errorformat=plaintext&format=json&formatversion=2&meta=tokens&type=patrol&uselang=user HTTP/1.1
+Host: $STUB_ADDR
+Accept-Encoding: gzip
+From: phantomcalebs@gmail.com
+User-Agent: PatrolBot/1.0 (+https://github.com/iocalebs/patrolbot)
+
+
+-- req-mwlogin.golden.http --
+POST /w/api.php?action=login&errorformat=plaintext&format=json&formatversion=2&uselang=user HTTP/1.1
+Host: $STUB_ADDR
+Accept-Encoding: gzip
+Content-Length: 90
+Content-Type: application/x-www-form-urlencoded
+From: phantomcalebs@gmail.com
+User-Agent: PatrolBot/1.0 (+https://github.com/iocalebs/patrolbot)
+
+lgname=username&lgpassword=password&lgtoken=8af20f35764bee599652a5d5d9e804d469444fb1%2B%5C
+-- req-recentchanges.golden.http --
+GET /w/api.php?action=query&errorformat=plaintext&format=json&formatversion=2&list=recentchanges&rcdir=newer&rclimit=1&rcprop=comment%7Cids%7Cloginfo%7Ctimestamp%7Ctitle%7Cuser&rcshow=%21patrolled&uselang=user HTTP/1.1
+Host: $STUB_ADDR
+Accept-Encoding: gzip
+From: phantomcalebs@gmail.com
+User-Agent: PatrolBot/1.0 (+https://github.com/iocalebs/patrolbot)
+
+
+-- req-recentchanges-flags.golden.http --
+GET /w/api.php?action=query&errorformat=plaintext&format=json&formatversion=2&list=recentchanges&rcdir=older&rclimit=1&rcnamespace=4&rcprop=comment%7Cids%7Cloginfo%7Ctimestamp%7Ctitle%7Cuser&rcshow=%21patrolled&rcuser=ExampleUser&uselang=user HTTP/1.1
+Host: $STUB_ADDR
+Accept-Encoding: gzip
+From: phantomcalebs@gmail.com
+User-Agent: PatrolBot/1.0 (+https://github.com/iocalebs/patrolbot)
+
+
+-- req-compare.golden.http --
+GET /w/api.php?action=compare&difftype=unified&errorformat=plaintext&format=json&formatversion=2&fromrev=41&torev=42&uselang=user HTTP/1.1
+Host: $STUB_ADDR
+Accept-Encoding: gzip
+From: phantomcalebs@gmail.com
+User-Agent: PatrolBot/1.0 (+https://github.com/iocalebs/patrolbot)
+
+
+-- req-patrol.golden.http --
+POST /w/api.php?action=patrol&errorformat=plaintext&format=json&formatversion=2&uselang=user HTTP/1.1
+Host: $STUB_ADDR
+Accept-Encoding: gzip
+Content-Length: 32
+Content-Type: application/x-www-form-urlencoded
+From: phantomcalebs@gmail.com
+User-Agent: PatrolBot/1.0 (+https://github.com/iocalebs/patrolbot)
+
+revid=42&token=patroltoken%2B%5C

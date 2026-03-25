@@ -10,4 +10,3 @@ func main() {
 }
 
 // TODO: Simplify init (no Discord bot)
-// TODO: patrol command test coverage
