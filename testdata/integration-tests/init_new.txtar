@@ -64,7 +64,7 @@ discord:
   token: ""
 log:
   level: INFO
-userAgent: "PatrolBot/v0.3.2 (+https://github.com/iocalebs/patrolbot)"
+userAgent: "PatrolBot/v0.3.3 (+https://github.com/iocalebs/patrolbot)"
 wiki: "zw"
 wikis:
   zw:
