@@ -31,11 +31,11 @@ wikis:
       timeout: 10s
     reports:
       templateDir: ./templates
-      discordServerID: "911393793666863116"
+      discordServerID: "471372235957993474"
       types:
         expiring:
           template: expiring.tmpl
-          discordChannelID: "911393794262458421"
+          discordChannelID: "955460856559317002"
           description: "Count the number of unpatrolled edits expiring in the next few weeks"
           data:
             patrolExpiring:
