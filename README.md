@@ -17,7 +17,7 @@ The PatrolBot Discord bot can generate reports on the state of a wiki's patrol b
 
 ## CLI
 
-The PatrolBot CLI (command line interface) helps patrollers work through the wiki's backlog via keyboard interface. It is particularly well suited to patrolling large quantities of smaller edits by a particular user (i.e. maintenance tasks) in rapid succession. It can also be helpful for patrolling revisions that are difficult or impossible to access via Special:RecentChanges, such as deleted files and old revisions hidden by the [link limit](Manual:$wgRCLinkLimits). 
+The PatrolBot CLI (command line interface) helps patrollers work through the wiki's backlog via keyboard interface. It can be helpful for multiple maintenance edits in rapid succession. It can also be used for patrolling revisions that are difficult or impossible to access via Special:RecentChanges, such as deleted files and old revisions hidden by [link limits](Manual:$wgRCLinkLimits). 
 
 ### Getting started
 
