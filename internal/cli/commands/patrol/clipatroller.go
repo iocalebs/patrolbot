@@ -99,7 +99,7 @@ func (p *CLIPatroller) prompt(scanner *bufio.Scanner) (bool, error) {
 	theme := p.theme
 
 	for {
-		cmd.Print(theme.prompt.Render("Mark as patrolled? ([y]es, [N]o, [o]pen in browser, [q]uit): "))
+		cmd.Print(theme.prompt.Render("Mark as patrolled? ([y]es, [N]o, [t]hank, [o]pen in browser, [q]uit): "))
 
 		if !scanner.Scan() {
 			if scanner.Err() != nil {
@@ -116,6 +116,8 @@ func (p *CLIPatroller) prompt(scanner *bufio.Scanner) (bool, error) {
 			return false, nil
 		case "n", "":
 			return false, nil
+		case "t":
+			p.thank()
 		case "o":
 			p.open()
 		case "q":
@@ -163,6 +165,15 @@ func (p *CLIPatroller) markPatrolled() {
 		p.printErr("Error marking revision as patrolled: " + err.Error())
 	} else {
 		p.cmd.Printf("Revision %d by %s marked as patrolled.\n", p.patroller.RevisionID(), p.patroller.User())
+	}
+}
+
+func (p *CLIPatroller) thank() {
+	err := p.patroller.Thank(p.cmd.Context())
+	if err != nil {
+		p.printErr("Error thanking user: " + err.Error())
+	} else {
+		p.cmd.Printf("Thanked User:%s.\n", p.patroller.User())
 	}
 }
 

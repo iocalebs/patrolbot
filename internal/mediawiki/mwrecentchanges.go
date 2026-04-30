@@ -47,6 +47,7 @@ type RecentChangesQueryParams struct {
 type RecentChange struct {
 	Comment       string    `json:"comment"`
 	LogAction     string    `json:"logaction"`
+	LogID         int       `json:"logid"`
 	LogType       string    `json:"logtype"`
 	OldRevisionID int       `json:"old_revid"`
 	RevisionID    int       `json:"revid"`

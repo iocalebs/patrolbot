@@ -7,6 +7,7 @@ import (
 
 // Tokens represents one or more MediaWiki API tokens.
 type Tokens struct {
+	CSRF   string `json:"csrftoken"`
 	Login  string `json:"logintoken"`
 	Patrol string `json:"patroltoken"`
 }
