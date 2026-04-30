@@ -14,6 +14,8 @@ import (
 	"github.com/iocalebs/patrolbot/internal/mediawiki"
 )
 
+var errNoThankTarget = errors.New("current change has no revision or log ID")
+
 // A Patroller iterates through unpatrolled revisions in a MediaWiki backlog, provides information about each revision,
 // and allows the caller to mark revisions as patrolled.
 type Patroller struct {
@@ -21,6 +23,7 @@ type Patroller struct {
 	rcPaginator *mediawiki.RecentChangesPaginator
 
 	current     mediawiki.RecentChange
+	csrfToken   string
 	err         error
 	patrolToken string
 }
@@ -173,6 +176,36 @@ func (p *Patroller) MarkPatrolled(ctx context.Context) error {
 	})
 	if err != nil {
 		return fmt.Errorf("error marking revision as patrolled: %w", err)
+	}
+
+	return nil
+}
+
+// Thank sends a thanks notification for the revision the patroller is currently on.
+func (p *Patroller) Thank(ctx context.Context) error {
+	params := mediawiki.ThankParams{}
+
+	switch {
+	case p.current.RevisionID != 0:
+		params.RevisionID = p.current.RevisionID
+	case p.current.LogID != 0:
+		params.LogID = p.current.LogID
+	default:
+		return errNoThankTarget
+	}
+
+	if p.csrfToken == "" {
+		tokens, err := p.mwclient.Tokens(ctx, "csrf")
+		if err != nil {
+			return fmt.Errorf("failed to retrieve CSRF token: %w", err)
+		}
+
+		p.csrfToken = tokens.CSRF
+	}
+
+	err := p.mwclient.Thank(ctx, p.csrfToken, params)
+	if err != nil {
+		return fmt.Errorf("error thanking user: %w", err)
 	}
 
 	return nil

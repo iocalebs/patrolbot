@@ -51,6 +51,12 @@ func tests() []actionTest {
 				return err
 			},
 		},
+		{
+			name: "Thank",
+			requestFunc: func(ctx context.Context, client *mediawiki.Client) error {
+				return client.Thank(ctx, "token", mediawiki.ThankParams{RevisionID: 1})
+			},
+		},
 	}
 }
 

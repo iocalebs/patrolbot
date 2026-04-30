@@ -53,11 +53,37 @@ cmp req-recentchanges-success.http req-recentchanges.golden.http
 cmp req-compare-success.http req-compare.golden.http
 cmp req-patrol.http req-patrol.golden.http
 
+# Scenario: user thanks the edit author before marking the edit as patrolled
+stub GET /w/api.php.*meta=tokens.*type=login 200 stub-login-token.json req-mwtokens-login-thank.http
+stub POST /w/api.php.*action=login 200 stub-mwlogin.json req-mwlogin-thank.http
+stub GET /w/api.php.*meta=tokens.*type=patrol 200 stub-patrol-token.json req-mwtokens-patrol-thank.http
+stub GET /w/api.php.*list=recentchanges 200 stub-recentchanges.json req-recentchanges-thank.http
+stub GET /w/api.php.*action=compare 200 stub-compare.json req-compare-thank.http
+stub GET /w/api.php.*meta=tokens.*type=csrf 200 stub-csrf-token.json req-mwtokens-csrf.http
+stub POST /w/api.php.*action=thank 200 stub-thank.json req-thank.http
+stub POST /w/api.php.*action=patrol 200 stub-patrol.json req-patrol-thank.http
+ttyin -stdin thank-prompt
+exec patrolbot patrol
+scrub stdout
+cmp stdout stdout-thank.golden
+cmp req-mwtokens-login-thank.http req-mwtokens-login.golden.http
+cmp req-mwlogin-thank.http req-mwlogin.golden.http
+cmp req-mwtokens-patrol-thank.http req-mwtokens-patrol.golden.http
+cmp req-recentchanges-thank.http req-recentchanges.golden.http
+cmp req-compare-thank.http req-compare.golden.http
+cmp req-mwtokens-csrf.http req-mwtokens-csrf.golden.http
+cmp req-thank.http req-thank.golden.http
+cmp req-patrol-thank.http req-patrol.golden.http
+
 -- accept-prompt --
 y
 
 -- decline-prompt --
 n
+
+-- thank-prompt --
+t
+y
 
 -- quit-prompt --
 q
@@ -108,7 +134,7 @@ Comment: Fixed typo
 +new line
 
 
-Mark as patrolled? ([y]es, [N]o, [o]pen in browser, [q]uit):
+Mark as patrolled? ([y]es, [N]o, [t]hank, [o]pen in browser, [q]uit):
 -- stdout-success.golden --
 
 >>> Main Page <<<
@@ -122,7 +148,22 @@ Comment: Fixed typo
 +new line
 
 
-Mark as patrolled? ([y]es, [N]o, [o]pen in browser, [q]uit): Revision 42 by ExampleUser marked as patrolled.
+Mark as patrolled? ([y]es, [N]o, [t]hank, [o]pen in browser, [q]uit): Revision 42 by ExampleUser marked as patrolled.
+-- stdout-thank.golden --
+
+>>> Main Page <<<
+Edit
+User:ExampleUser
+Thu, 01 Jan 1970 00:00:00 GMT
+Comment: Fixed typo
+
+@@ -1 +1 @@
+-old line
++new line
+
+
+Mark as patrolled? ([y]es, [N]o, [t]hank, [o]pen in browser, [q]uit): Thanked ExampleUser.
+Mark as patrolled? ([y]es, [N]o, [t]hank, [o]pen in browser, [q]uit): Revision 42 by ExampleUser marked as patrolled.
 -- stub-login-token.json --
 {
   "batchcomplete": true,
@@ -139,6 +180,16 @@ Mark as patrolled? ([y]es, [N]o, [o]pen in browser, [q]uit): Revision 42 by Exam
   "query": {
     "tokens": {
       "patroltoken": "patroltoken+\\"
+    }
+  }
+}
+
+-- stub-csrf-token.json --
+{
+  "batchcomplete": true,
+  "query": {
+    "tokens": {
+      "csrftoken": "csrftoken+\\"
     }
   }
 }
@@ -180,6 +231,9 @@ Mark as patrolled? ([y]es, [N]o, [o]pen in browser, [q]uit): Revision 42 by Exam
 -- stub-patrol.json --
 {}
 
+-- stub-thank.json --
+{}
+
 -- req-mwtokens-login.golden.http --
 GET /w/api.php?action=query&errorformat=plaintext&format=json&formatversion=2&meta=tokens&type=login&uselang=user HTTP/1.1
 Host: $STUB_ADDR
@@ -190,6 +244,14 @@ User-Agent: PatrolBot/1.0 (+https://github.com/iocalebs/patrolbot)
 
 -- req-mwtokens-patrol.golden.http --
 GET /w/api.php?action=query&errorformat=plaintext&format=json&formatversion=2&meta=tokens&type=patrol&uselang=user HTTP/1.1
+Host: $STUB_ADDR
+Accept-Encoding: gzip
+From: phantomcalebs@gmail.com
+User-Agent: PatrolBot/1.0 (+https://github.com/iocalebs/patrolbot)
+
+
+-- req-mwtokens-csrf.golden.http --
+GET /w/api.php?action=query&errorformat=plaintext&format=json&formatversion=2&meta=tokens&type=csrf&uselang=user HTTP/1.1
 Host: $STUB_ADDR
 Accept-Encoding: gzip
 From: phantomcalebs@gmail.com
@@ -240,3 +302,13 @@ From: phantomcalebs@gmail.com
 User-Agent: PatrolBot/1.0 (+https://github.com/iocalebs/patrolbot)
 
 revid=42&token=patroltoken%2B%5C
+-- req-thank.golden.http --
+POST /w/api.php?action=thank&errorformat=plaintext&format=json&formatversion=2&uselang=user HTTP/1.1
+Host: $STUB_ADDR
+Accept-Encoding: gzip
+Content-Length: 45
+Content-Type: application/x-www-form-urlencoded
+From: phantomcalebs@gmail.com
+User-Agent: PatrolBot/1.0 (+https://github.com/iocalebs/patrolbot)
+
+rev=42&source=patrolbot&token=csrftoken%2B%5C
